@@ -1,0 +1,42 @@
+name: AutoBloodmoon
+main: cat.nyaa.autobloodmoon.AutoBloodmoon
+description: "Plugin to automate bloodmoon game"
+version: 1.0
+depend: [Vault]
+authors: [RecursiveG]
+website: "https://github.com/NyaaCat/bloodmoon"
+database: false
+
+commands:
+  bloodmoon:
+    description: The command for AutoBloodmoon
+    aliases: bm
+    permission: bm.command
+    permission-message: "You do not have the required permission: <permission>"
+    usage: "/<command> [SubCommand] [Arguments...] or /<command> help"
+
+permissions:
+  bm.*:
+    description: All permissions for AutoBloodmoon
+    default: false
+    children:
+      bm.command: true
+      bm.player: true
+      bm.admin: true
+  bm.command:
+    description: Permission node for AutoBloodmoon commands
+    default: true
+  bm.player:
+    description: Meta permission node for general commands
+    default: true
+    children:
+      bm.join: true
+      bm.quit: true
+  bm.admin:
+    description: Meta permission node for administrative commands
+    default: op
+    children:
+      bm.start: true
+      bm.stop: true
+      bm.modificate: true
+      bm.reload: true
