@@ -2,7 +2,7 @@ name: AutoBloodmoon
 main: cat.nyaa.autobloodmoon.AutoBloodmoon
 description: "Plugin to automate bloodmoon game"
 version: 1.0
-depend: [Vault]
+depend: [Vault,NyaaUtils]
 authors: [RecursiveG]
 website: "https://github.com/NyaaCat/bloodmoon"
 database: false
