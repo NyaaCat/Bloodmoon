@@ -1,5 +1,6 @@
 package cat.nyaa.autobloodmoon;
 
+import cat.nyaa.autobloodmoon.arena.ArenaConfig;
 import cat.nyaa.utils.ISerializable;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -13,9 +14,12 @@ public class Configuration implements ISerializable {
     public int preparation_time = 600;
     @Serializable
     public boolean save_inventory = false;
+    
+    public ArenaConfig arenaConfig;
 
     public Configuration(AutoBloodmoon pl) {
         plugin = pl;
+        arenaConfig = new ArenaConfig(plugin); 
     }
 
     public void save() {
@@ -25,10 +29,12 @@ public class Configuration implements ISerializable {
 
     public void deserialize(ConfigurationSection config) {
         ISerializable.deserialize(config, this);
+        arenaConfig.load();
     }
 
     public void serialize(ConfigurationSection config) {
         ISerializable.serialize(config, this);
+        arenaConfig.save();
     }
 
 }

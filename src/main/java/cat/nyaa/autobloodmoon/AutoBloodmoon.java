@@ -1,5 +1,6 @@
 package cat.nyaa.autobloodmoon;
 
+import cat.nyaa.autobloodmoon.arena.ArenaManager;
 import cat.nyaa.nyaautils.NyaaUtils;
 import cat.nyaa.utils.Internationalization;
 import cat.nyaa.utils.VaultUtil;
@@ -12,6 +13,7 @@ public class AutoBloodmoon extends JavaPlugin {
     public boolean serverEnabled;
     public Configuration cfg;
     public VaultUtil vaultUtil;
+    public ArenaManager arenaManager;
 
     @Override
     public void onLoad() {
@@ -42,6 +44,7 @@ public class AutoBloodmoon extends JavaPlugin {
         this.commandHandler = new CommandHandler(this, this.i18n);
         this.getCommand("bloodmoon").setExecutor(this.commandHandler);
         this.vaultUtil = getPlugin(NyaaUtils.class).vaultUtil;
+        this.arenaManager=new ArenaManager(this);
     }
 
     @Override
