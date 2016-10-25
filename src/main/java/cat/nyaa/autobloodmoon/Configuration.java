@@ -16,10 +16,12 @@ public class Configuration implements ISerializable {
     public boolean save_inventory = false;
     
     public ArenaConfig arenaConfig;
+    public RewardConfig rewardConfig;
 
     public Configuration(AutoBloodmoon pl) {
         plugin = pl;
         arenaConfig = new ArenaConfig(plugin); 
+        rewardConfig = new RewardConfig(plugin);
     }
 
     public void save() {
@@ -30,11 +32,13 @@ public class Configuration implements ISerializable {
     public void deserialize(ConfigurationSection config) {
         ISerializable.deserialize(config, this);
         arenaConfig.load();
+        rewardConfig.load();
     }
 
     public void serialize(ConfigurationSection config) {
         ISerializable.serialize(config, this);
         arenaConfig.save();
+        rewardConfig.save();
     }
 
 }
