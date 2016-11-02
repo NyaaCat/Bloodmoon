@@ -1,5 +1,6 @@
 package cat.nyaa.autobloodmoon;
 
+import cat.nyaa.autobloodmoon.api.InfernalMobsAPI;
 import cat.nyaa.autobloodmoon.arena.ArenaManager;
 import cat.nyaa.autobloodmoon.kits.KitListener;
 import cat.nyaa.nyaautils.NyaaUtils;
@@ -48,6 +49,7 @@ public class AutoBloodmoon extends JavaPlugin {
         this.vaultUtil = getPlugin(NyaaUtils.class).vaultUtil;
         this.arenaManager = new ArenaManager(this);
         this.kitListener = new KitListener(this);
+        InfernalMobsAPI.load(getServer().getPluginManager().getPlugin("InfernalMobs"));
     }
 
     @Override
