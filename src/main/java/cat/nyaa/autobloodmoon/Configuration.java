@@ -1,6 +1,7 @@
 package cat.nyaa.autobloodmoon;
 
 import cat.nyaa.autobloodmoon.arena.ArenaConfig;
+import cat.nyaa.autobloodmoon.mobs.MobConfig;
 import cat.nyaa.utils.ISerializable;
 import org.bukkit.configuration.ConfigurationSection;
 
@@ -17,11 +18,13 @@ public class Configuration implements ISerializable {
     
     public ArenaConfig arenaConfig;
     public RewardConfig rewardConfig;
+    public MobConfig mobConfig;
 
     public Configuration(AutoBloodmoon pl) {
         plugin = pl;
         arenaConfig = new ArenaConfig(plugin); 
         rewardConfig = new RewardConfig(plugin);
+        mobConfig = new MobConfig(plugin);
     }
 
     public void save() {
@@ -33,12 +36,14 @@ public class Configuration implements ISerializable {
         ISerializable.deserialize(config, this);
         arenaConfig.load();
         rewardConfig.load();
+        mobConfig.load();
     }
 
     public void serialize(ConfigurationSection config) {
         ISerializable.serialize(config, this);
         arenaConfig.save();
         rewardConfig.save();
+        mobConfig.save();
     }
 
 }
