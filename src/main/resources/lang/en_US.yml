@@ -21,6 +21,8 @@ user:
     save_success: "Save success"
     not_found: "Kit does not exist"
     kit_type_error: "Unknown kit type"
+  difficulty:
+    type_error: "Unknown difficulty type"
 manual:
   no_description: "No description"
   no_usage: "No usage"
@@ -39,3 +41,6 @@ manual:
     list:
       description: "List all kits"
       usage: "/bm kit list"
+  difficulty:
+    description: "Define a difficulty level"
+    usage: "/bm difficulty [level] [min player amount] [mob:player amount] [mob:infernal amount] [mob spawn delay ticks] [max infernal level]"
