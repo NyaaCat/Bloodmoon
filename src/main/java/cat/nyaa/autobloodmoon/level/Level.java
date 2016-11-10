@@ -79,7 +79,7 @@ public class Level implements ISerializable {
         ISerializable.serialize(config, this);
     }
 
-    public enum LevelType {
+    public static enum LevelType {
         EASY,
         NORMAL,
         HARD,

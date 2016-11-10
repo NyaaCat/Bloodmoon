@@ -30,10 +30,10 @@ public class LevelConfig extends FileConfigure {
     public void deserialize(ConfigurationSection config) {
         ISerializable.deserialize(config, this);
         if (config.isConfigurationSection("levels")) {
-            ConfigurationSection levels = config.getConfigurationSection("infernal");
+            ConfigurationSection levels = config.getConfigurationSection("levels");
             for (String k : levels.getKeys(false)) {
                 Level level = new Level();
-                level.deserialize(config.getConfigurationSection(k));
+                level.deserialize(levels.getConfigurationSection(k));
                 this.levels.put(level.getLevelType(), level);
             }
         }
