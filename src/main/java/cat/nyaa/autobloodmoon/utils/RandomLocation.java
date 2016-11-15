@@ -18,7 +18,7 @@ public class RandomLocation {
                 Block b = world.getBlockAt(block.getX(), block.getY() - 1, block.getZ());
                 if (block.getY() > 5) {
                     if (!b.getType().equals(Material.LAVA)) {
-                        return block.getLocation().add(new Vector(0.5D, 0.1D, 0.5D));
+                        return block.getLocation().add(new Vector(0.5D, 0.5D, 0.5D));
                     }
                 }
             }
@@ -28,14 +28,29 @@ public class RandomLocation {
 
     private static Block getRandomLocation(Location loc, int min, int max) {
         World world = loc.getWorld();
-        int x = min + new Random().nextInt(max - min) + 1;
-        int z = min + new Random().nextInt(max - min) + 1;
-        if (new Random().nextBoolean()) {
-            x *= -1;
+        for (int i = 0; i < 10; i++) {
+            int x = new Random().nextInt(max);
+            int z = new Random().nextInt(max);
+            if (new Random().nextBoolean()) {
+                x *= -1;
+            }
+            if (new Random().nextBoolean()) {
+                z *= -1;
+            }
+            if (loc.getX() + x < 1.0) {
+                x = x - 1;
+            }
+            if (loc.getZ() + z < 1.0) {
+                z = z - 1;
+            }
+            Block block = world.getHighestBlockAt((int) loc.getX() + x, (int) loc.getZ() + z);
+            Location randomLocation = block.getLocation();
+            randomLocation.setY(loc.getY());
+            double distance = randomLocation.distance(loc);
+            if (distance <= max && distance > min + 1) {
+                return block;
+            }
         }
-        if (new Random().nextBoolean()) {
-            z *= -1;
-        }
-        return world.getHighestBlockAt((int) loc.getX() + x, (int) loc.getZ() + z);
+        return null;
     }
 }
