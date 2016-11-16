@@ -7,11 +7,14 @@ import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 
 public class MobConfig extends FileConfigure {
     public HashMap<Integer, ArrayList<Mob>> mobList = new HashMap<>();
+    @Serializable
+    public ArrayList<String> normalMob = new ArrayList<>(Arrays.asList(new String[]{"zombie", "creeper"}));
     private AutoBloodmoon plugin;
 
     public MobConfig(AutoBloodmoon plugin) {

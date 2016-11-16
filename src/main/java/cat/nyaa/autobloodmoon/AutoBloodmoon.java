@@ -1,7 +1,10 @@
 package cat.nyaa.autobloodmoon;
 
 import cat.nyaa.autobloodmoon.api.InfernalMobsAPI;
+import cat.nyaa.autobloodmoon.arena.Arena;
 import cat.nyaa.autobloodmoon.arena.ArenaManager;
+import cat.nyaa.autobloodmoon.events.MobListener;
+import cat.nyaa.autobloodmoon.events.PlayerListener;
 import cat.nyaa.autobloodmoon.kits.KitListener;
 import cat.nyaa.autobloodmoon.mobs.MobManager;
 import cat.nyaa.autobloodmoon.utils.TeleportUtil;
@@ -21,6 +24,9 @@ public class AutoBloodmoon extends JavaPlugin {
     public KitListener kitListener;
     public MobManager mobManager;
     public TeleportUtil teleportUtil;
+    public Arena currentArena = null;
+    public PlayerListener playerListener;
+    public MobListener mobListener;
 
     @Override
     public void onLoad() {
@@ -56,6 +62,8 @@ public class AutoBloodmoon extends JavaPlugin {
         this.mobManager = new MobManager(this);
         InfernalMobsAPI.load(getServer().getPluginManager().getPlugin("InfernalMobs"));
         this.teleportUtil = new TeleportUtil(this);
+        this.playerListener = new PlayerListener(this);
+        this.mobListener = new MobListener(this);
     }
 
     @Override

@@ -23,6 +23,24 @@ user:
     kit_type_error: "Unknown kit type"
   difficulty:
     type_error: "Unknown difficulty type"
+  prefix: "&6[&aBloodmoon&6]&r &b"
+  arena:
+    info: "Arena: %s (%s, %.2f ,%.2f, %.2f) radius: [%d] spawn radius: [%d]"
+    remove: "Arena %s has been removed"
+  game:
+    new_game_0: "New blood moon events"
+    new_game_1: "Difficulty: [%s] Max level: [%d] Require players: [%d]"
+    new_game_2: "Use &f/bm join&b to join the game"
+    join: "%s has joined (%d/%d)"
+    quit: "%s quit"
+    start: "The game start in %d second(s)"
+    cancel: "Not enough players"
+    next_wave: "Next wave start in %d seconds"
+    level: "Level %d"
+    mobs_remaining: "%d infernal mobs remaining"
+    players_remaining: "%d players remaining"
+    win: "All infernal mobs have been cleared"
+    fail: "All players are dead or quit"
 manual:
   no_description: "No description"
   no_usage: "No usage"
@@ -41,6 +59,30 @@ manual:
     list:
       description: "List all kits"
       usage: "/bm kit list"
+  arena:
+    description: "Create or remove arena"
+    usage: "/bm arena"
+    create:
+      description: "Create a arena"
+      usage: "/bm arena create [name] [radius] [spawn radius]"
+    remove:
+      description: "Remove a arena"
+      usage: "/bm arena remove [name]"
+    list:
+      description: "List all arena"
+      usage: "/bm arena list"
   difficulty:
     description: "Define a difficulty level"
     usage: "/bm difficulty [level] [min player amount] [mob:player amount] [mob:infernal amount] [mob spawn delay ticks] [max infernal level]"
+  start:
+    description: "Start a game"
+    usage: "/bm start [arena name] [difficulty level] [kit name]"
+  stop:
+    description: "Stop a game"
+    usage: "/bm stop [arena name]"
+  join:
+    description: "Join the game"
+    usage: "/bm join"
+  quit:
+    description: "Leave the game"
+    usage: "/bm quit"

@@ -11,7 +11,7 @@ public class Configuration implements ISerializable {
     @Serializable
     public String language = "en_US";
     @Serializable
-    public long call_timeout = 600;
+    public int call_timeout = 600;
     @Serializable
     public int preparation_time = 600;
     @Serializable

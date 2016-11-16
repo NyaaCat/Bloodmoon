@@ -44,7 +44,7 @@ public class ArenaManager {
 
     public Arena getArena(String name) {
         if (plugin.cfg.arenaConfig.arenaList.containsKey(name)) {
-            return plugin.cfg.arenaConfig.arenaList.get(name);
+            return plugin.cfg.arenaConfig.arenaList.get(name).clone();
         }
         return null;
     }
