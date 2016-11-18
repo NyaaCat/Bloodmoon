@@ -6,14 +6,18 @@ import cat.nyaa.autobloodmoon.api.InfernalMobsAPI;
 import cat.nyaa.autobloodmoon.events.MobListener;
 import cat.nyaa.autobloodmoon.level.Level;
 import cat.nyaa.autobloodmoon.mobs.Mob;
+import cat.nyaa.autobloodmoon.utils.GetCircle;
 import cat.nyaa.autobloodmoon.utils.RandomLocation;
 import cat.nyaa.utils.ISerializable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.Particle;
+import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -48,6 +52,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
     private int time = 0;
     private int infernal;
     private int ticks = 0;
+    private long sendBorderParticle = 0;
 
 
     public String getWorld() {
@@ -154,6 +159,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public void run() {
         time++;
         ticks++;
+        sendBorderParticle();
         if (state == ArenaState.WAIT) {
             nextWave--;
             if (nextWave <= 0) {
@@ -212,6 +218,14 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     for (LivingEntity entity : getCenterPoint().getWorld().getLivingEntities()) {
                         if (!entity.isDead() && infernalMobs.contains(entity.getUniqueId()) &&
                                 InfernalMobsAPI.isInfernalMob(entity)) {
+                            Location location = getCenterPoint().clone();
+                            location.setY(entity.getLocation().getY());
+                            if (location.distance(entity.getLocation()) > getRadius()) {
+                                Location loc = getRandomLocation();
+                                if (loc != null) {
+                                    entity.teleport(loc);
+                                }
+                            }
                             tmp.add(entity.getUniqueId());
                         }
                     }
@@ -286,6 +300,17 @@ public class Arena extends BukkitRunnable implements ISerializable {
         for (LivingEntity entity : getCenterPoint().getWorld().getLivingEntities()) {
             if (entityList.contains(entity.getUniqueId())) {
                 entity.remove();
+            }
+        }
+    }
+
+    public void sendBorderParticle() {
+        if (plugin.cfg.border_particle && System.currentTimeMillis() - sendBorderParticle >= 4000) {
+            sendBorderParticle = System.currentTimeMillis();
+            for (Block block : GetCircle.getCylinder(getCenterPoint(), getCenterPoint().getWorld(),
+                    getRadius(), getRadius(), plugin.cfg.border_particle_height, false)) {
+                block.getWorld().spawnParticle(Particle.BARRIER, block.getLocation().add(
+                        new Vector(0.5D, 0.5D, 0.5D)), 1);
             }
         }
     }

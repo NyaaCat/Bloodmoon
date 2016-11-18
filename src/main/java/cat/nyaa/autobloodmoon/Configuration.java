@@ -16,6 +16,10 @@ public class Configuration implements ISerializable {
     public int preparation_time = 600;
     @Serializable
     public boolean save_inventory = false;
+    @Serializable
+    public boolean border_particle = true;
+    @Serializable
+    public int border_particle_height = 3;
 
     public ArenaConfig arenaConfig;
     public RewardConfig rewardConfig;
