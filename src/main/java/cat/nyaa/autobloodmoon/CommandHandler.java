@@ -90,4 +90,15 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
             plugin.currentArena.quit(player);
         }
     }
+
+    @SubCommand(value = "reload", permission = "bm.admin")
+    public void commandReload(CommandSender sender, Arguments args) {
+        AutoBloodmoon p = plugin;
+        p.reloadConfig();
+        p.cfg.deserialize(p.getConfig());
+        p.cfg.serialize(p.getConfig());
+        p.saveConfig();
+        p.i18n.reset();
+        p.i18n.load(p.cfg.language);
+    }
 }
