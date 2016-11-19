@@ -93,7 +93,8 @@ public class PlayerListener implements Listener {
                 Player damager = null;
                 if (e.getDamager() instanceof Player) {
                     damager = (Player) e.getDamager();
-                } else if (((Projectile) e.getDamager()).getShooter() instanceof Player) {
+                } else if (e.getDamager() instanceof Projectile &&
+                        ((Projectile) e.getDamager()).getShooter() instanceof Player) {
                     damager = (Player) ((Projectile) e.getDamager()).getShooter();
                 }
                 if (plugin.currentArena.players.contains(e.getEntity().getUniqueId()) ||
