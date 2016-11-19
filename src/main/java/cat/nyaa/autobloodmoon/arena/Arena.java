@@ -218,7 +218,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 if (infernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
                         normalMobs.size() >= players.size() * level.getMobAmount()) {
                     broadcast(I18n._("user.game.win"));
-                    for(UUID k:playerStats.keySet()){
+                    for (UUID k : players) {
                         playerStats.get(k).incrementStats(PlayerStats.StatsType.WINING);
                     }
                     stop();
