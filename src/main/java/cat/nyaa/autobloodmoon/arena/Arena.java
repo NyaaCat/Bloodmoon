@@ -6,11 +6,13 @@ import cat.nyaa.autobloodmoon.api.InfernalMobsAPI;
 import cat.nyaa.autobloodmoon.events.MobListener;
 import cat.nyaa.autobloodmoon.level.Level;
 import cat.nyaa.autobloodmoon.mobs.Mob;
+import cat.nyaa.autobloodmoon.stats.PlayerStats;
 import cat.nyaa.autobloodmoon.utils.GetCircle;
 import cat.nyaa.autobloodmoon.utils.RandomLocation;
 import cat.nyaa.utils.ISerializable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
+import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -20,6 +22,7 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.Random;
 import java.util.UUID;
 
@@ -34,6 +37,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public ArrayList<UUID> normalMobs = new ArrayList<>();
     public ArrayList<UUID> entityList = new ArrayList<>();
     public ArenaState state;
+    public HashMap<UUID, PlayerStats> playerStats = new HashMap<>();
     @Serializable
     private String name;
     @Serializable
@@ -114,6 +118,10 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public void join(Player player) {
         if (!players.contains(player.getUniqueId())) {
             players.add(player.getUniqueId());
+            PlayerStats stats = getPlayerStats(player);
+            stats.incrementStats(PlayerStats.StatsType.JOINED);
+            playerStats.put(player.getUniqueId(), stats);
+
             if (players.size() >= level.getMinPlayerAmount()) {
                 broadcast(I18n._("user.game.join", player.getName(), players.size(), players.size() + 1));
             } else {
@@ -152,6 +160,10 @@ public class Arena extends BukkitRunnable implements ISerializable {
         state = ArenaState.STOP;
         this.cancel();
         removeAllMobs();
+        for (UUID k : playerStats.keySet()) {
+            plugin.statsManager.getPlayerStats(k).add(playerStats.get(k));
+        }
+        plugin.cfg.statsConfig.save();
         plugin.currentArena = null;
     }
 
@@ -206,6 +218,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 if (infernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
                         normalMobs.size() >= players.size() * level.getMobAmount()) {
                     broadcast(I18n._("user.game.win"));
+                    for(UUID k:playerStats.keySet()){
+                        playerStats.get(k).incrementStats(PlayerStats.StatsType.WINING);
+                    }
                     stop();
                     return;
                 }
@@ -313,6 +328,13 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         new Vector(0.5D, 0.5D, 0.5D)), 1);
             }
         }
+    }
+
+    public PlayerStats getPlayerStats(OfflinePlayer player) {
+        if (!playerStats.containsKey(player.getUniqueId())) {
+            playerStats.put(player.getUniqueId(), new PlayerStats(player));
+        }
+        return playerStats.get(player.getUniqueId());
     }
 
     public enum ArenaState {

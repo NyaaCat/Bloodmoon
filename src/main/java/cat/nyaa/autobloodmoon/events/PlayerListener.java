@@ -3,6 +3,7 @@ package cat.nyaa.autobloodmoon.events;
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
 import cat.nyaa.autobloodmoon.arena.Arena;
+import cat.nyaa.autobloodmoon.stats.PlayerStats;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -40,6 +41,7 @@ public class PlayerListener implements Listener {
         if (plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.PLAYING &&
                 plugin.currentArena.players.contains(e.getEntity().getUniqueId())) {
             Player player = e.getEntity();
+            plugin.currentArena.getPlayerStats(player).incrementStats(PlayerStats.StatsType.DEATH);
             if (player.getKiller() != null &&
                     plugin.currentArena.players.contains(player.getKiller().getUniqueId())) {
                 if (plugin.cfg.pvp_penalty_percent > 0 && plugin.cfg.pvp_penalty_max > 0 &&

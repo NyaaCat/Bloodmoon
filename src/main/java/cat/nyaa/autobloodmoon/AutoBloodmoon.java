@@ -7,6 +7,7 @@ import cat.nyaa.autobloodmoon.events.MobListener;
 import cat.nyaa.autobloodmoon.events.PlayerListener;
 import cat.nyaa.autobloodmoon.kits.KitListener;
 import cat.nyaa.autobloodmoon.mobs.MobManager;
+import cat.nyaa.autobloodmoon.stats.StatsManager;
 import cat.nyaa.autobloodmoon.utils.TeleportUtil;
 import cat.nyaa.nyaautils.NyaaUtils;
 import cat.nyaa.utils.Internationalization;
@@ -27,6 +28,8 @@ public class AutoBloodmoon extends JavaPlugin {
     public Arena currentArena = null;
     public PlayerListener playerListener;
     public MobListener mobListener;
+    public StatsManager statsManager;
+    public NyaaUtils nyaaUtils;
 
     @Override
     public void onLoad() {
@@ -64,6 +67,8 @@ public class AutoBloodmoon extends JavaPlugin {
         this.teleportUtil = new TeleportUtil(this);
         this.playerListener = new PlayerListener(this);
         this.mobListener = new MobListener(this);
+        this.statsManager = new StatsManager(this);
+        this.nyaaUtils = getPlugin(NyaaUtils.class);
     }
 
     @Override

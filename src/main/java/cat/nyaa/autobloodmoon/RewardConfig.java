@@ -79,6 +79,29 @@ public class RewardConfig extends FileConfigure {
             }
         }
     }
+
+    public int getNormalBonus(BonusType type) {
+        if (type == BonusType.KILL) {
+            return normal_kill;
+        } else {
+            return 0;
+        }
+    }
+
+    public int getInfernalBonus(BonusType type, int level) {
+        if (type == BonusType.KILL) {
+            if (infernal_kill.containsKey(level)) {
+                return infernal_kill.get(level);
+            }
+        } else if (type == BonusType.ASSIST) {
+            if (infernal_assist.containsKey(level)) {
+                return infernal_assist.get(level);
+            }
+        }
+        return 0;
+    }
+
+    public enum BonusType {KILL, ASSIST}
 }
 
 

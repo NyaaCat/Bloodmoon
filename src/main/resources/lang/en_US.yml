@@ -44,6 +44,10 @@ user:
   pvp_penalty:
     message: "You recieved %d from %s"
     killer: "You killed %s, %d has been sent to %s"
+  reward:
+    normal_kill: "You gained %d for killed a mob"
+    infernal_kill: "You gained %d for killed a infernal mob"
+    infernal_assist: "You gained %d for assist killed a infernal mob"
 manual:
   no_description: "No description"
   no_usage: "No usage"
