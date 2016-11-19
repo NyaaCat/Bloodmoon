@@ -20,6 +20,12 @@ public class Configuration implements ISerializable {
     public boolean border_particle = true;
     @Serializable
     public int border_particle_height = 3;
+    @Serializable
+    public boolean pvp = false;
+    @Serializable
+    public int pvp_penalty_percent = 0;
+    @Serializable
+    public int pvp_penalty_max = 0;
 
     public ArenaConfig arenaConfig;
     public RewardConfig rewardConfig;
