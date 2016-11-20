@@ -92,7 +92,7 @@ public class KitItems implements ISerializable {
         MOSTKILL,
         MOSTASSIST,
         MOSTNORMALKILL,
-        MVP_EXTRA_BONUS
+        MVP
     }
 }
 

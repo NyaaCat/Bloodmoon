@@ -109,4 +109,41 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
             }
         }
     }
+
+    @SubCommand(value = "give", permission = "bm.admin")
+    public void commandGiveKit(CommandSender sender, Arguments args) {
+        if (args.length() >= 4) {
+            String kitName = args.next();
+            KitItems.KitType kitType = KitManager.getKitType(args.next());
+            if (kitType == null) {
+                msg(sender, "user.kit.kit_type_error");
+                return;
+            }
+            if (plugin.kitManager.getKitItems(kitName, kitType) == null) {
+                msg(sender, "user.kit.not_found");
+                return;
+            }
+            Player player;
+            if (args.length() == 5) {
+                player = Bukkit.getPlayer(args.next());
+            } else {
+                player = asPlayer(sender);
+            }
+            if (player != null && player.isOnline()) {
+                if (plugin.kitManager.giveKit(kitName, kitType, player)) {
+                    msg(sender, "user.kit.give_success", kitName, kitType.toString(), player.getName());
+                    return;
+                } else if (plugin.kitManager.giveKit(kitName, kitType, player, true)) {
+                    msg(sender, "user.kit.give_success", kitName, kitType.toString(), player.getName());
+                    return;
+                } else {
+                    msg(sender, "user.give.not_enough_space");
+                    return;
+                }
+            }
+            msg(sender, "user.info.player_not_found");
+        } else {
+            msg(sender, "manual.kit.give.usage");
+        }
+    }
 }
