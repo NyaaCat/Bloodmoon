@@ -58,7 +58,7 @@ public class KitItems implements ISerializable {
             if (items[i] != null) {
                 ItemStack item = items[i];
                 if (!item.getType().equals(Material.AIR) && item.getAmount() > 0) {
-                    this.items.add(item);
+                    this.items.add(item.clone());
                 }
             }
         }
@@ -87,7 +87,11 @@ public class KitItems implements ISerializable {
     public void serialize(ConfigurationSection config) {
         ISerializable.serialize(config, this);
     }
-
+    
+    public KitItems clone(){
+        return new KitItems(this.kitName,this.type,this.items);
+    }
+    
     public static enum KitType {
         MOSTKILL,
         MOSTASSIST,

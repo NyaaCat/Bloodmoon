@@ -35,7 +35,7 @@ public class KitListener implements Listener {
                         plugin.cfg.rewardConfig.kits.put(kit.getKitName(), new HashMap<>());
                     }
                     kit.setItems(chest.getInventory().getContents());
-                    plugin.cfg.rewardConfig.kits.get(kit.getKitName()).put(kit.getType(), kit);
+                    plugin.cfg.rewardConfig.kits.get(kit.getKitName()).put(kit.getType(), kit.clone());
                     plugin.cfg.rewardConfig.save();
                     e.getPlayer().sendMessage(I18n._("user.kit.save_success"));
                 }

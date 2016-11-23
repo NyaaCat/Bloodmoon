@@ -4,6 +4,7 @@ import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
 import cat.nyaa.autobloodmoon.api.InfernalMobsAPI;
 import cat.nyaa.autobloodmoon.events.MobListener;
+import cat.nyaa.autobloodmoon.kits.KitItems;
 import cat.nyaa.autobloodmoon.level.Level;
 import cat.nyaa.autobloodmoon.mobs.Mob;
 import cat.nyaa.autobloodmoon.stats.PlayerStats;
@@ -218,8 +219,83 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 if (infernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
                         normalMobs.size() >= players.size() * level.getMobAmount()) {
                     broadcast(I18n._("user.game.win"));
+                    PlayerStats mvp = null;
+                    PlayerStats mostInfernalKill = null;
+                    PlayerStats mostNormalKill = null;
+                    PlayerStats mostAssist = null;
                     for (UUID k : players) {
                         playerStats.get(k).incrementStats(PlayerStats.StatsType.WINING);
+                        PlayerStats stats=playerStats.get(k).clone();
+                        if ((mostInfernalKill == null && stats.infernal_kill > 0) ||
+                                (mostInfernalKill != null && mostInfernalKill.infernal_kill < stats.infernal_kill)) {
+                            mostInfernalKill = stats.clone();
+                        }
+                        if ((mostNormalKill == null && stats.normal_kill > 0) ||
+                                (mostNormalKill != null && mostNormalKill.normal_kill < stats.normal_kill)) {
+                            mostNormalKill = stats.clone();
+                        }
+                        if ((mostAssist == null && stats.assist > 0) ||
+                                (mostAssist != null && mostAssist.assist < stats.assist)) {
+                            mostAssist = stats.clone();
+                        }
+                    }
+                    if (mostInfernalKill != null && ((mostAssist != null && mostInfernalKill.getUUID().equals(mostAssist.getUUID())) ||
+                            (mostNormalKill != null && mostInfernalKill.getUUID().equals(mostNormalKill.getUUID())))) {
+                        mvp = mostInfernalKill.clone();
+                    } else if (mostNormalKill != null && mostAssist != null &&
+                            mostNormalKill.getUUID().equals(mostAssist.getUUID())) {
+                        mvp = mostNormalKill.clone();
+                    }
+                    if (mvp != null) {
+                        broadcast(I18n._("user.game.mvp", mvp.playerName));
+                        ArrayList<KitItems> items = new ArrayList<>();
+                        items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MVP));
+                        items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MOSTKILL));
+                        plugin.rewardList.put(mvp.getUUID(), items);
+                    }
+                    if (mostInfernalKill != null) {
+                        broadcast(I18n._("user.game.most_infernal_kill", mostInfernalKill.playerName,
+                                mostInfernalKill.infernal_kill));
+                        if (mvp == null || !mvp.getUUID().equals(mostInfernalKill.getUUID())) {
+                            ArrayList<KitItems> items = new ArrayList<>();
+                            items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MOSTKILL));
+                            plugin.rewardList.put(mostInfernalKill.getUUID(), items);
+                        }
+                    }
+                    if (mostAssist != null) {
+                        broadcast(I18n._("user.game.most_assist", mostAssist.playerName,
+                                mostAssist.assist));
+                        if (mvp == null || !mvp.getUUID().equals(mostAssist.getUUID())) {
+                            ArrayList<KitItems> items = new ArrayList<>();
+                            items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MOSTASSIST));
+                            plugin.rewardList.put(mostAssist.getUUID(), items);
+                        }
+                    }
+                    if (mostNormalKill != null) {
+                        broadcast(I18n._("user.game.most_normal_kill", mostNormalKill.playerName,
+                                mostNormalKill.normal_kill));
+                        if (mvp == null || !mvp.getUUID().equals(mostNormalKill.getUUID())) {
+                            ArrayList<KitItems> items = new ArrayList<>();
+                            items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MOSTNORMALKILL));
+                            plugin.rewardList.put(mostNormalKill.getUUID(), items);
+                        }
+                    }
+                    for (UUID k : players) {
+                        PlayerStats stats = playerStats.get(k);
+                        broadcast(I18n._("user.game.player_stats", stats.playerName, stats.infernal_kill, stats.assist,
+                                stats.normal_kill, stats.death));
+                    }
+                    if(mvp!=null){
+                        plugin.kitManager.giveReward(Bukkit.getPlayer(mvp.getUUID()));
+                    }
+                    if(mostInfernalKill!=null){
+                        plugin.kitManager.giveReward(Bukkit.getPlayer(mostInfernalKill.getUUID()));
+                    }
+                    if(mostAssist!=null){
+                        plugin.kitManager.giveReward(Bukkit.getPlayer(mostAssist.getUUID()));
+                    }
+                    if(mostNormalKill!=null){
+                        plugin.kitManager.giveReward(Bukkit.getPlayer(mostNormalKill.getUUID()));
                     }
                     stop();
                     return;
@@ -291,9 +367,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
     }
 
     public void broadcast(String s) {
-        for (Player p : plugin.getServer().getOnlinePlayers()) {
-            p.sendMessage(I18n._("user.prefix") + s);
-        }
+        plugin.getServer().broadcastMessage(I18n._("user.prefix") + s);
     }
 
     public Arena clone() {

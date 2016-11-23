@@ -79,5 +79,18 @@ public class PlayerStats implements ISerializable {
         this.assist += stats.assist;
     }
 
+    public PlayerStats clone() {
+        PlayerStats stats = new PlayerStats();
+        stats.playerUUID = playerUUID;
+        stats.playerName = playerName;
+        stats.wining = wining;
+        stats.death = death;
+        stats.joined = joined;
+        stats.normal_kill = normal_kill;
+        stats.infernal_kill = infernal_kill;
+        stats.assist = assist;
+        return stats;
+    }
+
     public enum StatsType {INFERNAL_KILL, NORMAL_KILL, ASSIST, DEATH, JOINED, WINING}
 }

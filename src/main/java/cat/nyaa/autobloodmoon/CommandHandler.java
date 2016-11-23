@@ -91,6 +91,14 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
         }
     }
 
+    @SubCommand(value = "acquire", permission = "bm.player")
+    public void commandAcquire(CommandSender sender, Arguments args) {
+        Player player = asPlayer(sender);
+        if (plugin.rewardList.containsKey(player.getUniqueId())) {
+            plugin.kitManager.giveReward(player);
+        }
+    }
+
     @SubCommand(value = "reload", permission = "bm.admin")
     public void commandReload(CommandSender sender, Arguments args) {
         AutoBloodmoon p = plugin;

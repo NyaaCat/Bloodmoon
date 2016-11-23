@@ -5,6 +5,7 @@ import cat.nyaa.autobloodmoon.arena.Arena;
 import cat.nyaa.autobloodmoon.arena.ArenaManager;
 import cat.nyaa.autobloodmoon.events.MobListener;
 import cat.nyaa.autobloodmoon.events.PlayerListener;
+import cat.nyaa.autobloodmoon.kits.KitItems;
 import cat.nyaa.autobloodmoon.kits.KitListener;
 import cat.nyaa.autobloodmoon.kits.KitManager;
 import cat.nyaa.autobloodmoon.mobs.MobManager;
@@ -14,6 +15,10 @@ import cat.nyaa.nyaautils.NyaaUtils;
 import cat.nyaa.utils.Internationalization;
 import cat.nyaa.utils.VaultUtil;
 import org.bukkit.plugin.java.JavaPlugin;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.UUID;
 
 public class AutoBloodmoon extends JavaPlugin {
     public static AutoBloodmoon instance;
@@ -32,6 +37,7 @@ public class AutoBloodmoon extends JavaPlugin {
     public StatsManager statsManager;
     public NyaaUtils nyaaUtils;
     public KitManager kitManager;
+    public HashMap<UUID,ArrayList<KitItems>> rewardList = new HashMap<>();
 
     @Override
     public void onLoad() {
@@ -87,5 +93,6 @@ public class AutoBloodmoon extends JavaPlugin {
     @Override
     public void reloadConfig() {
         super.reloadConfig();
+        rewardList.clear();
     }
 }

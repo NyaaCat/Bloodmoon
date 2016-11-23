@@ -9,6 +9,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 
 public class KitCommands extends CommandReceiver<AutoBloodmoon> {
@@ -43,8 +44,8 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
         if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
             plugin.cfg.rewardConfig.kits.put(kitName, new HashMap<>());
         }
-        KitItems kit = new KitItems(kitName, kitType, null);
-        plugin.kitListener.selectChest.put(player, kit);
+        KitItems kit = new KitItems(kitName, kitType,new ArrayList<ItemStack>());
+        plugin.kitListener.selectChest.put(player, kit.clone());
         msg(player, "user.kit.right_click_chest");
     }
 

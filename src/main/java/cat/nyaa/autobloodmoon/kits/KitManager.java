@@ -10,6 +10,7 @@ import org.bukkit.inventory.PlayerInventory;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 public class KitManager {
@@ -31,7 +32,7 @@ public class KitManager {
     public KitItems getKitItems(String kitName, KitItems.KitType type) {
         if (plugin.cfg.rewardConfig.kits.containsKey(kitName) &&
                 plugin.cfg.rewardConfig.kits.get(kitName).containsKey(type)) {
-            return plugin.cfg.rewardConfig.kits.get(kitName).get(type);
+            return plugin.cfg.rewardConfig.kits.get(kitName).get(type).clone();
         }
         return null;
     }
@@ -80,6 +81,30 @@ public class KitManager {
             }
         }
         return false;
+    }
+
+    public void giveReward(Player player) {
+        if (player != null && player.isOnline() && plugin.rewardList.containsKey(player.getUniqueId())) {
+            ArrayList<KitItems> reward = plugin.rewardList.get(player.getUniqueId());
+            Iterator<KitItems> iter = reward.iterator();
+            while (iter.hasNext()) {
+                KitItems item = iter.next();
+                if (plugin.kitManager.giveKit(item.getKitName(), item.getType(), player)) {
+                    iter.remove();
+                } else if (plugin.kitManager.giveKit(item.getKitName(), item.getType(), player, true)) {
+                    iter.remove();
+                } else {
+                    break;
+                }
+            }
+            if (reward.isEmpty()) {
+                plugin.rewardList.remove(player.getUniqueId());
+            } else {
+                plugin.rewardList.put(player.getUniqueId(), reward);
+                player.sendMessage(I18n._("user.prefix") + I18n._("user.give.not_enough_space"));
+                player.sendMessage(I18n._("user.prefix") + I18n._("user.reward.acquire"));
+            }
+        }
     }
 }
 
