@@ -122,15 +122,8 @@ public class Arena extends BukkitRunnable implements ISerializable {
             PlayerStats stats = getPlayerStats(player);
             stats.incrementStats(PlayerStats.StatsType.JOINED);
             playerStats.put(player.getUniqueId(), stats);
-
-            if (players.size() >= level.getMinPlayerAmount()) {
-                broadcast(I18n._("user.game.join", player.getName(), players.size(), players.size() + 1));
-            } else {
-                broadcast(I18n._("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount()));
-            }
-            if (state == ArenaState.PLAYING) {
-                plugin.teleportUtil.Teleport(player, getCenterPoint());
-            }
+            broadcast(I18n._("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount()));
+            plugin.teleportUtil.Teleport(player, getCenterPoint());
         }
     }
 
@@ -148,11 +141,6 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public void start() {
         state = ArenaState.PLAYING;
         lockTime();
-        for (Player p : Bukkit.getOnlinePlayers()) {
-            if (players.contains(p.getUniqueId())) {
-                plugin.teleportUtil.Teleport(p, getCenterPoint());
-            }
-        }
         nextWave = 0;
         currentLevel = 0;
     }

@@ -31,7 +31,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spigotmc:spigot-api:1.10.2-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.11-R0.1-SNAPSHOT'
     compile name: 'nyaautils-2.0.46'
     compile('net.ess3:Essentials:2.13-SNAPSHOT') {
         transitive = false
