@@ -89,7 +89,9 @@ public class KitManager {
             Iterator<KitItems> iter = reward.iterator();
             while (iter.hasNext()) {
                 KitItems item = iter.next();
-                if (plugin.kitManager.giveKit(item.getKitName(), item.getType(), player)) {
+                if (item == null) {
+                    iter.remove();
+                } else if (plugin.kitManager.giveKit(item.getKitName(), item.getType(), player)) {
                     iter.remove();
                 } else if (plugin.kitManager.giveKit(item.getKitName(), item.getType(), player, true)) {
                     iter.remove();
