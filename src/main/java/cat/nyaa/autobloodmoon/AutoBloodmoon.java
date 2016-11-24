@@ -14,10 +14,12 @@ import cat.nyaa.autobloodmoon.utils.TeleportUtil;
 import cat.nyaa.nyaautils.NyaaUtils;
 import cat.nyaa.utils.Internationalization;
 import cat.nyaa.utils.VaultUtil;
+import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.UUID;
 
 public class AutoBloodmoon extends JavaPlugin {
@@ -37,7 +39,7 @@ public class AutoBloodmoon extends JavaPlugin {
     public StatsManager statsManager;
     public NyaaUtils nyaaUtils;
     public KitManager kitManager;
-    public HashMap<UUID,ArrayList<KitItems>> rewardList = new HashMap<>();
+    public HashMap<UUID,List<ItemStack>> rewardList = new HashMap<>();
 
     @Override
     public void onLoad() {

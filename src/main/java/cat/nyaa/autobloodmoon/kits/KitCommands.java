@@ -131,16 +131,14 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
                 player = asPlayer(sender);
             }
             if (player != null && player.isOnline()) {
-                if (plugin.kitManager.giveKit(kitName, kitType, player)) {
+                if (plugin.kitManager.getKitItems(kitName, kitType) != null) {
+                    msg(sender, "user.kit.not_found");
+                } else if (plugin.kitManager.directGiveKit(kitName, kitType, player)) {
                     msg(sender, "user.kit.give_success", kitName, kitType.toString(), player.getName());
-                    return;
-                } else if (plugin.kitManager.giveKit(kitName, kitType, player, true)) {
-                    msg(sender, "user.kit.give_success", kitName, kitType.toString(), player.getName());
-                    return;
                 } else {
                     msg(sender, "user.give.not_enough_space");
-                    return;
                 }
+                return;
             }
             msg(sender, "user.info.player_not_found");
         } else {

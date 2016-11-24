@@ -22,10 +22,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Random;
-import java.util.UUID;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class Arena extends BukkitRunnable implements ISerializable {
     public ArrayList<UUID> players = new ArrayList<>();
@@ -206,85 +204,69 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 }
                 if (infernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
                         normalMobs.size() >= players.size() * level.getMobAmount()) {
+                    // most kill decision
+                    List<PlayerStats> stats = players.stream().map(playerStats::get).filter(st->st!=null).collect(Collectors.toList());
+                    Optional<PlayerStats> mostInfernalKill = stats.stream().max((s1, s2)->s1.infernal_kill-s2.infernal_kill).filter(s->s.infernal_kill > 0);
+                    Optional<PlayerStats> mostNormalKill = stats.stream().max((s1, s2)->s1.normal_kill-s2.normal_kill).filter(s->s.normal_kill > 0);
+                    Optional<PlayerStats> mostAssist = stats.stream().max((s1, s2)->s1.assist-s2.assist).filter(s->s.assist > 0);
+
+                    // mvp decision
+                    Optional<PlayerStats> mvp = Optional.empty();
+                    if (mostInfernalKill.isPresent() && mostNormalKill.isPresent() &&
+                            mostInfernalKill.get().getUUID().equals(mostNormalKill.get().getUUID())) {
+                        mvp = mostInfernalKill;
+                    } else if (mostInfernalKill.isPresent() && mostAssist.isPresent() &&
+                            mostInfernalKill.get().getUUID().equals(mostAssist.get().getUUID())) {
+                        mvp = mostInfernalKill;
+                    } else if (mostNormalKill.isPresent() && mostAssist.isPresent() &&
+                            mostNormalKill.get().getUUID().equals(mostAssist.get().getUUID())) {
+                        mvp = mostNormalKill;
+                    }
+
+                    // increase WINNING counter
+                    stats.forEach(st->st.incrementStats(PlayerStats.StatsType.WINING));
+
+                    // winning announcement
                     broadcast(I18n._("user.game.win"));
-                    PlayerStats mvp = null;
-                    PlayerStats mostInfernalKill = null;
-                    PlayerStats mostNormalKill = null;
-                    PlayerStats mostAssist = null;
-                    for (UUID k : players) {
-                        playerStats.get(k).incrementStats(PlayerStats.StatsType.WINING);
-                        PlayerStats stats=playerStats.get(k).clone();
-                        if ((mostInfernalKill == null && stats.infernal_kill > 0) ||
-                                (mostInfernalKill != null && mostInfernalKill.infernal_kill < stats.infernal_kill)) {
-                            mostInfernalKill = stats.clone();
-                        }
-                        if ((mostNormalKill == null && stats.normal_kill > 0) ||
-                                (mostNormalKill != null && mostNormalKill.normal_kill < stats.normal_kill)) {
-                            mostNormalKill = stats.clone();
-                        }
-                        if ((mostAssist == null && stats.assist > 0) ||
-                                (mostAssist != null && mostAssist.assist < stats.assist)) {
-                            mostAssist = stats.clone();
-                        }
+                    if (mvp.isPresent()) {
+                        broadcast(I18n._("user.game.mvp", mvp.get().playerName));
                     }
-                    if (mostInfernalKill != null && ((mostAssist != null && mostInfernalKill.getUUID().equals(mostAssist.getUUID())) ||
-                            (mostNormalKill != null && mostInfernalKill.getUUID().equals(mostNormalKill.getUUID())))) {
-                        mvp = mostInfernalKill.clone();
-                    } else if (mostNormalKill != null && mostAssist != null &&
-                            mostNormalKill.getUUID().equals(mostAssist.getUUID())) {
-                        mvp = mostNormalKill.clone();
+                    if (mostInfernalKill.isPresent()) {
+                        broadcast(I18n._("user.game.most_infernal_kill", mostInfernalKill.get().playerName,
+                                mostInfernalKill.get().infernal_kill));
                     }
-                    if (mvp != null) {
-                        broadcast(I18n._("user.game.mvp", mvp.playerName));
-                        ArrayList<KitItems> items = new ArrayList<>();
-                        items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MVP));
-                        items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MOSTKILL));
-                        plugin.rewardList.put(mvp.getUUID(), items);
+                    if (mostNormalKill.isPresent()) {
+                        broadcast(I18n._("user.game.most_normal_kill", mostNormalKill.get().playerName,
+                                mostNormalKill.get().normal_kill));
                     }
-                    if (mostInfernalKill != null) {
-                        broadcast(I18n._("user.game.most_infernal_kill", mostInfernalKill.playerName,
-                                mostInfernalKill.infernal_kill));
-                        if (mvp == null || !mvp.getUUID().equals(mostInfernalKill.getUUID())) {
-                            ArrayList<KitItems> items = new ArrayList<>();
-                            items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MOSTKILL));
-                            plugin.rewardList.put(mostInfernalKill.getUUID(), items);
-                        }
+                    if (mostAssist.isPresent()) {
+                        broadcast(I18n._("user.game.most_assist", mostAssist.get().playerName,
+                                mostAssist.get().assist));
                     }
-                    if (mostAssist != null) {
-                        broadcast(I18n._("user.game.most_assist", mostAssist.playerName,
-                                mostAssist.assist));
-                        if (mvp == null || !mvp.getUUID().equals(mostAssist.getUUID())) {
-                            ArrayList<KitItems> items = new ArrayList<>();
-                            items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MOSTASSIST));
-                            plugin.rewardList.put(mostAssist.getUUID(), items);
-                        }
+                    stats.forEach(st->broadcast(I18n._("user.game.player_stats", st.playerName,
+                            st.infernal_kill, st.assist, st.normal_kill, st.death)));
+
+                    // Distribute Rewards
+                    UUID mvpId = mvp.isPresent()? mvp.get().getUUID(): null;
+                    if (mvp.isPresent()) {
+                        plugin.kitManager.addRewardToList(mvp.get().getUUID(), kitName, KitItems.KitType.MVP);
+                        plugin.kitManager.addRewardToList(mvp.get().getUUID(), kitName, KitItems.KitType.MOSTKILL);
+                        plugin.kitManager.applyRewardFromList(Bukkit.getPlayer(mvp.get().getUUID()));
                     }
-                    if (mostNormalKill != null) {
-                        broadcast(I18n._("user.game.most_normal_kill", mostNormalKill.playerName,
-                                mostNormalKill.normal_kill));
-                        if (mvp == null || !mvp.getUUID().equals(mostNormalKill.getUUID())) {
-                            ArrayList<KitItems> items = new ArrayList<>();
-                            items.add(plugin.kitManager.getKitItems(kitName, KitItems.KitType.MOSTNORMALKILL));
-                            plugin.rewardList.put(mostNormalKill.getUUID(), items);
-                        }
+                    if (mostInfernalKill.isPresent() && !mostInfernalKill.get().getUUID().equals(mvpId)) {
+                        plugin.kitManager.addRewardToList(mostInfernalKill.get().getUUID(), kitName, KitItems.KitType.MOSTKILL);
+                        plugin.kitManager.applyRewardFromList(Bukkit.getPlayer(mostInfernalKill.get().getUUID()));
                     }
-                    for (UUID k : players) {
-                        PlayerStats stats = playerStats.get(k);
-                        broadcast(I18n._("user.game.player_stats", stats.playerName, stats.infernal_kill, stats.assist,
-                                stats.normal_kill, stats.death));
+                    if (mostNormalKill.isPresent() && !mostNormalKill.get().getUUID().equals(mvpId)) {
+                        plugin.kitManager.addRewardToList(mostNormalKill.get().getUUID(), kitName, KitItems.KitType.MOSTNORMALKILL);
+                        plugin.kitManager.applyRewardFromList(Bukkit.getPlayer(mostNormalKill.get().getUUID()));
                     }
-                    if(mvp!=null){
-                        plugin.kitManager.giveReward(Bukkit.getPlayer(mvp.getUUID()));
+                    if (mostAssist.isPresent() && !mostAssist.get().getUUID().equals(mvpId)) {
+                        plugin.kitManager.addRewardToList(mostAssist.get().getUUID(), kitName, KitItems.KitType.MOSTASSIST);
+                        plugin.kitManager.applyRewardFromList(Bukkit.getPlayer(mostAssist.get().getUUID()));
                     }
-                    if(mostInfernalKill!=null){
-                        plugin.kitManager.giveReward(Bukkit.getPlayer(mostInfernalKill.getUUID()));
-                    }
-                    if(mostAssist!=null){
-                        plugin.kitManager.giveReward(Bukkit.getPlayer(mostAssist.getUUID()));
-                    }
-                    if(mostNormalKill!=null){
-                        plugin.kitManager.giveReward(Bukkit.getPlayer(mostNormalKill.getUUID()));
-                    }
+
+                    // Cancel listen & write statistics to db
                     stop();
                     return;
                 }

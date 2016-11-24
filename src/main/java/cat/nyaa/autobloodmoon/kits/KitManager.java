@@ -2,16 +2,16 @@ package cat.nyaa.autobloodmoon.kits;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
+import cat.nyaa.nyaautils.NyaaUtils;
+import cat.nyaa.utils.InventoryUtils;
 import org.bukkit.Material;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.PlayerInventory;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
+import java.util.*;
+import java.util.stream.Collectors;
 
 public class KitManager {
     private AutoBloodmoon plugin;
@@ -44,68 +44,59 @@ public class KitManager {
         return null;
     }
 
-    public boolean giveKit(String kitName, KitItems.KitType type, Player player) {
-        return giveKit(kitName, type, player, false);
-    }
-
-    public boolean giveKit(String kitName, KitItems.KitType type, Player player, boolean enderChest) {
+    public boolean directGiveKit(String kitName, KitItems.KitType type, Player player) {
         KitItems kitItems = getKitItems(kitName, type);
         if (kitItems != null) {
-            Inventory inventory;
-            if (!enderChest) {
-                inventory = player.getInventory();
-            } else {
-                inventory = player.getEnderChest();
-            }
-            List<ItemStack> items = kitItems.getItems();
-            ArrayList<Integer> emptySlots = new ArrayList<>();
-            for (int i = 0; i < inventory.getSize(); i++) {
-                if (i < 36 || i > 39 || !(inventory instanceof PlayerInventory)) {
-                    if (inventory.getItem(i) == null || inventory.getItem(i).getType() == Material.AIR) {
-                        emptySlots.add(i);
-                    }
-                }
-            }
-            if (emptySlots.size() >= items.size()) {
-                for (int i = 0; i < items.size(); i++) {
-                    inventory.setItem(emptySlots.get(i), items.get(i));
-                }
-                if (enderChest) {
-                    player.sendMessage(I18n._("user.prefix") + I18n._("user.give.ender_chest"));
-                } else {
-                    player.sendMessage(I18n._("user.prefix") + I18n._("user.give.inventory"));
-                }
-                return true;
-            } else {
-                return false;
-            }
+            List<ItemStack> remain =giveItemsToPlayer(kitItems.getItems(), player);
+            return remain == null || remain.size() <= 0;
+            // return if there's enough space
         }
         return false;
     }
 
-    public void giveReward(Player player) {
+    private List<ItemStack> giveItemsToPlayer(List<ItemStack> items, Player p) {
+        Map<Integer, ItemStack> tmp = p.getInventory().addItem(items.toArray(new ItemStack[0]));
+        if (tmp == null || tmp.size() < items.size()) {
+            p.sendMessage(I18n._("user.prefix") + I18n._("user.give.inventory"));
+        }
+        if (tmp == null || tmp.size() <= 0) {
+            return null;
+        }
+        ItemStack[] remainedItems = tmp.values().toArray(new ItemStack[0]);
+        tmp = p.getEnderChest().addItem(remainedItems);
+        if (tmp == null || tmp.size() < items.size()) {
+            p.sendMessage(I18n._("user.prefix") + I18n._("user.give.ender_chest"));
+        }
+        if (tmp == null || tmp.size() <= 0) {
+            return null;
+        }
+        // Remained Items are returned
+        return new ArrayList<>(tmp.values());
+    }
+
+    public void applyRewardFromList(Player player) {
         if (player != null && player.isOnline() && plugin.rewardList.containsKey(player.getUniqueId())) {
-            ArrayList<KitItems> reward = plugin.rewardList.get(player.getUniqueId());
-            Iterator<KitItems> iter = reward.iterator();
-            while (iter.hasNext()) {
-                KitItems item = iter.next();
-                if (item == null) {
-                    iter.remove();
-                } else if (plugin.kitManager.giveKit(item.getKitName(), item.getType(), player)) {
-                    iter.remove();
-                } else if (plugin.kitManager.giveKit(item.getKitName(), item.getType(), player, true)) {
-                    iter.remove();
-                } else {
-                    break;
-                }
-            }
-            if (reward.isEmpty()) {
-                plugin.rewardList.remove(player.getUniqueId());
+            UUID id = player.getUniqueId();
+            List<ItemStack> items = plugin.rewardList.get(id);
+            items = giveItemsToPlayer(items, player);
+            if (items == null || items.size() <= 0) {
+                plugin.rewardList.remove(id);
             } else {
-                plugin.rewardList.put(player.getUniqueId(), reward);
+                plugin.rewardList.put(id, items);
                 player.sendMessage(I18n._("user.prefix") + I18n._("user.give.not_enough_space"));
                 player.sendMessage(I18n._("user.prefix") + I18n._("user.reward.acquire"));
             }
+        }
+    }
+
+    public void addRewardToList(UUID id, String kitName, KitItems.KitType kitType) {
+        KitItems rewardKit = getKitItems(kitName, kitType);
+        if (rewardKit == null) return;
+        List<ItemStack> clonedItems = rewardKit.getItems().stream().map(ItemStack::clone).collect(Collectors.toList());
+        if (plugin.rewardList.containsKey(id)) {
+            plugin.rewardList.get(id).addAll(clonedItems);
+        } else {
+            plugin.rewardList.put(id, new ArrayList<>(clonedItems));
         }
     }
 }
