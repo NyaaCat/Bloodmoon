@@ -22,9 +22,19 @@ public class ArenaCommands extends CommandReceiver<AutoBloodmoon> {
 
     @SubCommand(value = "create", permission = "bm.admin")
     public void commandCreate(CommandSender sender, Arguments args) {
+        if (args.length() != 5) {
+            msg(sender, "manual.arena.create.usage");
+            return;
+        }
         Player player = asPlayer(sender);
         String arenaName = args.next();
-        plugin.arenaManager.createArena(arenaName, player.getLocation(), args.nextInt(), args.nextInt());
+        int radius = args.nextInt();
+        int spawnRadius = args.nextInt();
+        if (spawnRadius >= radius) {
+            msg(sender, "user.arena.radius_error");
+            return;
+        }
+        plugin.arenaManager.createArena(arenaName, player.getLocation(), radius, spawnRadius);
         Arena arena = plugin.arenaManager.getArena(arenaName);
         sender.sendMessage(I18n._("user.arena.info", arena.getName(), arena.getWorld(),
                 arena.getCenterPoint().getX(), arena.getCenterPoint().getY(), arena.getCenterPoint().getZ(),
@@ -43,9 +53,15 @@ public class ArenaCommands extends CommandReceiver<AutoBloodmoon> {
 
     @SubCommand(value = "remove", permission = "bm.admin")
     public void commandRemove(CommandSender sender, Arguments args) {
+        if (args.length() != 3) {
+            msg(sender, "manual.arena.remove.usage");
+            return;
+        }
         String arenaName = args.next();
         if (plugin.arenaManager.removeArena(arenaName)) {
             sender.sendMessage(I18n._("user.arena.remove", arenaName));
+        } else {
+            sender.sendMessage(I18n._("user.arena.not_found", arenaName));
         }
     }
 }

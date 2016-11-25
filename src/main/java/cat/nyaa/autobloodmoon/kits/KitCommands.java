@@ -27,44 +27,43 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
 
     @SubCommand(value = "create", permission = "bm.admin")
     public void commandCreateKit(CommandSender sender, Arguments args) {
+        if (args.length() != 4) {
+            msg(sender, "manual.kit.create.usage");
+            return;
+        }
         Player player = asPlayer(sender);
         String kitName = args.next();
-        String type = args.next().toUpperCase();
-        KitItems.KitType kitType = null;
-        for (KitItems.KitType k : KitItems.KitType.values()) {
-            if (k.name().equals(type)) {
-                kitType = k;
-                break;
-            }
-        }
-        if (kitType == null) {
+        String kitType = args.next();
+        if (KitManager.getKitType(kitType) == null) {
             msg(player, "user.kit.kit_type_error");
             return;
         }
         if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
             plugin.cfg.rewardConfig.kits.put(kitName, new HashMap<>());
         }
-        KitItems kit = new KitItems(kitName, kitType,new ArrayList<ItemStack>());
+        KitItems kit = new KitItems(kitName, KitManager.getKitType(kitType), new ArrayList<ItemStack>());
         plugin.kitListener.selectChest.put(player, kit.clone());
         msg(player, "user.kit.right_click_chest");
     }
 
     @SubCommand(value = "view", permission = "bm.admin")
     public void commandViewKit(CommandSender sender, Arguments args) {
+        if (args.length() != 4) {
+            msg(sender, "manual.kit.view.usage");
+            return;
+        }
         Player player = asPlayer(sender);
         String kitName = args.next();
-        String type = args.next().toUpperCase();
-        KitItems.KitType kitType = null;
-        for (KitItems.KitType k : KitItems.KitType.values()) {
-            if (k.name().equals(type)) {
-                kitType = k;
-                break;
-            }
+        String type = args.next();
+        if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
+            msg(sender, "user.kit.not_found");
+            return;
         }
-        if (kitType == null) {
+        if (KitManager.getKitType(type) == null) {
             msg(sender, "user.kit.kit_type_error");
             return;
         }
+        KitItems.KitType kitType = KitManager.getKitType(type);
         if (!plugin.cfg.rewardConfig.kits.containsKey(kitName) ||
                 !plugin.cfg.rewardConfig.kits.get(kitName).containsKey(kitType)) {
             msg(sender, "user.kit.not_found");
@@ -78,20 +77,22 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
 
     @SubCommand(value = "remove", permission = "bm.admin")
     public void commandRemoveKit(CommandSender sender, Arguments args) {
+        if (args.length() != 4) {
+            msg(sender, "manual.kit.remove.usage");
+            return;
+        }
         Player player = asPlayer(sender);
         String kitName = args.next();
-        String type = args.next().toUpperCase();
-        KitItems.KitType kitType = null;
-        for (KitItems.KitType k : KitItems.KitType.values()) {
-            if (k.name().equals(type)) {
-                kitType = k;
-                break;
-            }
+        String type = args.next();
+        if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
+            msg(sender, "user.kit.not_found");
+            return;
         }
-        if (kitType == null) {
+        if (KitManager.getKitType(type) == null) {
             msg(sender, "user.kit.kit_type_error");
             return;
         }
+        KitItems.KitType kitType = KitManager.getKitType(type);
         if (!plugin.cfg.rewardConfig.kits.containsKey(kitName) ||
                 !plugin.cfg.rewardConfig.kits.get(kitName).containsKey(kitType)) {
             msg(sender, "user.kit.not_found");

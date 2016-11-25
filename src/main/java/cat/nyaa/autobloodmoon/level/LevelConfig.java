@@ -9,7 +9,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.HashMap;
 
 public class LevelConfig extends FileConfigure {
-    public HashMap<Level.LevelType, Level> levels = new HashMap<>();
+    public HashMap<String, Level> levels = new HashMap<>();
     private AutoBloodmoon plugin;
 
     public LevelConfig(AutoBloodmoon plugin) {
@@ -34,7 +34,7 @@ public class LevelConfig extends FileConfigure {
             for (String k : levels.getKeys(false)) {
                 Level level = new Level();
                 level.deserialize(levels.getConfigurationSection(k));
-                this.levels.put(level.getLevelType(), level);
+                this.levels.put(k, level);
             }
         }
     }
@@ -44,8 +44,8 @@ public class LevelConfig extends FileConfigure {
         ISerializable.serialize(config, this);
         config.set("levels", null);
         ConfigurationSection levels = config.createSection("levels");
-        for (Level.LevelType k : this.levels.keySet()) {
-            this.levels.get(k).serialize(levels.createSection(String.valueOf(k)));
+        for (String k : this.levels.keySet()) {
+            this.levels.get(k).serialize(levels.createSection(k));
         }
 
     }

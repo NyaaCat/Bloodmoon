@@ -101,15 +101,15 @@ public class Arena extends BukkitRunnable implements ISerializable {
         this.name = name;
     }
 
-    public void init(AutoBloodmoon plugin, Level level, String kitName) {
+    public void init(AutoBloodmoon plugin, String difficulty, String kitName) {
         this.plugin = plugin;
-        this.level = level;
+        this.level = plugin.cfg.levelConfig.levels.get(difficulty);
         this.kitName = kitName;
         state = ArenaState.WAIT;
         nextWave = plugin.cfg.call_timeout;
         this.runTaskTimer(this.plugin, 20, 1);
         broadcast(I18n._("user.game.new_game_0"));
-        broadcast(I18n._("user.game.new_game_1", level.getLevelType().toString(), level.getMaxInfernalLevel(),
+        broadcast(I18n._("user.game.new_game_1", level.getLevelType(), level.getMaxInfernalLevel(),
                 level.getMinPlayerAmount()));
         broadcast(I18n._("user.game.new_game_2"));
     }

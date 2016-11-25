@@ -28,20 +28,13 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
 
     @SubCommand(value = "difficulty", permission = "bm.admin")
     public void commandDifficulty(CommandSender sender, Arguments args) {
-        String type = args.next().toUpperCase();
-        Level level = new Level();
-        Level.LevelType levelType = null;
-        for (Level.LevelType k : Level.LevelType.values()) {
-            if (k.name().equals(type)) {
-                levelType = k;
-                break;
-            }
-        }
-        if (levelType == null) {
-            sender.sendMessage(I18n._("user.difficulty.type_error"));
+        if (args.length() != 7) {
+            msg(sender, "manual.difficulty.usage");
             return;
         }
-        level.setLevelType(levelType);
+        String type = args.next();
+        Level level = new Level();
+        level.setLevelType(type);
         level.setMinPlayerAmount(args.nextInt());
         level.setMobAmount(args.nextInt());
         level.setInfernalAmount(args.nextInt());
@@ -49,17 +42,36 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
         level.setMaxInfernalLevel(args.nextInt());
         plugin.cfg.levelConfig.levels.put(level.getLevelType(), level);
         plugin.cfg.levelConfig.save();
+        msg(sender, "user.difficulty.save_success");
     }
 
     @SubCommand(value = "start", permission = "bm.start")
     public void commandStart(CommandSender sender, Arguments args) {
+        if (args.length() != 4) {
+            msg(sender, "manual.start.usage");
+            return;
+        }
         if (plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.STOP) {
             plugin.currentArena = null;
         }
         if (plugin.currentArena == null) {
             String arenaName = args.next();
+            String difficulty = args.next();
+            String kitName = args.next();
+            if (plugin.arenaManager.getArena(arenaName) == null) {
+                msg(sender, "user.arena.not_found", arenaName);
+                return;
+            }
+            if (!plugin.cfg.levelConfig.levels.containsKey(difficulty)) {
+                msg(sender, "user.difficulty.type_error");
+                return;
+            }
+            if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
+                msg(sender, "user.kit.not_found");
+                return;
+            }
             plugin.currentArena = plugin.arenaManager.getArena(arenaName);
-            plugin.currentArena.init(plugin, plugin.cfg.levelConfig.levels.get(Level.LevelType.valueOf(args.next())), args.next());
+            plugin.currentArena.init(plugin, difficulty, kitName);
             return;
         }
         if (plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.WAIT) {

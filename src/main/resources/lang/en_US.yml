@@ -29,10 +29,13 @@ user:
     not_enough_space: "Not enough space"
   difficulty:
     type_error: "Unknown difficulty type"
+    save_success: "Save success"
   prefix: "&6[&aBloodmoon&6]&r &b"
   arena:
     info: "Arena: %s (%s, %.2f ,%.2f, %.2f) radius: [%d] spawn radius: [%d]"
     remove: "Arena %s has been removed"
+    not_found: "Arena %s not found"
+    radius_error: "Radius must be greater than spawn radius"
   game:
     new_game_0: "New blood moon events"
     new_game_1: "Difficulty: [%s] Max level: [%d] Require players: [%d]"

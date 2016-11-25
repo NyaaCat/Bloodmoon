@@ -5,7 +5,7 @@ import org.bukkit.configuration.ConfigurationSection;
 
 public class Level implements ISerializable {
     @Serializable
-    private LevelType levelType;
+    private String levelType;
     @Serializable
     private int minPlayerAmount;
     @Serializable
@@ -21,12 +21,12 @@ public class Level implements ISerializable {
 
     }
 
-    public LevelType getLevelType() {
+    public String getLevelType() {
         return levelType;
     }
 
-    public void setLevelType(LevelType levelType) {
-        this.levelType = levelType;
+    public void setLevelType(String level) {
+        this.levelType = level;
     }
 
     public int getMinPlayerAmount() {
@@ -77,12 +77,5 @@ public class Level implements ISerializable {
     @Override
     public void serialize(ConfigurationSection config) {
         ISerializable.serialize(config, this);
-    }
-
-    public static enum LevelType {
-        EASY,
-        NORMAL,
-        HARD,
-        INSANE
     }
 }
