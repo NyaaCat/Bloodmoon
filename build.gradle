@@ -4,9 +4,6 @@ sourceCompatibility = 1.8
 targetCompatibility = 1.8
 
 repositories {
-    flatDir {
-        dirs 'libs'
-    }
     jcenter()
 
     maven {
@@ -28,13 +25,19 @@ repositories {
         name 'ess-repo'
         url 'http://repo.ess3.net/content/groups/essentials'
     }
+
+    maven {
+        name 'nyaa'
+        url 'https://raw.githubusercontent.com/NyaaCat/nyaautils/maven-repo'
+    }
 }
 
 dependencies {
     compile 'org.spigotmc:spigot-api:1.11-R0.1-SNAPSHOT'
-    compile name: 'nyaautils-2.0.46'
+    compile('cat.nyaa:nyaautils:2.0-SNAPSHOT') {
+        transitive = false
+    }
     compile('net.ess3:Essentials:2.13-SNAPSHOT') {
         transitive = false
     }
 }
-
