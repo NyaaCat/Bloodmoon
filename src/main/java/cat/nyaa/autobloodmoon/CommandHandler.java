@@ -26,6 +26,19 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
         return "";
     }
 
+    @Override
+    public void acceptCommand(CommandSender sender, Arguments cmd) {
+        String subCommand = cmd.top();
+        if (subCommand == null) subCommand = "";
+        switch (subCommand) {
+            case "in":
+                commandJoin(sender, cmd);
+                break;
+            default:
+                super.acceptCommand(sender, cmd);
+        }
+    }
+
     @SubCommand(value = "difficulty", permission = "bm.admin")
     public void commandDifficulty(CommandSender sender, Arguments args) {
         if (args.length() != 7) {
