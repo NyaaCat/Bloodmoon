@@ -131,7 +131,6 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
         p.cfg.deserialize(p.getConfig());
         p.cfg.serialize(p.getConfig());
         p.saveConfig();
-        p.i18n.reset();
-        p.i18n.load(p.cfg.language);
+        p.i18n = new I18n(plugin, plugin.cfg.language);
     }
 }

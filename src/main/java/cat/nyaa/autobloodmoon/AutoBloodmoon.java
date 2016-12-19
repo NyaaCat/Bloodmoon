@@ -66,7 +66,7 @@ public class AutoBloodmoon extends JavaPlugin {
     public void onEnable() {
         instance = this;
         this.serverEnabled = true;
-        this.i18n.load(this.cfg.language);
+        this.i18n.load();
         this.commandHandler = new CommandHandler(this, this.i18n);
         this.getCommand("bloodmoon").setExecutor(this.commandHandler);
         this.vaultUtil = getPlugin(NyaaUtils.class).vaultUtil;
