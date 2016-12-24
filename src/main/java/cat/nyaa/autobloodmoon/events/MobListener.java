@@ -76,9 +76,8 @@ public class MobListener implements Listener {
                             plugin.vaultUtil.deposit(player, bonus);
                             player.sendMessage(I18n._("user.prefix") +
                                     I18n._("user.reward.infernal_kill", bonus));
-                            if (plugin.nyaaUtils.dsListener.entityList.getUnchecked(mob.getUniqueId()) != null) {
-                                Map<UUID, Double> assistList = plugin.nyaaUtils.dsListener.
-                                        entityList.getUnchecked(mob.getUniqueId());
+                            Map<UUID, Double> assistList = plugin.damageStatistic.getDamagePlayerList(mob.getUniqueId());
+                            if (assistList != null) {
                                 for (UUID k : assistList.keySet()) {
                                     if (k != player.getUniqueId() && arena.players.contains(k)
                                             && assistList.get(k) >= 5.0D) {

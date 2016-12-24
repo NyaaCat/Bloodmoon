@@ -8,6 +8,7 @@ import cat.nyaa.utils.CommandReceiver;
 import cat.nyaa.utils.Internationalization;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
+import org.bukkit.event.HandlerList;
 
 public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
     @SubCommand("kit")
@@ -127,10 +128,12 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
     @SubCommand(value = "reload", permission = "bm.admin")
     public void commandReload(CommandSender sender, Arguments args) {
         AutoBloodmoon p = plugin;
-        p.reloadConfig();
-        p.cfg.deserialize(p.getConfig());
-        p.cfg.serialize(p.getConfig());
-        p.saveConfig();
-        p.i18n = new I18n(plugin, plugin.cfg.language);
+        // onDisable without save
+        p.getServer().getScheduler().cancelTasks(p);
+        p.getCommand("bloodmoon").setExecutor(null);
+        HandlerList.unregisterAll(p);
+        p.i18n.reset();
+
+        p.onEnable();
     }
 }

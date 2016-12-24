@@ -12,8 +12,10 @@ import cat.nyaa.autobloodmoon.mobs.MobManager;
 import cat.nyaa.autobloodmoon.stats.StatsManager;
 import cat.nyaa.autobloodmoon.utils.TeleportUtil;
 import cat.nyaa.nyaautils.NyaaUtils;
+import cat.nyaa.nyaautils.api.DamageStatistic;
 import cat.nyaa.utils.Internationalization;
 import cat.nyaa.utils.VaultUtil;
+import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -26,7 +28,6 @@ public class AutoBloodmoon extends JavaPlugin {
     public static AutoBloodmoon instance;
     public CommandHandler commandHandler;
     public Internationalization i18n;
-    public boolean serverEnabled;
     public Configuration cfg;
     public VaultUtil vaultUtil;
     public ArenaManager arenaManager;
@@ -37,38 +38,18 @@ public class AutoBloodmoon extends JavaPlugin {
     public PlayerListener playerListener;
     public MobListener mobListener;
     public StatsManager statsManager;
-    public NyaaUtils nyaaUtils;
+    public DamageStatistic damageStatistic;
     public KitManager kitManager;
     public HashMap<UUID,List<ItemStack>> rewardList = new HashMap<>();
 
     @Override
-    public void onLoad() {
-        this.serverEnabled = false;
-        instance = this;
-        this.saveDefaultConfig();
-        this.cfg = new Configuration(this);
-        this.cfg.deserialize(this.getConfig());
-        this.cfg.serialize(this.getConfig());
-        this.saveConfig();
-        this.i18n = new I18n(this, this.cfg.language);
-    }
-
-    @Override
-    public void onDisable() {
-        instance = null;
-        this.cfg.serialize(this.getConfig());
-        this.saveConfig();
-        I18n.instance.reset();
-        this.serverEnabled = false;
-    }
-
-    @Override
     public void onEnable() {
         instance = this;
-        this.serverEnabled = true;
-        this.i18n.load();
+        this.cfg = new Configuration(this);
+        this.cfg.load();
+        this.i18n = new I18n(this, this.cfg.language);
+
         this.commandHandler = new CommandHandler(this, this.i18n);
-        this.getCommand("bloodmoon").setExecutor(this.commandHandler);
         this.vaultUtil = getPlugin(NyaaUtils.class).vaultUtil;
         this.arenaManager = new ArenaManager(this);
         this.kitListener = new KitListener(this);
@@ -78,18 +59,18 @@ public class AutoBloodmoon extends JavaPlugin {
         this.playerListener = new PlayerListener(this);
         this.mobListener = new MobListener(this);
         this.statsManager = new StatsManager(this);
-        this.nyaaUtils = getPlugin(NyaaUtils.class);
         this.kitManager = new KitManager(this);
+        damageStatistic = DamageStatistic.instance();
+        this.getCommand("bloodmoon").setExecutor(this.commandHandler);
     }
 
     @Override
-    public void saveDefaultConfig() {
-        super.saveDefaultConfig();
-    }
-
-    @Override
-    public void saveConfig() {
-        super.saveConfig();
+    public void onDisable() {
+        getServer().getScheduler().cancelTasks(this);
+        getCommand("bloodmoon").setExecutor(null);
+        HandlerList.unregisterAll(this);
+        cfg.save();
+        i18n.reset();
     }
 
     @Override

@@ -5,9 +5,11 @@ import cat.nyaa.autobloodmoon.level.LevelConfig;
 import cat.nyaa.autobloodmoon.mobs.MobConfig;
 import cat.nyaa.autobloodmoon.stats.StatsConfig;
 import cat.nyaa.utils.ISerializable;
+import cat.nyaa.utils.PluginConfigure;
 import org.bukkit.configuration.ConfigurationSection;
+import org.bukkit.plugin.java.JavaPlugin;
 
-public class Configuration implements ISerializable {
+public class Configuration extends PluginConfigure {
     public AutoBloodmoon plugin;
     @Serializable
     public String language = "en_US";
@@ -28,11 +30,21 @@ public class Configuration implements ISerializable {
     @Serializable
     public int pvp_penalty_max = 0;
 
+    @StandaloneConfig
     public ArenaConfig arenaConfig;
+    @StandaloneConfig
     public RewardConfig rewardConfig;
+    @StandaloneConfig
     public MobConfig mobConfig;
+    @StandaloneConfig
     public LevelConfig levelConfig;
+    @StandaloneConfig
     public StatsConfig statsConfig;
+
+    @Override
+    protected JavaPlugin getPlugin() {
+        return plugin;
+    }
 
     public Configuration(AutoBloodmoon pl) {
         plugin = pl;
@@ -42,28 +54,4 @@ public class Configuration implements ISerializable {
         levelConfig = new LevelConfig(plugin);
         statsConfig = new StatsConfig(plugin);
     }
-
-    public void save() {
-        serialize(plugin.getConfig());
-        plugin.saveConfig();
-    }
-
-    public void deserialize(ConfigurationSection config) {
-        ISerializable.deserialize(config, this);
-        arenaConfig.load();
-        rewardConfig.load();
-        mobConfig.load();
-        levelConfig.load();
-        statsConfig.load();
-    }
-
-    public void serialize(ConfigurationSection config) {
-        ISerializable.serialize(config, this);
-        arenaConfig.save();
-        rewardConfig.save();
-        mobConfig.save();
-        levelConfig.save();
-        statsConfig.save();
-    }
-
 }
