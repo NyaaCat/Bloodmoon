@@ -2,13 +2,8 @@ package cat.nyaa.autobloodmoon.kits;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
-import cat.nyaa.nyaautils.NyaaUtils;
-import cat.nyaa.utils.InventoryUtils;
-import org.bukkit.Material;
 import org.bukkit.entity.Player;
-import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
-import org.bukkit.inventory.PlayerInventory;
 
 import java.util.*;
 import java.util.stream.Collectors;
@@ -47,7 +42,7 @@ public class KitManager {
     public boolean directGiveKit(String kitName, KitItems.KitType type, Player player) {
         KitItems kitItems = getKitItems(kitName, type);
         if (kitItems != null) {
-            List<ItemStack> remain =giveItemsToPlayer(kitItems.getItems(), player);
+            List<ItemStack> remain = giveItemsToPlayer(kitItems.getItems(), player);
             return remain == null || remain.size() <= 0;
             // return if there's enough space
         }

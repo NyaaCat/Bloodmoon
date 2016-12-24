@@ -5,7 +5,6 @@ import cat.nyaa.autobloodmoon.arena.Arena;
 import cat.nyaa.autobloodmoon.arena.ArenaManager;
 import cat.nyaa.autobloodmoon.events.MobListener;
 import cat.nyaa.autobloodmoon.events.PlayerListener;
-import cat.nyaa.autobloodmoon.kits.KitItems;
 import cat.nyaa.autobloodmoon.kits.KitListener;
 import cat.nyaa.autobloodmoon.kits.KitManager;
 import cat.nyaa.autobloodmoon.mobs.MobManager;
@@ -19,7 +18,6 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.UUID;
@@ -40,7 +38,7 @@ public class AutoBloodmoon extends JavaPlugin {
     public StatsManager statsManager;
     public DamageStatistic damageStatistic;
     public KitManager kitManager;
-    public HashMap<UUID,List<ItemStack>> rewardList = new HashMap<>();
+    public HashMap<UUID, List<ItemStack>> rewardList = new HashMap<>();
 
     @Override
     public void onEnable() {

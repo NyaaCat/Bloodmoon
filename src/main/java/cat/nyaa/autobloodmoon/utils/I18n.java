@@ -62,7 +62,7 @@ public final class I18n {
             plugin.getLogger().warning("Cannot save language file: " + language + ".yml");
         }
 
-        lang =language;
+        lang = language;
         plugin.getLogger().info(get("internal.info.using_language", lang));
     }
 

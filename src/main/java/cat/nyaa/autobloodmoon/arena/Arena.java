@@ -205,10 +205,10 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 if (infernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
                         normalMobs.size() >= players.size() * level.getMobAmount()) {
                     // most kill decision
-                    List<PlayerStats> stats = players.stream().map(playerStats::get).filter(st->st!=null).collect(Collectors.toList());
-                    Optional<PlayerStats> mostInfernalKill = stats.stream().max((s1, s2)->s1.infernal_kill-s2.infernal_kill).filter(s->s.infernal_kill > 0);
-                    Optional<PlayerStats> mostNormalKill = stats.stream().max((s1, s2)->s1.normal_kill-s2.normal_kill).filter(s->s.normal_kill > 0);
-                    Optional<PlayerStats> mostAssist = stats.stream().max((s1, s2)->s1.assist-s2.assist).filter(s->s.assist > 0);
+                    List<PlayerStats> stats = players.stream().map(playerStats::get).filter(st -> st != null).collect(Collectors.toList());
+                    Optional<PlayerStats> mostInfernalKill = stats.stream().max((s1, s2) -> s1.infernal_kill - s2.infernal_kill).filter(s -> s.infernal_kill > 0);
+                    Optional<PlayerStats> mostNormalKill = stats.stream().max((s1, s2) -> s1.normal_kill - s2.normal_kill).filter(s -> s.normal_kill > 0);
+                    Optional<PlayerStats> mostAssist = stats.stream().max((s1, s2) -> s1.assist - s2.assist).filter(s -> s.assist > 0);
 
                     // mvp decision
                     Optional<PlayerStats> mvp = Optional.empty();
@@ -224,7 +224,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     }
 
                     // increase WINNING counter
-                    stats.forEach(st->st.incrementStats(PlayerStats.StatsType.WINING));
+                    stats.forEach(st -> st.incrementStats(PlayerStats.StatsType.WINING));
 
                     // winning announcement
                     broadcast(I18n._("user.game.win"));
@@ -243,11 +243,11 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         broadcast(I18n._("user.game.most_assist", mostAssist.get().playerName,
                                 mostAssist.get().assist));
                     }
-                    stats.forEach(st->broadcast(I18n._("user.game.player_stats", st.playerName,
+                    stats.forEach(st -> broadcast(I18n._("user.game.player_stats", st.playerName,
                             st.infernal_kill, st.assist, st.normal_kill, st.death)));
 
                     // Distribute Rewards
-                    UUID mvpId = mvp.isPresent()? mvp.get().getUUID(): null;
+                    UUID mvpId = mvp.isPresent() ? mvp.get().getUUID() : null;
                     if (mvp.isPresent()) {
                         plugin.kitManager.addRewardToList(mvp.get().getUUID(), kitName, KitItems.KitType.MVP);
                         plugin.kitManager.addRewardToList(mvp.get().getUUID(), kitName, KitItems.KitType.MOSTKILL);

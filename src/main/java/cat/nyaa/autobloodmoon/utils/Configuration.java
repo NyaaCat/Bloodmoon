@@ -23,7 +23,7 @@ public class Configuration {
             Serializable anno = f.getAnnotation(Serializable.class);
             if (anno == null) continue;
             f.setAccessible(true);
-            String cfgName = anno.name().equals("")? f.getName(): anno.name();
+            String cfgName = anno.name().equals("") ? f.getName() : anno.name();
             try {
                 Object origValue = f.get(obj);
                 Object newValue;
@@ -49,10 +49,10 @@ public class Configuration {
             Serializable anno = f.getAnnotation(Serializable.class);
             if (anno == null) continue;
             f.setAccessible(true);
-            String cfgName = anno.name().equals("")? f.getName(): anno.name();
+            String cfgName = anno.name().equals("") ? f.getName() : anno.name();
             try {
                 if (f.getType().isEnum()) {
-                    Enum e = (Enum)f.get(obj);
+                    Enum e = (Enum) f.get(obj);
                     config.set(cfgName, e.name());
                 } else {
                     Object origValue = f.get(obj);

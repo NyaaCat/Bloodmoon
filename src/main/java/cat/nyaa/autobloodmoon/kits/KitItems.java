@@ -87,11 +87,11 @@ public class KitItems implements ISerializable {
     public void serialize(ConfigurationSection config) {
         ISerializable.serialize(config, this);
     }
-    
-    public KitItems clone(){
-        return new KitItems(this.kitName,this.type,this.items);
+
+    public KitItems clone() {
+        return new KitItems(this.kitName, this.type, this.items);
     }
-    
+
     public static enum KitType {
         MOSTKILL,
         MOSTASSIST,

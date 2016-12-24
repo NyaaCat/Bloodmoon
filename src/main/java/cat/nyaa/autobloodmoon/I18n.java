@@ -7,7 +7,7 @@ public class I18n extends Internationalization {
     public static I18n instance = null;
     private final AutoBloodmoon plugin;
     private String lang = null;
-    
+
     public I18n(AutoBloodmoon plugin, String lang) {
         instance = this;
         this.plugin = plugin;

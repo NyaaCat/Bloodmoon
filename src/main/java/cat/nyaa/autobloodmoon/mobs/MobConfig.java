@@ -30,7 +30,7 @@ public class MobConfig extends FileConfigure {
     protected JavaPlugin getPlugin() {
         return this.plugin;
     }
-    
+
     @Override
     public void deserialize(ConfigurationSection config) {
         ISerializable.deserialize(config, this);
