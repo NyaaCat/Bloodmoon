@@ -25,7 +25,7 @@ import java.util.UUID;
 public class AutoBloodmoon extends JavaPlugin {
     public static AutoBloodmoon instance;
     public CommandHandler commandHandler;
-    public Internationalization i18n;
+    public I18n i18n;
     public Configuration cfg;
     public VaultUtil vaultUtil;
     public ArenaManager arenaManager;
@@ -38,7 +38,6 @@ public class AutoBloodmoon extends JavaPlugin {
     public StatsManager statsManager;
     public DamageStatistic damageStatistic;
     public KitManager kitManager;
-    public HashMap<UUID, List<ItemStack>> rewardList = new HashMap<>();
 
     @Override
     public void onEnable() {
@@ -71,9 +70,11 @@ public class AutoBloodmoon extends JavaPlugin {
         i18n.reset();
     }
 
-    @Override
-    public void reloadConfig() {
-        super.reloadConfig();
-        rewardList.clear();
+    public void doReload() {
+        getServer().getScheduler().cancelTasks(this);
+        getCommand("bloodmoon").setExecutor(null);
+        HandlerList.unregisterAll(this);
+        i18n.reset();
+        onEnable();
     }
 }

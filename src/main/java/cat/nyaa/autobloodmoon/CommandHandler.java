@@ -8,7 +8,7 @@ import cat.nyaa.utils.CommandReceiver;
 import cat.nyaa.utils.Internationalization;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.HandlerList;
+import org.bukkit.scheduler.BukkitRunnable;
 
 public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
     @SubCommand("kit")
@@ -120,20 +120,19 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
     @SubCommand(value = "acquire", permission = "bm.player")
     public void commandAcquire(CommandSender sender, Arguments args) {
         Player player = asPlayer(sender);
-        if (plugin.rewardList.containsKey(player.getUniqueId())) {
+        if (plugin.kitManager.rewardList.containsKey(player.getUniqueId())) {
             plugin.kitManager.applyRewardFromList(player);
         }
     }
 
     @SubCommand(value = "reload", permission = "bm.admin")
     public void commandReload(CommandSender sender, Arguments args) {
-        AutoBloodmoon p = plugin;
-        // onDisable without save
-        p.getServer().getScheduler().cancelTasks(p);
-        p.getCommand("bloodmoon").setExecutor(null);
-        HandlerList.unregisterAll(p);
-        p.i18n.reset();
-
-        p.onEnable();
+        new BukkitRunnable() {
+            @Override
+            public void run() {
+                plugin.doReload();
+                sender.sendMessage("Reload Complete");
+            }
+        }.runTaskLater(plugin, 1L);
     }
 }

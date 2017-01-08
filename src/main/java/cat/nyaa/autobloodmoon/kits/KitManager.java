@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 public class KitManager {
     private AutoBloodmoon plugin;
+    public HashMap<UUID, List<ItemStack>> rewardList = new HashMap<>();
 
     public KitManager(AutoBloodmoon pl) {
         plugin = pl;
@@ -70,14 +71,14 @@ public class KitManager {
     }
 
     public void applyRewardFromList(Player player) {
-        if (player != null && player.isOnline() && plugin.rewardList.containsKey(player.getUniqueId())) {
+        if (player != null && player.isOnline() && rewardList.containsKey(player.getUniqueId())) {
             UUID id = player.getUniqueId();
-            List<ItemStack> items = plugin.rewardList.get(id);
+            List<ItemStack> items = rewardList.get(id);
             items = giveItemsToPlayer(items, player);
             if (items == null || items.size() <= 0) {
-                plugin.rewardList.remove(id);
+                rewardList.remove(id);
             } else {
-                plugin.rewardList.put(id, items);
+                rewardList.put(id, items);
                 player.sendMessage(I18n._("user.prefix") + I18n._("user.give.not_enough_space"));
                 player.sendMessage(I18n._("user.prefix") + I18n._("user.reward.acquire"));
             }
@@ -88,10 +89,10 @@ public class KitManager {
         KitItems rewardKit = getKitItems(kitName, kitType);
         if (rewardKit == null) return;
         List<ItemStack> clonedItems = rewardKit.getItems().stream().map(ItemStack::clone).collect(Collectors.toList());
-        if (plugin.rewardList.containsKey(id)) {
-            plugin.rewardList.get(id).addAll(clonedItems);
+        if (rewardList.containsKey(id)) {
+            rewardList.get(id).addAll(clonedItems);
         } else {
-            plugin.rewardList.put(id, new ArrayList<>(clonedItems));
+            rewardList.put(id, new ArrayList<>(clonedItems));
         }
     }
 }

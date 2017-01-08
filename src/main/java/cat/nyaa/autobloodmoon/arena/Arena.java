@@ -101,6 +101,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
         this.name = name;
     }
 
+    // TODO separate game logic apart from configure.
     public void init(AutoBloodmoon plugin, String difficulty, String kitName) {
         this.plugin = plugin;
         this.level = plugin.cfg.levelConfig.levels.get(difficulty);
@@ -374,6 +375,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
         }
     }
 
+    // NOTE: this is temporary statue, though it shares same class with persist status
     public PlayerStats getPlayerStats(OfflinePlayer player) {
         if (!playerStats.containsKey(player.getUniqueId())) {
             playerStats.put(player.getUniqueId(), new PlayerStats(player));
