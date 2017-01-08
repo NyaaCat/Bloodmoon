@@ -78,16 +78,6 @@ public class KitItems implements ISerializable {
         }
     }
 
-    @Override
-    public void deserialize(ConfigurationSection config) {
-        ISerializable.deserialize(config, this);
-    }
-
-    @Override
-    public void serialize(ConfigurationSection config) {
-        ISerializable.serialize(config, this);
-    }
-
     public KitItems clone() {
         return new KitItems(this.kitName, this.type, this.items);
     }

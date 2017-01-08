@@ -68,14 +68,4 @@ public class Level implements ISerializable {
     public void setMaxInfernalLevel(int maxInfernalLevel) {
         this.maxInfernalLevel = maxInfernalLevel;
     }
-
-    @Override
-    public void deserialize(ConfigurationSection config) {
-        ISerializable.deserialize(config, this);
-    }
-
-    @Override
-    public void serialize(ConfigurationSection config) {
-        ISerializable.serialize(config, this);
-    }
 }

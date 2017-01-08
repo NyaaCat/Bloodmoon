@@ -11,7 +11,7 @@ import java.util.HashMap;
 public class RewardConfig extends FileConfigure {
     @Serializable(name = "normal.kill")
     public int normal_kill = 1;
-    public HashMap<Integer, Integer> infernal_kill = new HashMap<>();
+    public HashMap<Integer, Integer> infernal_kill = new HashMap<>();   // Kill Infernal Mob money reward Map<Level,Money>
     public HashMap<Integer, Integer> infernal_assist = new HashMap<>();
     public HashMap<String, HashMap<KitItems.KitType, KitItems>> kits = new HashMap<>();
     private AutoBloodmoon plugin;
