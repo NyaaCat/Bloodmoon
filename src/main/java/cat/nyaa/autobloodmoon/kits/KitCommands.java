@@ -5,12 +5,14 @@ import cat.nyaa.utils.CommandReceiver;
 import cat.nyaa.utils.Internationalization;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
+import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 public class KitCommands extends CommandReceiver<AutoBloodmoon> {
     private AutoBloodmoon plugin;
@@ -33,16 +35,11 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
         }
         Player player = asPlayer(sender);
         String kitName = args.next();
-        String kitType = args.next();
-        if (KitManager.getKitType(kitType) == null) {
-            msg(player, "user.kit.kit_type_error");
-            return;
-        }
+        KitConfig.KitType kitType = args.nextEnum(KitConfig.KitType.class);
         if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
-            plugin.cfg.rewardConfig.kits.put(kitName, new HashMap<>());
+            plugin.cfg.rewardConfig.kits.put(kitName, new KitConfig());
         }
-        KitItems kit = new KitItems(kitName, KitManager.getKitType(kitType), new ArrayList<ItemStack>());
-        plugin.kitListener.selectChest.put(player, kit.clone());
+        plugin.kitListener.selectChest.put(player, new KitListener.Pair<>(kitName, kitType));
         msg(player, "user.kit.right_click_chest");
     }
 
@@ -54,24 +51,18 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
         }
         Player player = asPlayer(sender);
         String kitName = args.next();
-        String type = args.next();
+        KitConfig.KitType type = args.nextEnum(KitConfig.KitType.class);
         if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
             msg(sender, "user.kit.not_found");
             return;
         }
-        if (KitManager.getKitType(type) == null) {
-            msg(sender, "user.kit.kit_type_error");
-            return;
-        }
-        KitItems.KitType kitType = KitManager.getKitType(type);
-        if (!plugin.cfg.rewardConfig.kits.containsKey(kitName) ||
-                !plugin.cfg.rewardConfig.kits.get(kitName).containsKey(kitType)) {
+        List<ItemStack> items = plugin.cfg.rewardConfig.kits.get(kitName).getKit(type);
+        if (items == null) {
             msg(sender, "user.kit.not_found");
             return;
         }
-        KitItems kit = plugin.cfg.rewardConfig.kits.get(kitName).get(kitType);
-        Inventory inv = Bukkit.createInventory(null, 54, kitName + " - " + kitType.name());
-        inv.setContents(kit.getItems().toArray(new ItemStack[kit.getItems().size()]));
+        Inventory inv = Bukkit.createInventory(null, 54, kitName + " - " + type.name());
+        inv.setContents(items.toArray(new ItemStack[0]));
         player.openInventory(inv);
     }
 
@@ -83,22 +74,16 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
         }
         Player player = asPlayer(sender);
         String kitName = args.next();
-        String type = args.next();
+        KitConfig.KitType kitType = args.nextEnum(KitConfig.KitType.class);
         if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
             msg(sender, "user.kit.not_found");
             return;
         }
-        if (KitManager.getKitType(type) == null) {
-            msg(sender, "user.kit.kit_type_error");
-            return;
-        }
-        KitItems.KitType kitType = KitManager.getKitType(type);
-        if (!plugin.cfg.rewardConfig.kits.containsKey(kitName) ||
-                !plugin.cfg.rewardConfig.kits.get(kitName).containsKey(kitType)) {
+        if (!plugin.cfg.rewardConfig.kits.containsKey(kitName)) {
             msg(sender, "user.kit.not_found");
             return;
         }
-        plugin.cfg.rewardConfig.kits.get(kitName).remove(kitType);
+        plugin.cfg.rewardConfig.kits.get(kitName).setKit(kitType, null);
         plugin.cfg.rewardConfig.save();
         msg(player, "user.kit.save_success");
     }
@@ -106,9 +91,7 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
     @SubCommand(value = "list", permission = "bm.admin")
     public void commandListKit(CommandSender sender, Arguments args) {
         for (String kitName : plugin.cfg.rewardConfig.kits.keySet()) {
-            for (KitItems.KitType type : plugin.cfg.rewardConfig.kits.get(kitName).keySet()) {
-                sender.sendMessage(kitName + " - " + type.name());
-            }
+            sender.sendMessage("Kit: " + kitName);
         }
     }
 
@@ -116,7 +99,7 @@ public class KitCommands extends CommandReceiver<AutoBloodmoon> {
     public void commandGiveKit(CommandSender sender, Arguments args) {
         if (args.length() >= 4) {
             String kitName = args.next();
-            KitItems.KitType kitType = KitManager.getKitType(args.next());
+            KitConfig.KitType kitType = args.nextEnum(KitConfig.KitType.class);
             if (kitType == null) {
                 msg(sender, "user.kit.kit_type_error");
                 return;

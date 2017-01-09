@@ -14,7 +14,16 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.HashMap;
 
 public class KitListener implements Listener {
-    public final HashMap<Player, KitItems> selectChest = new HashMap<>();
+    static class Pair<A,B> {
+        public Pair(A a, B b) {
+            first = a;
+            second = b;
+        }
+        final public A first;
+        final public B second;
+    }
+
+    public final HashMap<Player, Pair<String, KitConfig.KitType>> selectChest = new HashMap<>();
     private final AutoBloodmoon plugin;
 
     public KitListener(AutoBloodmoon plugin) {
@@ -28,14 +37,17 @@ public class KitListener implements Listener {
             if (e.getAction().equals(Action.RIGHT_CLICK_BLOCK)) {
                 Block block = e.getClickedBlock();
                 if (block.getType().equals(Material.CHEST) || block.getType().equals(Material.TRAPPED_CHEST)) {
+                    Player p = e.getPlayer();
+                    String kitName = selectChest.get(p).first;
+                    KitConfig.KitType type = selectChest.get(p).second;
                     e.setCancelled(true);
                     Chest chest = (Chest) block.getState();
-                    KitItems kit = selectChest.get(e.getPlayer());
-                    if (!plugin.cfg.rewardConfig.kits.containsKey(kit.getKitName())) {
-                        plugin.cfg.rewardConfig.kits.put(kit.getKitName(), new HashMap<>());
+                    KitConfig kit = plugin.cfg.rewardConfig.kits.get(kitName);
+                    if (kit == null) {
+                        kit = new KitConfig();
+                        plugin.cfg.rewardConfig.kits.put(kitName, kit);
                     }
-                    kit.setItems(chest.getInventory().getContents());
-                    plugin.cfg.rewardConfig.kits.get(kit.getKitName()).put(kit.getType(), kit.clone());
+                    kit.setKit(type, chest.getInventory().getContents());
                     plugin.cfg.rewardConfig.save();
                     e.getPlayer().sendMessage(I18n._("user.kit.save_success"));
                 }

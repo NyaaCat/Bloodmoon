@@ -120,8 +120,8 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
     @SubCommand(value = "acquire", permission = "bm.player")
     public void commandAcquire(CommandSender sender, Arguments args) {
         Player player = asPlayer(sender);
-        if (plugin.kitManager.rewardList.containsKey(player.getUniqueId())) {
-            plugin.kitManager.applyRewardFromList(player);
+        if (plugin.kitManager.unacquiredItemList.containsKey(player.getUniqueId())) {
+            plugin.kitManager.applyUnacquiredReward(player);
         }
     }
 

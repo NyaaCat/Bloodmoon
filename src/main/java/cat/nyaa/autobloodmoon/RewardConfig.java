@@ -1,19 +1,20 @@
 package cat.nyaa.autobloodmoon;
 
-import cat.nyaa.autobloodmoon.kits.KitItems;
+import cat.nyaa.autobloodmoon.kits.KitConfig;
 import cat.nyaa.utils.FileConfigure;
 import cat.nyaa.utils.ISerializable;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.HashMap;
+import java.util.Map;
 
 public class RewardConfig extends FileConfigure {
-    @Serializable(name = "normal.kill")
+    @Serializable(name = "normal_kill_point")
     public int normal_kill = 1;
     public HashMap<Integer, Integer> infernal_kill = new HashMap<>();   // Kill Infernal Mob money reward Map<Level,Money>
     public HashMap<Integer, Integer> infernal_assist = new HashMap<>();
-    public HashMap<String, HashMap<KitItems.KitType, KitItems>> kits = new HashMap<>();
+    public Map<String, KitConfig> kits = new HashMap<>();
     private AutoBloodmoon plugin;
 
     public RewardConfig(AutoBloodmoon plugin) {
@@ -33,25 +34,22 @@ public class RewardConfig extends FileConfigure {
     @Override
     public void deserialize(ConfigurationSection config) {
         ISerializable.deserialize(config, this);
-        if (config.isConfigurationSection("infernal")) {
-            ConfigurationSection infernal = config.getConfigurationSection("infernal");
-            for (String k : infernal.getKeys(false)) {
-                ConfigurationSection level = infernal.getConfigurationSection(k);
-                infernal_kill.put(Integer.valueOf(k), level.getInt("kill"));
-                infernal_assist.put(Integer.valueOf(k), level.getInt("assist"));
+        ConfigurationSection killSec = config.getConfigurationSection("infernal_kill_point");
+        if (killSec != null) {
+            for (String key : killSec.getKeys(false)) {
+                infernal_kill.put(Integer.parseInt(key), killSec.getInt(key));
             }
         }
-        if (config.isConfigurationSection("kits")) {
-            ConfigurationSection kitsData = config.getConfigurationSection("kits");
-            for (String kitName : kitsData.getKeys(false)) {
-                for (String type : kitsData.getConfigurationSection(kitName).getKeys(false)) {
-                    KitItems kit = new KitItems();
-                    kit.deserialize(kitsData.getConfigurationSection(kitName).getConfigurationSection(type));
-                    if (!this.kits.containsKey(kitName)) {
-                        this.kits.put(kitName, new HashMap<>());
-                    }
-                    this.kits.get(kitName).put(kit.getType(), kit);
-                }
+        ConfigurationSection assistSec = config.getConfigurationSection("infernal_assist_point");
+        if (assistSec != null) {
+            for (String key : assistSec.getKeys(false)) {
+                infernal_assist.put(Integer.parseInt(key), assistSec.getInt(key));
+            }
+        }
+        ConfigurationSection kitsSec = config.getConfigurationSection("kits");
+        if (kitsSec != null) {
+            for (String kitName : kitsSec.getKeys(false)) {
+                kits.put(kitName, KitConfig.fromConfig(kitsSec.getConfigurationSection(kitName)));
             }
         }
     }
@@ -59,24 +57,19 @@ public class RewardConfig extends FileConfigure {
     @Override
     public void serialize(ConfigurationSection config) {
         ISerializable.serialize(config, this);
-        config.set("infernal", null);
-        ConfigurationSection infernal = config.createSection("infernal");
-        for (int k : infernal_kill.keySet()) {
-            ConfigurationSection level = infernal.createSection(String.valueOf(k));
-            level.set("kill", infernal_kill.get(k));
-            if (infernal_kill.containsKey(k)) {
-                level.set("assist", infernal_assist.get(k));
-            }
+        ConfigurationSection infernal = config.createSection("infernal_kill_point");
+        for (Integer level : infernal_kill.keySet()) {
+            infernal.set(Integer.toString(level), infernal_kill.get(level));
         }
+        infernal = config.createSection("infernal_assist_point");
+        for (Integer level : infernal_assist.keySet()) {
+            infernal.set(Integer.toString(level), infernal_kill.get(level));
+        }
+
         ConfigurationSection kitsData = config.createSection("kits");
         for (String kitName : kits.keySet()) {
-            kitsData.set(kitName, null);
-            ConfigurationSection data = kitsData.createSection(kitName);
-            HashMap<KitItems.KitType, KitItems> k = kits.get(kitName);
-            for (KitItems.KitType kitType : k.keySet()) {
-                KitItems kitItems = k.get(kitType);
-                kitItems.serialize(data.createSection(kitType.name()));
-            }
+            ConfigurationSection sec = kitsData.createSection(kitName);
+            kits.get(kitName).serialize(sec);
         }
     }
 
