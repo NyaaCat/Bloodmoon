@@ -23,6 +23,7 @@ import java.util.UUID;
 public class MobListener implements Listener {
     public Location spawnLocation = null;
     public MobType mobType = MobType.NORMAL;
+    public int mobLevel = 0;
     private AutoBloodmoon plugin;
 
     public MobListener(AutoBloodmoon pl) {
@@ -37,6 +38,7 @@ public class MobListener implements Listener {
             if (spawnLocation.equals(e.getLocation())) {
                 if (mobType == MobType.INFERNAL) {
                     plugin.currentArena.infernalMobs.add(entity.getUniqueId());
+                    plugin.currentArena.mobLevelMap.put(entity.getUniqueId(), mobLevel);
                 } else {
                     entity.setMetadata("NPC", new FixedMetadataValue(plugin, 1));
                 }
@@ -59,44 +61,29 @@ public class MobListener implements Listener {
                 if (mob.getKiller() != null &&
                         arena.players.contains(mob.getKiller().getUniqueId())) {
                     player = mob.getKiller();
+                    plugin.currentArena.scoreBoard.incNormalKill(player);
                     arena.getPlayerStats(player).incrementStats(PlayerStats.StatsType.NORMAL_KILL);
-                    int bonus = plugin.cfg.rewardConfig.getNormalBonus(RewardConfig.BonusType.KILL);
-                    if (bonus > 0) {
-                        plugin.vaultUtil.deposit(player, bonus);
-                        player.sendMessage(I18n._("user.prefix") +
-                                I18n._("user.reward.normal_kill", bonus));
-                    }
                 }
                 if (arena.infernalMobs.contains(mob.getUniqueId())) {
+                    plugin.currentArena.scoreBoard.incInfernalKill(player, mob);
+                    arena.infernalMobs.remove(mob.getUniqueId());
+                    arena.broadcast(I18n._("user.game.mobs_remaining", arena.infernalMobs.size()));
+                    // inc stat killer
                     if (player != null) {
                         arena.getPlayerStats(player).incrementStats(PlayerStats.StatsType.INFERNAL_KILL);
-                        int bonus = plugin.cfg.rewardConfig.getInfernalBonus(RewardConfig.BonusType.KILL,
-                                arena.currentLevel);
-                        if (bonus > 0) {
-                            plugin.vaultUtil.deposit(player, bonus);
-                            player.sendMessage(I18n._("user.prefix") +
-                                    I18n._("user.reward.infernal_kill", bonus));
-                            Map<UUID, Double> assistList = plugin.damageStatistic.getDamagePlayerList(mob.getUniqueId());
-                            if (assistList != null) {
-                                for (UUID k : assistList.keySet()) {
-                                    if (k != player.getUniqueId() && arena.players.contains(k)
-                                            && assistList.get(k) >= 5.0D) {
-                                        Player assistPlayer = Bukkit.getPlayer(k);
-                                        int assistBonus = plugin.cfg.rewardConfig.getInfernalBonus(
-                                                RewardConfig.BonusType.ASSIST, arena.currentLevel);
-                                        if (assistBonus > 0) {
-                                            arena.getPlayerStats(assistPlayer).incrementStats(
-                                                    PlayerStats.StatsType.ASSIST);
-                                            plugin.vaultUtil.deposit(assistPlayer, assistBonus);
-                                            assistPlayer.sendMessage(I18n._("user.prefix") +
-                                                    I18n._("user.reward.infernal_assist", assistBonus));
-                                        }
-                                    }
-                                }
+                    }
+                    // inc stat assist
+                    Map<UUID, Double> assistList = plugin.damageStatistic.getDamagePlayerList(mob.getUniqueId());
+                    UUID killerId = (player == null) ? null : player.getUniqueId();
+                    if (assistList != null) {
+                        for (UUID k : assistList.keySet()) {
+                            if (!k.equals(killerId) && arena.players.contains(k)
+                                    && assistList.get(k) >= 5.0D) {
+                                Player assistPlayer = Bukkit.getPlayer(k);
+                                arena.getPlayerStats(assistPlayer).incrementStats(
+                                        PlayerStats.StatsType.ASSIST);
                             }
                         }
-                        arena.infernalMobs.remove(mob.getUniqueId());
-                        arena.broadcast(I18n._("user.game.mobs_remaining", arena.infernalMobs.size()));
                     }
                 }
             }

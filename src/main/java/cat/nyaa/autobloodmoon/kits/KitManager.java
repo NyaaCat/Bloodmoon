@@ -2,12 +2,10 @@ package cat.nyaa.autobloodmoon.kits;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
-import com.sun.tools.javac.jvm.Items;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.*;
-import java.util.stream.Collectors;
 
 public class KitManager {
     private AutoBloodmoon plugin;
@@ -54,9 +52,10 @@ public class KitManager {
         return new ArrayList<>(tmp.values());
     }
 
-    public void applyUnacquiredReward(Player player) {
-        if (player != null && player.isOnline() && unacquiredItemList.containsKey(player.getUniqueId())) {
-            UUID id = player.getUniqueId();
+    public void applyUnacquiredReward(UUID id) {
+        if (id != null &&  unacquiredItemList.containsKey(id)) {
+            Player player = plugin.getServer().getPlayer(id);
+            if (player == null) return;
             List<ItemStack> items = unacquiredItemList.get(id);
             items = giveItemsToPlayer(items, player);
             if (items == null || items.size() <= 0) {
@@ -70,6 +69,7 @@ public class KitManager {
     }
 
     public void addUnacquiredReward(UUID id, List<ItemStack> items) {
+        if (items == null) return;
         List<ItemStack> list = unacquiredItemList.get(id);
         if (list == null) {
             list = new ArrayList<>();

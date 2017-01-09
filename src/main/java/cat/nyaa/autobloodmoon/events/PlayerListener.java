@@ -43,6 +43,7 @@ public class PlayerListener implements Listener {
             Player player = e.getEntity();
             plugin.currentArena.getPlayerStats(player).incrementStats(PlayerStats.StatsType.DEATH);
             if (player.getKiller() != null && player.getKiller() instanceof Player) {
+                plugin.currentArena.scoreBoard.incPlayerKill(player.getKiller(), player);
                 if (plugin.cfg.pvp_penalty_percent > 0 && plugin.cfg.pvp_penalty_max > 0 &&
                         plugin.vaultUtil.enoughMoney(player, 100)) {
                     int money = 0;

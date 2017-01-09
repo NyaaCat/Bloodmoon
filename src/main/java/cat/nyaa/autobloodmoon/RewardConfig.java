@@ -12,8 +12,7 @@ import java.util.Map;
 public class RewardConfig extends FileConfigure {
     @Serializable(name = "normal_kill_point")
     public int normal_kill = 1;
-    public HashMap<Integer, Integer> infernal_kill = new HashMap<>();   // Kill Infernal Mob money reward Map<Level,Money>
-    public HashMap<Integer, Integer> infernal_assist = new HashMap<>();
+    public HashMap<Integer, Integer> infernal_kill = new HashMap<>();   // Kill Infernal Mob reward Map<Level,Points>
     public Map<String, KitConfig> kits = new HashMap<>();
     private AutoBloodmoon plugin;
 
@@ -40,12 +39,6 @@ public class RewardConfig extends FileConfigure {
                 infernal_kill.put(Integer.parseInt(key), killSec.getInt(key));
             }
         }
-        ConfigurationSection assistSec = config.getConfigurationSection("infernal_assist_point");
-        if (assistSec != null) {
-            for (String key : assistSec.getKeys(false)) {
-                infernal_assist.put(Integer.parseInt(key), assistSec.getInt(key));
-            }
-        }
         ConfigurationSection kitsSec = config.getConfigurationSection("kits");
         if (kitsSec != null) {
             for (String kitName : kitsSec.getKeys(false)) {
@@ -61,10 +54,6 @@ public class RewardConfig extends FileConfigure {
         for (Integer level : infernal_kill.keySet()) {
             infernal.set(Integer.toString(level), infernal_kill.get(level));
         }
-        infernal = config.createSection("infernal_assist_point");
-        for (Integer level : infernal_assist.keySet()) {
-            infernal.set(Integer.toString(level), infernal_kill.get(level));
-        }
 
         ConfigurationSection kitsData = config.createSection("kits");
         for (String kitName : kits.keySet()) {
@@ -72,29 +61,6 @@ public class RewardConfig extends FileConfigure {
             kits.get(kitName).serialize(sec);
         }
     }
-
-    public int getNormalBonus(BonusType type) {
-        if (type == BonusType.KILL) {
-            return normal_kill;
-        } else {
-            return 0;
-        }
-    }
-
-    public int getInfernalBonus(BonusType type, int level) {
-        if (type == BonusType.KILL) {
-            if (infernal_kill.containsKey(level)) {
-                return infernal_kill.get(level);
-            }
-        } else if (type == BonusType.ASSIST) {
-            if (infernal_assist.containsKey(level)) {
-                return infernal_assist.get(level);
-            }
-        }
-        return 0;
-    }
-
-    public enum BonusType {KILL, ASSIST}
 }
 
 

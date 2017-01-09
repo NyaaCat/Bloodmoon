@@ -53,6 +53,12 @@ user:
     most_infernal_kill: "  &f%s - &b%d infernal kills"
     most_assist: "  &f%s - &b%d assists"
     most_normal_kill: "  &f%s - &b%d normal kills"
+    no_mvp: "&fNo MVP"
+    no_most_infernal_kill: "  &fNo most infernal kill player"
+    no_most_assist: "  &fNo most assist player"
+    no_most_normal_kill: "  &fNo most normal kill player"
+    great_fisherman: "  Player %s is granted the title \"Great Fisherman\""
+    money_given: "Battle reward ($%.2f) has been put into your account"
     player_stats: "&f%s &b(%d infernal kills, %d assists, %d normal kills, %d deaths)"
     fail: "All players are dead or quit"
   pvp_penalty:

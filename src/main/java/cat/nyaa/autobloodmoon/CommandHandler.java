@@ -121,7 +121,7 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
     public void commandAcquire(CommandSender sender, Arguments args) {
         Player player = asPlayer(sender);
         if (plugin.kitManager.unacquiredItemList.containsKey(player.getUniqueId())) {
-            plugin.kitManager.applyUnacquiredReward(player);
+            plugin.kitManager.applyUnacquiredReward(player.getUniqueId());
         }
     }
 
