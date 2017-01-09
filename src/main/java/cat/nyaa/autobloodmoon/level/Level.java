@@ -1,7 +1,6 @@
 package cat.nyaa.autobloodmoon.level;
 
 import cat.nyaa.utils.ISerializable;
-import org.bukkit.configuration.ConfigurationSection;
 
 public class Level implements ISerializable {
     @Serializable

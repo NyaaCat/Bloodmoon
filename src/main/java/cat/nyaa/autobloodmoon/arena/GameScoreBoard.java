@@ -32,7 +32,7 @@ public class GameScoreBoard {
     }
 
     public void incInfernalKill(Player killer, LivingEntity infernalMob) {
-        UUID killerId = killer == null? null: killer.getUniqueId();
+        UUID killerId = killer == null ? null : killer.getUniqueId();
         Integer infernalLevel = arena.mobLevelMap.get(infernalMob.getUniqueId());
         if (infernalLevel == null) return;
         Double score = new Double(plugin.cfg.rewardConfig.infernal_kill.get(infernalLevel));
@@ -53,7 +53,7 @@ public class GameScoreBoard {
 
         for (Map.Entry<UUID, Double> e : damageMap.entrySet()) {
             if (!e.getKey().equals(killerId)) {
-                incScore(e.getKey(), score*e.getValue()/totalDamageExcludeKiller);
+                incScore(e.getKey(), score * e.getValue() / totalDamageExcludeKiller);
                 incStat(e.getKey(), KitConfig.KitType.MOSTASSIST);
             }
         }
@@ -119,26 +119,26 @@ public class GameScoreBoard {
 
     public UUID getMVP() {
         return scoreMap.entrySet().stream()
-                .filter(e->!fishermen.contains(e.getKey()))
-                .filter(e->arena.players.contains(e.getKey()))
+                .filter(e -> !fishermen.contains(e.getKey()))
+                .filter(e -> arena.players.contains(e.getKey()))
                 .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
     }
 
     private int compairByScore(UUID u1, UUID u2) {
-        Double s1 = scoreMap.containsKey(u1)? scoreMap.get(u1): 0D;
-        Double s2 = scoreMap.containsKey(u2)? scoreMap.get(u2): 0D;
+        Double s1 = scoreMap.containsKey(u1) ? scoreMap.get(u1) : 0D;
+        Double s2 = scoreMap.containsKey(u2) ? scoreMap.get(u2) : 0D;
         return s1.compareTo(s2);
     }
 
     public UUID getMaxInfernalKill() {
         if (statMap.get(KitConfig.KitType.MOSTKILL) == null) return null;
         return statMap.get(KitConfig.KitType.MOSTKILL).entrySet().stream()
-                .filter(e->!fishermen.contains(e.getKey()))
-                .filter(e->arena.players.contains(e.getKey()))
-                .sorted((e1, e2) -> e1.getValue().equals(e2.getValue())?
-                        compairByScore(e2.getKey(), e1.getKey()):
+                .filter(e -> !fishermen.contains(e.getKey()))
+                .filter(e -> arena.players.contains(e.getKey()))
+                .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?
+                        compairByScore(e2.getKey(), e1.getKey()) :
                         e2.getValue().compareTo(e1.getValue()))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
@@ -147,10 +147,10 @@ public class GameScoreBoard {
     public UUID getMaxNormalKill() {
         if (statMap.get(KitConfig.KitType.MOSTNORMALKILL) == null) return null;
         return statMap.get(KitConfig.KitType.MOSTNORMALKILL).entrySet().stream()
-                .filter(e->!fishermen.contains(e.getKey()))
-                .filter(e->arena.players.contains(e.getKey()))
-                .sorted((e1, e2) -> e1.getValue().equals(e2.getValue())?
-                        compairByScore(e2.getKey(), e1.getKey()):
+                .filter(e -> !fishermen.contains(e.getKey()))
+                .filter(e -> arena.players.contains(e.getKey()))
+                .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?
+                        compairByScore(e2.getKey(), e1.getKey()) :
                         e2.getValue().compareTo(e1.getValue()))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
@@ -159,10 +159,10 @@ public class GameScoreBoard {
     public UUID getMaxAssist() {
         if (statMap.get(KitConfig.KitType.MOSTASSIST) == null) return null;
         return statMap.get(KitConfig.KitType.MOSTNORMALKILL).entrySet().stream()
-                .filter(e->!fishermen.contains(e.getKey()))
-                .filter(e->arena.players.contains(e.getKey()))
-                .sorted((e1, e2) -> e1.getValue().equals(e2.getValue())?
-                        compairByScore(e2.getKey(), e1.getKey()):
+                .filter(e -> !fishermen.contains(e.getKey()))
+                .filter(e -> arena.players.contains(e.getKey()))
+                .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?
+                        compairByScore(e2.getKey(), e1.getKey()) :
                         e2.getValue().compareTo(e1.getValue()))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);

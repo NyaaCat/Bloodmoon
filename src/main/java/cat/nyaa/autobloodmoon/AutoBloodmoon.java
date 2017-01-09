@@ -12,15 +12,9 @@ import cat.nyaa.autobloodmoon.stats.StatsManager;
 import cat.nyaa.autobloodmoon.utils.TeleportUtil;
 import cat.nyaa.nyaautils.NyaaUtils;
 import cat.nyaa.nyaautils.api.DamageStatistic;
-import cat.nyaa.utils.Internationalization;
 import cat.nyaa.utils.VaultUtil;
 import org.bukkit.event.HandlerList;
-import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
-
-import java.util.HashMap;
-import java.util.List;
-import java.util.UUID;
 
 public class AutoBloodmoon extends JavaPlugin {
     public static AutoBloodmoon instance;

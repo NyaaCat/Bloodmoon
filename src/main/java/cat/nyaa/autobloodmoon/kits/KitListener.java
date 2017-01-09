@@ -14,11 +14,12 @@ import org.bukkit.event.player.PlayerInteractEvent;
 import java.util.HashMap;
 
 public class KitListener implements Listener {
-    static class Pair<A,B> {
+    static class Pair<A, B> {
         public Pair(A a, B b) {
             first = a;
             second = b;
         }
+
         final public A first;
         final public B second;
     }

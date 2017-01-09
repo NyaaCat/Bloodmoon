@@ -53,7 +53,7 @@ public class KitManager {
     }
 
     public void applyUnacquiredReward(UUID id) {
-        if (id != null &&  unacquiredItemList.containsKey(id)) {
+        if (id != null && unacquiredItemList.containsKey(id)) {
             Player player = plugin.getServer().getPlayer(id);
             if (player == null) return;
             List<ItemStack> items = unacquiredItemList.get(id);

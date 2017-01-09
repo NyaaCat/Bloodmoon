@@ -2,14 +2,12 @@ package cat.nyaa.autobloodmoon.kits;
 
 import cat.nyaa.utils.ISerializable;
 import org.bukkit.configuration.ConfigurationSection;
-import org.bukkit.entity.Item;
 import org.bukkit.inventory.ItemStack;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
-public class KitConfig implements ISerializable{
+public class KitConfig implements ISerializable {
     @Serializable(name = "MOSTKILL")
     public List<ItemStack> kitMostKill = new ArrayList<>();
     @Serializable(name = "MOSTASSIST")

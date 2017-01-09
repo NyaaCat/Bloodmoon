@@ -5,13 +5,10 @@ import cat.nyaa.utils.CommandReceiver;
 import cat.nyaa.utils.Internationalization;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Item;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
-import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 
 public class KitCommands extends CommandReceiver<AutoBloodmoon> {

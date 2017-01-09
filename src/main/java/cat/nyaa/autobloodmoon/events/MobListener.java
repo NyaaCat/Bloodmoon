@@ -2,7 +2,6 @@ package cat.nyaa.autobloodmoon.events;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
-import cat.nyaa.autobloodmoon.RewardConfig;
 import cat.nyaa.autobloodmoon.arena.Arena;
 import cat.nyaa.autobloodmoon.stats.PlayerStats;
 import org.bukkit.Bukkit;
