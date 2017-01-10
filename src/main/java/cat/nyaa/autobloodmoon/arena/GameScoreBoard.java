@@ -35,7 +35,12 @@ public class GameScoreBoard {
         UUID killerId = killer == null ? null : killer.getUniqueId();
         Integer infernalLevel = arena.mobLevelMap.get(infernalMob.getUniqueId());
         if (infernalLevel == null) return;
-        Double score = new Double(plugin.cfg.rewardConfig.infernal_kill.get(infernalLevel));
+        Double score;
+        if (plugin.cfg.rewardConfig.infernal_kill.containsKey(infernalLevel)) {
+            score = new Double(plugin.cfg.rewardConfig.infernal_kill.get(infernalLevel));
+        } else {
+            score = 0D;
+        }
         if (score == null) score = 0D;
         if (killer != null) {
             incScore(killerId, score);
@@ -119,6 +124,7 @@ public class GameScoreBoard {
 
     public UUID getMVP() {
         return scoreMap.entrySet().stream()
+                .filter(e -> e.getValue() > 0)
                 .filter(e -> !fishermen.contains(e.getKey()))
                 .filter(e -> arena.players.contains(e.getKey()))
                 .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
@@ -135,6 +141,7 @@ public class GameScoreBoard {
     public UUID getMaxInfernalKill() {
         if (statMap.get(KitConfig.KitType.MOSTKILL) == null) return null;
         return statMap.get(KitConfig.KitType.MOSTKILL).entrySet().stream()
+                .filter(e -> e.getValue() > 0)
                 .filter(e -> !fishermen.contains(e.getKey()))
                 .filter(e -> arena.players.contains(e.getKey()))
                 .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?
@@ -147,6 +154,7 @@ public class GameScoreBoard {
     public UUID getMaxNormalKill() {
         if (statMap.get(KitConfig.KitType.MOSTNORMALKILL) == null) return null;
         return statMap.get(KitConfig.KitType.MOSTNORMALKILL).entrySet().stream()
+                .filter(e -> e.getValue() > 0)
                 .filter(e -> !fishermen.contains(e.getKey()))
                 .filter(e -> arena.players.contains(e.getKey()))
                 .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?
@@ -159,6 +167,7 @@ public class GameScoreBoard {
     public UUID getMaxAssist() {
         if (statMap.get(KitConfig.KitType.MOSTASSIST) == null) return null;
         return statMap.get(KitConfig.KitType.MOSTNORMALKILL).entrySet().stream()
+                .filter(e -> e.getValue() > 0)
                 .filter(e -> !fishermen.contains(e.getKey()))
                 .filter(e -> arena.players.contains(e.getKey()))
                 .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?

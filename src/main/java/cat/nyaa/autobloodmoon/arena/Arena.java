@@ -223,6 +223,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     UUID mostKillId = scoreBoard.getMaxInfernalKill();
                     UUID mostNormalId = scoreBoard.getMaxNormalKill();
                     UUID mostAssistId = scoreBoard.getMaxAssist();
+                    Map<UUID, Double> scoreMap = scoreBoard.getScores();
 
                     // increase WINNING counter
                     List<PlayerStats> stats = players.stream().map(playerStats::get).filter(st -> st != null).collect(Collectors.toList());
@@ -257,37 +258,41 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         broadcast(I18n._("user.game.no_most_assist"));
                     }
                     for (UUID id : scoreBoard.getFishermen()) {
-                        broadcast(I18n._("usr.game.great_fisherman", plugin.getServer().getOfflinePlayer(id).getName()));
+                        broadcast(I18n._("user.game.great_fisherman", plugin.getServer().getOfflinePlayer(id).getName()));
                     }
+
                     stats.forEach(st -> broadcast(I18n._("user.game.player_stats", st.playerName,
+                            scoreMap.containsKey(st.getUUID())? scoreMap.get(st.getUUID()): 0D,
                             st.infernal_kill, st.assist, st.normal_kill, st.death)));
 
                     // Distribute Rewards
+                    Set<UUID> rewardedPlayers = new HashSet<>();
                     KitConfig kit = plugin.cfg.rewardConfig.kits.get(kitName);
                     if (mvpId != null) {
                         plugin.kitManager.addUnacquiredReward(mvpId, kit.getKit(MVP));
-                        plugin.kitManager.addUnacquiredReward(mvpId, kit.getKit(MOSTKILL));
-                        plugin.kitManager.applyUnacquiredReward(mvpId);
+                        rewardedPlayers.add(mvpId);
                     }
-                    if (mostKillId != null && !mostKillId.equals(mvpId)) {
+                    if (mostKillId != null) {
                         plugin.kitManager.addUnacquiredReward(mostKillId, kit.getKit(MOSTKILL));
-                        plugin.kitManager.applyUnacquiredReward(mostKillId);
+                        rewardedPlayers.add(mostKillId);
                     }
-                    if (mostNormalId != null && !mostNormalId.equals(mvpId)) {
+                    if (mostNormalId != null) {
                         plugin.kitManager.addUnacquiredReward(mostNormalId, kit.getKit(MOSTNORMALKILL));
-                        plugin.kitManager.applyUnacquiredReward(mostNormalId);
+                        rewardedPlayers.add(mostNormalId);
                     }
-                    if (mostAssistId != null && !mostAssistId.equals(mvpId)) {
+                    if (mostAssistId != null) {
                         plugin.kitManager.addUnacquiredReward(mostAssistId, kit.getKit(MOSTASSIST));
-                        plugin.kitManager.applyUnacquiredReward(mostAssistId);
+                        rewardedPlayers.add(mostAssistId);
                     }
                     List<ItemStack> teamReward = kit.getKit(TEAM);
                     for (UUID id : scoreBoard.getActivePlayers()) {
                         int idx = ThreadLocalRandom.current().nextInt(0, teamReward.size());
-                        plugin.kitManager.addUnacquiredReward(id, Collections.singletonList(teamReward.get(idx)));
+                        plugin.kitManager.addUnacquiredReward(id, Collections.singletonList(teamReward.get(idx).clone()));
+                        rewardedPlayers.add(id);
+                    }
+                    for (UUID id : rewardedPlayers) {
                         plugin.kitManager.applyUnacquiredReward(id);
                     }
-                    Map<UUID, Double> scoreMap = scoreBoard.getScores();
                     for (Map.Entry<UUID, Double> e : scoreMap.entrySet()) {
                         plugin.vaultUtil.deposit(plugin.getServer().getOfflinePlayer(e.getKey()), e.getValue());
                         Player p = plugin.getServer().getPlayer(e.getKey());
@@ -348,7 +353,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
             if (mob != null && loc != null) {
                 plugin.mobListener.spawnLocation = loc;
                 plugin.mobListener.mobType = MobListener.MobType.INFERNAL;
-                plugin.mobListener.mobLevel = mob.getMobType().length();
+                plugin.mobListener.mobLevel = mob.getSkills().size();
                 if (InfernalMobsAPI.spawnMob(mob.getMobType(), mob.getSkills(), loc)) {
                     plugin.mobListener.spawnLocation = null;
                 }
