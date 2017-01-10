@@ -37,6 +37,7 @@ public class KitConfig implements ISerializable {
         List<ItemStack> clonedArray = new ArrayList<>();
         if (content != null) {
             for (ItemStack i : content) {
+                if (i == null) continue;
                 clonedArray.add(i.clone());
             }
         }
