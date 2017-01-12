@@ -10,6 +10,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class RewardConfig extends FileConfigure {
+    @Serializable(name = "killer_penalty")
+    public int killer_penalty = 100;
+    @Serializable(name = "victim_penalty")
+    public int victim_penalty = 10;
     @Serializable(name = "normal_kill_point")
     public int normal_kill = 1;
     public HashMap<Integer, Integer> infernal_kill = new HashMap<>();   // Kill Infernal Mob reward Map<Level,Points>

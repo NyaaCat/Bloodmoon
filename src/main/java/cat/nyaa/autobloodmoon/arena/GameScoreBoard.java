@@ -1,24 +1,35 @@
 package cat.nyaa.autobloodmoon.arena;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
-import cat.nyaa.autobloodmoon.kits.KitConfig;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 
 import java.util.*;
 import java.util.stream.Collectors;
 
+import static cat.nyaa.autobloodmoon.arena.GameScoreBoard.StatType.*;
+
 /**
  * Temporary score storage for each game
  */
 public class GameScoreBoard {
+    public enum StatType {
+        NORMALKILL,
+        INFERNALKILL,
+        INFERNALASSIST,
+        DEATH,    // total death
+        ASSISSAN, // killing player
+        VICTIM    // killed by player
+
+    }
+
     private final AutoBloodmoon plugin;
     private final Arena arena;
 
     private final Set<UUID> fishermen = new HashSet<>();
     private final Map<UUID, Double> scoreMap = new HashMap<>();
     private final Map<Integer, Set<UUID>> activeMap = new HashMap<>();
-    private final Map<KitConfig.KitType, Map<UUID, Integer>> statMap = new HashMap<>();
+    private final Map<StatType, Map<UUID, Integer>> statMap = new HashMap<>();
 
     public GameScoreBoard(AutoBloodmoon plugin, Arena arena) {
         this.plugin = plugin;
@@ -27,7 +38,7 @@ public class GameScoreBoard {
 
     public void incNormalKill(Player p) {
         incScore(p.getUniqueId(), plugin.cfg.rewardConfig.normal_kill);
-        incStat(p.getUniqueId(), KitConfig.KitType.MOSTNORMALKILL);
+        incStat(p.getUniqueId(), NORMALKILL);
         incActive(p.getUniqueId(), arena.currentLevel);
     }
 
@@ -44,7 +55,7 @@ public class GameScoreBoard {
         if (score == null) score = 0D;
         if (killer != null) {
             incScore(killerId, score);
-            incStat(killerId, KitConfig.KitType.MOSTKILL);
+            incStat(killerId, INFERNALKILL);
             incActive(killerId, arena.currentLevel);
         }
 
@@ -59,14 +70,16 @@ public class GameScoreBoard {
         for (Map.Entry<UUID, Double> e : damageMap.entrySet()) {
             if (!e.getKey().equals(killerId)) {
                 incScore(e.getKey(), score * e.getValue() / totalDamageExcludeKiller);
-                incStat(e.getKey(), KitConfig.KitType.MOSTASSIST);
+                incStat(e.getKey(), INFERNALASSIST);
             }
         }
     }
 
     public void incPlayerKill(Player killer, Player victim) {
-        fishermen.add(killer.getUniqueId());
-        fishermen.add(victim.getUniqueId());
+        incStat(killer.getUniqueId(), ASSISSAN);
+        incStat(victim.getUniqueId(), VICTIM);
+        incScore(killer.getUniqueId(), -plugin.cfg.rewardConfig.killer_penalty);
+        incScore(victim.getUniqueId(), -plugin.cfg.rewardConfig.victim_penalty);
     }
 
     private void incScore(UUID id, double score) {
@@ -77,7 +90,7 @@ public class GameScoreBoard {
         }
     }
 
-    private void incStat(UUID id, KitConfig.KitType type) {
+    private void incStat(UUID id, StatType type) {
         Map<UUID, Integer> map = statMap.get(type);
         if (map == null) {
             map = new HashMap<>();
@@ -99,25 +112,27 @@ public class GameScoreBoard {
         activeSet.add(id);
     }
 
-    public void computeInactivePlayers() {
-        for (int level = 1; level <= arena.level.getMaxInfernalLevel(); level++) {
-            if (!activeMap.containsKey(level)) {
-                activeMap.put(level, new HashSet<>());
-            }
-        }
-        for (UUID pid : arena.players) {
-            boolean lastInactive = !activeMap.get(1).contains(pid);
-            for (int level = 2; level <= arena.level.getMaxInfernalLevel(); level++) {
-                if (activeMap.get(level).contains(pid)) {
-                    lastInactive = false;
-                } else {
-                    if (lastInactive) { // fisherman
-                        fishermen.add(pid);
-                        break;
-                    } else {
-                        lastInactive = true;
+    /**
+     * A player is a fisherman if:
+     * - active in less than 2 waves (unless there's only one wave), or
+     * - have negative score
+     */
+    public void computeFishermen() {
+        if (arena.level.getMaxInfernalLevel() >= 2) {
+            for (UUID pid : scoreMap.keySet()) {
+                int count = 0;
+                for (int level = 1; level <= arena.level.getMaxInfernalLevel(); level++) {
+                    if (activeMap.containsKey(level) && activeMap.get(level).contains(pid)) {
+                        count++;
                     }
                 }
+                if (count < 2) fishermen.add(pid);
+            }
+        }
+
+        for (UUID pid : scoreMap.keySet()) {
+            if (scoreMap.get(pid) <= 0) {
+                fishermen.add(pid);
             }
         }
     }
@@ -126,76 +141,81 @@ public class GameScoreBoard {
         return scoreMap.entrySet().stream()
                 .filter(e -> e.getValue() > 0)
                 .filter(e -> !fishermen.contains(e.getKey()))
-                .filter(e -> arena.players.contains(e.getKey()))
                 .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
     }
 
-    private int compairByScore(UUID u1, UUID u2) {
+    private int compareByScore(UUID u1, UUID u2) {
         Double s1 = scoreMap.containsKey(u1) ? scoreMap.get(u1) : 0D;
         Double s2 = scoreMap.containsKey(u2) ? scoreMap.get(u2) : 0D;
         return s1.compareTo(s2);
     }
 
     public UUID getMaxInfernalKill() {
-        if (statMap.get(KitConfig.KitType.MOSTKILL) == null) return null;
-        return statMap.get(KitConfig.KitType.MOSTKILL).entrySet().stream()
+        if (statMap.get(INFERNALKILL) == null) return null;
+        return statMap.get(INFERNALKILL).entrySet().stream()
                 .filter(e -> e.getValue() > 0)
                 .filter(e -> !fishermen.contains(e.getKey()))
-                .filter(e -> arena.players.contains(e.getKey()))
                 .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?
-                        compairByScore(e2.getKey(), e1.getKey()) :
+                        compareByScore(e2.getKey(), e1.getKey()) :
                         e2.getValue().compareTo(e1.getValue()))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
     }
 
     public UUID getMaxNormalKill() {
-        if (statMap.get(KitConfig.KitType.MOSTNORMALKILL) == null) return null;
-        return statMap.get(KitConfig.KitType.MOSTNORMALKILL).entrySet().stream()
+        if (statMap.get(NORMALKILL) == null) return null;
+        return statMap.get(NORMALKILL).entrySet().stream()
                 .filter(e -> e.getValue() > 0)
                 .filter(e -> !fishermen.contains(e.getKey()))
-                .filter(e -> arena.players.contains(e.getKey()))
                 .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?
-                        compairByScore(e2.getKey(), e1.getKey()) :
+                        compareByScore(e2.getKey(), e1.getKey()) :
                         e2.getValue().compareTo(e1.getValue()))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
     }
 
     public UUID getMaxAssist() {
-        if (statMap.get(KitConfig.KitType.MOSTASSIST) == null) return null;
-        return statMap.get(KitConfig.KitType.MOSTNORMALKILL).entrySet().stream()
+        if (statMap.get(INFERNALASSIST) == null) return null;
+        return statMap.get(INFERNALASSIST).entrySet().stream()
                 .filter(e -> e.getValue() > 0)
                 .filter(e -> !fishermen.contains(e.getKey()))
-                .filter(e -> arena.players.contains(e.getKey()))
                 .sorted((e1, e2) -> e1.getValue().equals(e2.getValue()) ?
-                        compairByScore(e2.getKey(), e1.getKey()) :
+                        compareByScore(e2.getKey(), e1.getKey()) :
                         e2.getValue().compareTo(e1.getValue()))
                 .map(Map.Entry::getKey)
                 .findFirst().orElse(null);
     }
 
     public Map<UUID, Double> getScores() {
-        Map<UUID, Double> ret = new HashMap<>();
-        for (UUID id : scoreMap.keySet()) {
-            if (!fishermen.contains(id) && arena.players.contains(id)) {
-                ret.put(id, scoreMap.get(id));
-            }
-        }
-        return ret;
+        return scoreMap;
     }
 
     public Set<UUID> getFishermen() {
-        return fishermen.stream()
-                .filter(arena.players::contains)
-                .collect(Collectors.toSet());
+        return fishermen;
     }
 
-    public Set<UUID> getActivePlayers() {
-        return arena.players.stream()
-                .filter(id -> !fishermen.contains(id))
-                .collect(Collectors.toSet());
+    /**
+     * @return the whole list of players appears in scoreMap
+     *         Listed by their score from highest to lowest
+     */
+    public List<UUID> getSortedPlayers() {
+        return scoreMap.entrySet().stream()
+                .sorted(Map.Entry.comparingByValue(Collections.reverseOrder()))
+                .map(Map.Entry::getKey)
+                .collect(Collectors.toList());
+    }
+
+    public Map<StatType, Integer> getStatMap(UUID id) {
+        Map<StatType, Integer> map = new HashMap<>();
+        for (StatType type : statMap.keySet()) {
+            if (statMap.get(type).containsKey(id)) {
+                map.put(type, statMap.get(type).get(id));
+            } else {
+                map.put(type, 0);
+            }
+        }
+        return map;
     }
 }

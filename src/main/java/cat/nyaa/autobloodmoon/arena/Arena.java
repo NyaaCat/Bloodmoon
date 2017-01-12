@@ -218,12 +218,15 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 }
                 if (infernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
                         normalMobs.size() >= players.size() * level.getMobAmount()) {
-                    scoreBoard.computeInactivePlayers();
+                    scoreBoard.computeFishermen();
                     UUID mvpId = scoreBoard.getMVP();
                     UUID mostKillId = scoreBoard.getMaxInfernalKill();
                     UUID mostNormalId = scoreBoard.getMaxNormalKill();
                     UUID mostAssistId = scoreBoard.getMaxAssist();
+
                     Map<UUID, Double> scoreMap = scoreBoard.getScores();
+                    List<UUID> sortedPlayers = scoreBoard.getSortedPlayers();
+                    Set<UUID> fishermen = scoreBoard.getFishermen();
 
                     // increase WINNING counter
                     List<PlayerStats> stats = players.stream().map(playerStats::get).filter(st -> st != null).collect(Collectors.toList());
@@ -257,13 +260,27 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     } else {
                         broadcast(I18n._("user.game.no_most_assist"));
                     }
-                    for (UUID id : scoreBoard.getFishermen()) {
+                    for (UUID id : fishermen) {
                         broadcast(I18n._("user.game.great_fisherman", plugin.getServer().getOfflinePlayer(id).getName()));
                     }
 
-                    stats.forEach(st -> broadcast(I18n._("user.game.player_stats", st.playerName,
-                            scoreMap.containsKey(st.getUUID())? scoreMap.get(st.getUUID()): 0D,
-                            st.infernal_kill, st.assist, st.normal_kill, st.death)));
+                    for (UUID id : sortedPlayers) {
+                        Map<GameScoreBoard.StatType, Integer> stat = scoreBoard.getStatMap(id);
+
+                        Object[] objs = new Object[6];
+                        objs[0] = plugin.getServer().getOfflinePlayer(id).getName();
+                        objs[1] = scoreMap.get(id);
+                        objs[2] = stat.get(GameScoreBoard.StatType.INFERNALKILL);
+                        objs[3] = stat.get(GameScoreBoard.StatType.INFERNALASSIST);
+                        objs[4] = stat.get(GameScoreBoard.StatType.NORMALKILL);
+                        objs[5] = playerStats.containsKey(id)? playerStats.get(id).death: 0;  // TODO use scoreBoard
+
+                        if (fishermen.contains(id)) {
+                            broadcast(I18n._("user.game.player_stats_fisherman", objs));
+                        } else {
+                            broadcast(I18n._("user.game.player_stats_active", objs));
+                        }
+                    }
 
                     // Distribute Rewards
                     Set<UUID> rewardedPlayers = new HashSet<>();
@@ -285,15 +302,22 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         rewardedPlayers.add(mostAssistId);
                     }
                     List<ItemStack> teamReward = kit.getKit(TEAM);
-                    for (UUID id : scoreBoard.getActivePlayers()) {
-                        int idx = ThreadLocalRandom.current().nextInt(0, teamReward.size());
-                        plugin.kitManager.addUnacquiredReward(id, Collections.singletonList(teamReward.get(idx).clone()));
-                        rewardedPlayers.add(id);
+                    Collections.shuffle(teamReward);
+                    for (int i = 0; i < Math.min(teamReward.size(), sortedPlayers.size()); i++) {
+                        plugin.kitManager.addUnacquiredReward(sortedPlayers.get(i),
+                                Collections.singletonList(teamReward.get(i)));
+                        rewardedPlayers.add(sortedPlayers.get(i));
                     }
+
+                    // Actually give rewards
                     for (UUID id : rewardedPlayers) {
                         plugin.kitManager.applyUnacquiredReward(id);
                     }
+
+                    // Give money
                     for (Map.Entry<UUID, Double> e : scoreMap.entrySet()) {
+                        if (fishermen.contains(e.getKey())) continue;
+                        if (e.getValue() <= 0) continue;
                         plugin.vaultUtil.deposit(plugin.getServer().getOfflinePlayer(e.getKey()), e.getValue());
                         Player p = plugin.getServer().getPlayer(e.getKey());
                         if (p != null) {

@@ -59,7 +59,8 @@ user:
     no_most_normal_kill: "  &fNo most normal kill player"
     great_fisherman: "  Player %s is granted the title \"Great Fisherman\""
     money_given: "Battle reward ($%.2f) has been put into your account"
-    player_stats: "&f%s &bScore: %.1f (%d infernal kills, %d assists, %d normal kills, %d deaths)"
+    player_stats_active: "&f%s &bScore: %.1f (%d infernal kills, %d assists, %d normal kills, %d deaths)"
+    player_stats_fisherman: "&f&m%s &b&mScore: %.1f (%d infernal kills, %d assists, %d normal kills, %d deaths)"
     fail: "All players are dead or quit"
   pvp_penalty:
     message: "You recieved %d from %s"
