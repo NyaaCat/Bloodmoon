@@ -90,6 +90,7 @@ public class PlayerListener implements Listener {
     public void onPlayerDamage(EntityDamageByEntityEvent e) {
         if (!plugin.cfg.pvp && plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.PLAYING) {
             if (e.getEntity() instanceof Player) {
+                Player player = (Player) e.getEntity();
                 Player damager = null;
                 if (e.getDamager() instanceof Player) {
                     damager = (Player) e.getDamager();
@@ -97,7 +98,10 @@ public class PlayerListener implements Listener {
                         ((Projectile) e.getDamager()).getShooter() instanceof Player) {
                     damager = (Player) ((Projectile) e.getDamager()).getShooter();
                 }
-                if (plugin.currentArena.players.contains(e.getEntity().getUniqueId()) ||
+                if (damager != null && damager.getUniqueId().equals(player.getUniqueId())) {
+                    return;
+                }
+                if (plugin.currentArena.players.contains(player.getUniqueId()) ||
                         (damager != null && plugin.currentArena.players.contains(damager.getUniqueId()))) {
                     e.setCancelled(true);
                 }
