@@ -52,7 +52,7 @@ public class GameScoreBoard {
         } else {
             score = 0D;
         }
-        if (score == null) score = 0D;
+        if (score.isNaN()) score = 0D;
         if (killer != null) {
             incScore(killerId, score);
             incStat(killerId, INFERNALKILL);
@@ -83,20 +83,19 @@ public class GameScoreBoard {
     }
 
     private void incScore(UUID id, double score) {
-        if (scoreMap.containsKey(id)) {
-            scoreMap.put(id, scoreMap.get(id) + score);
+        if(Double.isNaN(score))score = 0;
+        Double currentScore =  scoreMap.get(id);
+        if (currentScore != null) {
+            if(Double.isNaN(currentScore))currentScore = 0D;
+            scoreMap.put(id, currentScore + score);
         } else {
             scoreMap.put(id, score);
         }
     }
 
     private void incStat(UUID id, StatType type) {
-        Map<UUID, Integer> map = statMap.get(type);
-        if (map == null) {
-            map = new HashMap<>();
-            statMap.put(type, map);
-        }
-        if (map.containsKey(id)) {
+        Map<UUID, Integer> map = statMap.computeIfAbsent(type, k -> new HashMap<>());
+        if (map.get(id) != null) {
             map.put(id, map.get(id) + 1);
         } else {
             map.put(id, 1);
@@ -104,11 +103,7 @@ public class GameScoreBoard {
     }
 
     public void incActive(UUID id, int waveNo) {
-        Set<UUID> activeSet = activeMap.get(waveNo);
-        if (activeSet == null) {
-            activeSet = new HashSet<>();
-            activeMap.put(waveNo, activeSet);
-        }
+        Set<UUID> activeSet = activeMap.computeIfAbsent(waveNo, k -> new HashSet<>());
         activeSet.add(id);
     }
 
@@ -147,8 +142,10 @@ public class GameScoreBoard {
     }
 
     private int compareByScore(UUID u1, UUID u2) {
-        Double s1 = scoreMap.containsKey(u1) ? scoreMap.get(u1) : 0D;
-        Double s2 = scoreMap.containsKey(u2) ? scoreMap.get(u2) : 0D;
+        Double s1 = scoreMap.get(u1);
+        Double s2 = scoreMap.get(u2);
+        if(s1 == null) s1 = 0D;
+        if(s2 == null) s2 = 0D;
         return s1.compareTo(s2);
     }
 
@@ -210,11 +207,8 @@ public class GameScoreBoard {
     public Map<StatType, Integer> getStatMap(UUID id) {
         Map<StatType, Integer> map = new HashMap<>();
         for (StatType type : statMap.keySet()) {
-            if (statMap.get(type).containsKey(id)) {
-                map.put(type, statMap.get(type).get(id));
-            } else {
-                map.put(type, 0);
-            }
+            Integer stat = statMap.get(type).get(id);
+            map.put(type, stat == null ? 0 : stat);
         }
         return map;
     }

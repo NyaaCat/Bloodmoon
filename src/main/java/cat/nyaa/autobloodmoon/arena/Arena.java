@@ -317,7 +317,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     // Give money
                     for (Map.Entry<UUID, Double> e : scoreMap.entrySet()) {
                         if (fishermen.contains(e.getKey())) continue;
-                        if (e.getValue() <= 0) continue;
+                        if (e.getValue() <= 0 || e.getValue().isNaN()) continue;
                         plugin.vaultUtil.deposit(plugin.getServer().getOfflinePlayer(e.getKey()), e.getValue());
                         Player p = plugin.getServer().getPlayer(e.getKey());
                         if (p != null) {
