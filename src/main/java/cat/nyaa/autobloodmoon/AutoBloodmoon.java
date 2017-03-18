@@ -1,5 +1,6 @@
 package cat.nyaa.autobloodmoon;
 
+import cat.nyaa.autobloodmoon.api.CoreProtectAPI;
 import cat.nyaa.autobloodmoon.api.InfernalMobsAPI;
 import cat.nyaa.autobloodmoon.arena.Arena;
 import cat.nyaa.autobloodmoon.arena.ArenaManager;
@@ -32,6 +33,7 @@ public class AutoBloodmoon extends JavaPlugin {
     public StatsManager statsManager;
     public DamageStatistic damageStatistic;
     public KitManager kitManager;
+    public CoreProtectAPI coreProtectAPI;
 
     @Override
     public void onEnable() {
@@ -53,6 +55,7 @@ public class AutoBloodmoon extends JavaPlugin {
         this.kitManager = new KitManager(this);
         damageStatistic = DamageStatistic.instance();
         this.getCommand("bloodmoon").setExecutor(this.commandHandler);
+        this.coreProtectAPI = new CoreProtectAPI(this);
     }
 
     @Override

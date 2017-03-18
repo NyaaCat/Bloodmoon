@@ -75,6 +75,7 @@ public class PlayerListener implements Listener {
                         HashMap items = inventory.addItem((ItemStack[]) e.getDrops().toArray(new ItemStack[0]));
                         e.getDrops().clear();
                         e.getDrops().addAll(items.values());
+                        plugin.coreProtectAPI.logPlacement(player, block.getLocation(), block.getType(), block.getData());
                         if (e.getDrops().isEmpty()) {
                             e.setKeepInventory(false);
                             break;
