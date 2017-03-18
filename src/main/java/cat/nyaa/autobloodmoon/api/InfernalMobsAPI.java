@@ -1,12 +1,12 @@
 package cat.nyaa.autobloodmoon.api;
 
 
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Entity;
+import org.bukkit.entity.EntityType;
 import org.bukkit.plugin.Plugin;
 
+import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
@@ -14,18 +14,25 @@ import java.util.UUID;
 
 public class InfernalMobsAPI {
     private static Plugin InfernalMobsPlugin;
-    private static Method spawnMob;
-    private static Method isInfernalMob;
+    private static Field mobManagerField;
+    private static Method spawnMobMethod;
+    private static Method isInfernalMobMethod;
+    private static Object mobManager;
 
     public static void load(Plugin InfernalMobs) {
         InfernalMobsAPI.InfernalMobsPlugin = InfernalMobs;
         try {
-            spawnMob = InfernalMobsPlugin.getClass().getDeclaredMethod("cSpawn", CommandSender.class,
-                    String.class, Location.class, ArrayList.class);
-            spawnMob.setAccessible(true);
-            isInfernalMob = InfernalMobsPlugin.getClass().getDeclaredMethod("idSearch", UUID.class);
-            isInfernalMob.setAccessible(true);
+            mobManagerField = InfernalMobsPlugin.getClass().getDeclaredField("mobManager");
+            mobManagerField.setAccessible(true);
+            mobManager = mobManagerField.get(InfernalMobsPlugin);
+            spawnMobMethod = mobManager.getClass().getDeclaredMethod("spawnMob", EntityType.class, Location.class, ArrayList.class);
+            isInfernalMobMethod = InfernalMobsPlugin.getClass().getDeclaredMethod("idSearch", UUID.class);
+            isInfernalMobMethod.setAccessible(true);
         } catch (NoSuchMethodException e) {
+            e.printStackTrace();
+        } catch (NoSuchFieldException e) {
+            e.printStackTrace();
+        } catch (IllegalAccessException e) {
             e.printStackTrace();
         }
 
@@ -33,7 +40,12 @@ public class InfernalMobsAPI {
 
     public static boolean spawnMob(String mobName, ArrayList<String> abilityList, Location loc) {
         try {
-            return (Boolean) spawnMob.invoke(InfernalMobsPlugin, Bukkit.getConsoleSender(), mobName, loc, abilityList);
+            EntityType type = EntityType.fromName(mobName);
+            if (type == null) {
+                return false;
+            }
+            Object mob = spawnMobMethod.invoke(mobManager, type, loc, abilityList);
+            return mob != null;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
         } catch (InvocationTargetException e) {
@@ -44,7 +56,7 @@ public class InfernalMobsAPI {
 
     public static boolean isInfernalMob(Entity mob) {
         try {
-            if (((int) isInfernalMob.invoke(InfernalMobsPlugin, mob.getUniqueId())) != -1) {
+            if (((int) isInfernalMobMethod.invoke(InfernalMobsPlugin, mob.getUniqueId())) != -1) {
                 return true;
             }
         } catch (IllegalAccessException e) {
