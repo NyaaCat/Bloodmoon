@@ -10,32 +10,26 @@ import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.UUID;
 
 public class InfernalMobsAPI {
-    private static Plugin InfernalMobsPlugin;
-    private static Field mobManagerField;
     private static Method spawnMobMethod;
     private static Method isInfernalMobMethod;
-    private static Object mobManager;
 
     public static void load(Plugin InfernalMobs) {
-        InfernalMobsAPI.InfernalMobsPlugin = InfernalMobs;
         try {
-            mobManagerField = InfernalMobsPlugin.getClass().getDeclaredField("mobManager");
-            mobManagerField.setAccessible(true);
-            mobManager = mobManagerField.get(InfernalMobsPlugin);
-            spawnMobMethod = mobManager.getClass().getDeclaredMethod("spawnMob", EntityType.class, Location.class, ArrayList.class);
-            isInfernalMobMethod = InfernalMobsPlugin.getClass().getDeclaredMethod("idSearch", UUID.class);
-            isInfernalMobMethod.setAccessible(true);
-        } catch (NoSuchMethodException e) {
-            e.printStackTrace();
-        } catch (NoSuchFieldException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
+            spawnMobMethod = Class.forName("com.jacob_vejvoda.infernal_mobs.InfernalMobsAPI").getMethod(
+                    "spawnInfernalMob",
+                    EntityType.class, Location.class, Collection.class
+            );
+            isInfernalMobMethod = Class.forName("com.jacob_vejvoda.infernal_mobs.InfernalMobsAPI").getMethod(
+                    "asInfernalMob",
+                    UUID.class
+            );
+        } catch (ReflectiveOperationException e) {
             e.printStackTrace();
         }
-
     }
 
     public static boolean spawnMob(String mobName, ArrayList<String> abilityList, Location loc) {
@@ -44,7 +38,7 @@ public class InfernalMobsAPI {
             if (type == null) {
                 return false;
             }
-            Object mob = spawnMobMethod.invoke(mobManager, type, loc, abilityList);
+            Object mob = spawnMobMethod.invoke(null, type, loc, abilityList);
             return mob != null;
         } catch (IllegalAccessException e) {
             e.printStackTrace();
@@ -56,7 +50,7 @@ public class InfernalMobsAPI {
 
     public static boolean isInfernalMob(Entity mob) {
         try {
-            if (((int) isInfernalMobMethod.invoke(InfernalMobsPlugin, mob.getUniqueId())) != -1) {
+            if (isInfernalMobMethod.invoke(null, mob.getUniqueId()) != null) {
                 return true;
             }
         } catch (IllegalAccessException e) {
