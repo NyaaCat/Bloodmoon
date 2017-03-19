@@ -61,29 +61,11 @@ public class MobListener implements Listener {
                         arena.players.contains(mob.getKiller().getUniqueId())) {
                     player = mob.getKiller();
                     plugin.currentArena.scoreBoard.incNormalKill(player);
-                    arena.getPlayerStats(player).incrementStats(PlayerStats.StatsType.NORMAL_KILL);
                 }
                 if (arena.infernalMobs.contains(mob.getUniqueId())) {
                     plugin.currentArena.scoreBoard.incInfernalKill(player, mob);
                     arena.infernalMobs.remove(mob.getUniqueId());
                     arena.broadcast(I18n._("user.game.mobs_remaining", arena.infernalMobs.size()));
-                    // inc stat killer
-                    if (player != null) {
-                        arena.getPlayerStats(player).incrementStats(PlayerStats.StatsType.INFERNAL_KILL);
-                    }
-                    // inc stat assist
-                    Map<UUID, Double> assistList = plugin.damageStatistic.getDamagePlayerList(mob.getUniqueId());
-                    UUID killerId = (player == null) ? null : player.getUniqueId();
-                    if (assistList != null) {
-                        for (UUID k : assistList.keySet()) {
-                            if (!k.equals(killerId) && arena.players.contains(k)
-                                    && assistList.get(k) >= 5.0D) {
-                                Player assistPlayer = Bukkit.getPlayer(k);
-                                arena.getPlayerStats(assistPlayer).incrementStats(
-                                        PlayerStats.StatsType.ASSIST);
-                            }
-                        }
-                    }
                 }
             }
         }

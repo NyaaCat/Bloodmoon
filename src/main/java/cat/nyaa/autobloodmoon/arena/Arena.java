@@ -13,7 +13,6 @@ import cat.nyaa.autobloodmoon.utils.RandomLocation;
 import cat.nyaa.utils.ISerializable;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
-import org.bukkit.OfflinePlayer;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
 import org.bukkit.entity.EntityType;
@@ -24,8 +23,6 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
 
 import java.util.*;
-import java.util.concurrent.ThreadLocalRandom;
-import java.util.stream.Collectors;
 
 import static cat.nyaa.autobloodmoon.kits.KitConfig.KitType.*;
 
@@ -63,7 +60,6 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public ArrayList<UUID> entityList = new ArrayList<>();
     public Map<UUID, Integer> mobLevelMap = new HashMap<>(); // Map<MobId, MobLevel>
     public ArenaState state;
-    public HashMap<UUID, PlayerStats> playerStats = new HashMap<>(); // TODO merge this into scoreBoard
     public GameScoreBoard scoreBoard;
 
 
@@ -127,9 +123,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public void join(Player player) {
         if (!players.contains(player.getUniqueId())) {
             players.add(player.getUniqueId());
-            PlayerStats stats = getPlayerStats(player);
-            stats.incrementStats(PlayerStats.StatsType.JOINED);
-            playerStats.put(player.getUniqueId(), stats);
+            plugin.statsManager.getPlayerStats(player).incrementStats(PlayerStats.StatsType.JOINED);
             broadcast(I18n._("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount()));
             plugin.teleportUtil.Teleport(player, getCenterPoint());
         }
@@ -161,9 +155,6 @@ public class Arena extends BukkitRunnable implements ISerializable {
         state = ArenaState.STOP;
         this.cancel();
         removeAllMobs();
-        for (UUID k : playerStats.keySet()) {
-            plugin.statsManager.getPlayerStats(k).add(playerStats.get(k));
-        }
         plugin.cfg.statsConfig.save();
         plugin.currentArena = null;
     }
@@ -229,8 +220,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     Set<UUID> fishermen = scoreBoard.getFishermen();
 
                     // increase WINNING counter
-                    List<PlayerStats> stats = players.stream().map(playerStats::get).filter(st -> st != null).collect(Collectors.toList());
-                    stats.forEach(st -> st.incrementStats(PlayerStats.StatsType.WINING));
+                    for (UUID uuid : players) {
+                        plugin.statsManager.getPlayerStats(uuid).incrementStats(PlayerStats.StatsType.WINING);
+                    }
 
                     // winning announcement
                     broadcast(I18n._("user.game.win"));
@@ -240,23 +232,26 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         broadcast(I18n._("user.game.no_mvp"));
                     }
                     if (mostKillId != null) {
+                        Map<GameScoreBoard.StatType, Integer> stat = this.scoreBoard.getStatMap(mostKillId);
                         broadcast(I18n._("user.game.most_infernal_kill",
                                 plugin.getServer().getOfflinePlayer(mostKillId).getName(),
-                                getPlayerStats(plugin.getServer().getOfflinePlayer(mostKillId)).infernal_kill));
+                                stat.get(GameScoreBoard.StatType.INFERNALKILL)));
                     } else {
                         broadcast(I18n._("user.game.no_most_infernal_kill"));
                     }
                     if (mostNormalId != null) {
+                        Map<GameScoreBoard.StatType, Integer> stat = this.scoreBoard.getStatMap(mostNormalId);
                         broadcast(I18n._("user.game.most_normal_kill",
                                 plugin.getServer().getOfflinePlayer(mostNormalId).getName(),
-                                getPlayerStats(plugin.getServer().getOfflinePlayer(mostNormalId)).normal_kill));
+                                stat.get(GameScoreBoard.StatType.NORMALKILL)));
                     } else {
                         broadcast(I18n._("user.game.no_most_normal_kill"));
                     }
                     if (mostAssistId != null) {
+                        Map<GameScoreBoard.StatType, Integer> stat = this.scoreBoard.getStatMap(mostAssistId);
                         broadcast(I18n._("user.game.most_assist",
                                 plugin.getServer().getOfflinePlayer(mostAssistId).getName(),
-                                getPlayerStats(plugin.getServer().getOfflinePlayer(mostAssistId)).assist));
+                                stat.get(GameScoreBoard.StatType.INFERNALASSIST)));
                     } else {
                         broadcast(I18n._("user.game.no_most_assist"));
                     }
@@ -273,7 +268,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         objs[2] = stat.get(GameScoreBoard.StatType.INFERNALKILL);
                         objs[3] = stat.get(GameScoreBoard.StatType.INFERNALASSIST);
                         objs[4] = stat.get(GameScoreBoard.StatType.NORMALKILL);
-                        objs[5] = playerStats.containsKey(id)? playerStats.get(id).death: 0;  // TODO use scoreBoard
+                        objs[5] = stat.get(GameScoreBoard.StatType.DEATH);
 
                         if (fishermen.contains(id)) {
                             broadcast(I18n._("user.game.player_stats_fisherman", objs));
@@ -324,7 +319,10 @@ public class Arena extends BukkitRunnable implements ISerializable {
                             p.sendMessage(I18n._("user.game.money_given", e.getValue()));
                         }
                     }
-
+                    for (UUID id : sortedPlayers) {
+                        PlayerStats playerStats = plugin.statsManager.getPlayerStats(id);
+                        playerStats.add(scoreBoard.getStatMap(id));
+                    }
                     // Cancel listen & write statistics to db
                     stop();
                     return;
@@ -432,14 +430,6 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         new Vector(0.5D, 0.5D, 0.5D)), 1);
             }
         }
-    }
-
-    // NOTE: this is temporary statue, though it shares same class with persist status
-    public PlayerStats getPlayerStats(OfflinePlayer player) {
-        if (!playerStats.containsKey(player.getUniqueId())) {
-            playerStats.put(player.getUniqueId(), new PlayerStats(player));
-        }
-        return playerStats.get(player.getUniqueId());
     }
 
     public enum ArenaState {

@@ -82,6 +82,10 @@ public class GameScoreBoard {
         incScore(victim.getUniqueId(), -plugin.cfg.rewardConfig.victim_penalty);
     }
 
+    public void incDeath(Player player) {
+        incStat(player.getUniqueId(), DEATH);
+    }
+
     private void incScore(UUID id, double score) {
         if(Double.isNaN(score))score = 0;
         Double currentScore =  scoreMap.get(id);

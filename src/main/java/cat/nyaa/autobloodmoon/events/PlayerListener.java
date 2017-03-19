@@ -41,7 +41,7 @@ public class PlayerListener implements Listener {
         if (plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.PLAYING &&
                 plugin.currentArena.players.contains(e.getEntity().getUniqueId())) {
             Player player = e.getEntity();
-            plugin.currentArena.getPlayerStats(player).incrementStats(PlayerStats.StatsType.DEATH);
+            plugin.currentArena.scoreBoard.incDeath(player);
             if (player.getKiller() != null && player.getKiller() instanceof Player) {
                 plugin.currentArena.scoreBoard.incPlayerKill(player.getKiller(), player);
                 if (plugin.cfg.pvp_penalty_percent > 0 && plugin.cfg.pvp_penalty_max > 0 &&

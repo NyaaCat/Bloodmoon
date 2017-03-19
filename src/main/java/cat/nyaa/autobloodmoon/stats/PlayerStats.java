@@ -1,8 +1,10 @@
 package cat.nyaa.autobloodmoon.stats;
 
+import cat.nyaa.autobloodmoon.arena.GameScoreBoard;
 import cat.nyaa.utils.ISerializable;
 import org.bukkit.OfflinePlayer;
 
+import java.util.Map;
 import java.util.UUID;
 
 public class PlayerStats implements ISerializable {
@@ -79,6 +81,13 @@ public class PlayerStats implements ISerializable {
         this.assist += stats.assist;
     }
 
+    public void add(Map<GameScoreBoard.StatType, Integer> stat) {
+        this.death += stat.get(GameScoreBoard.StatType.DEATH) == null ? 0 : stat.get(GameScoreBoard.StatType.DEATH);
+        this.normal_kill += stat.get(GameScoreBoard.StatType.NORMALKILL) == null ? 0 : stat.get(GameScoreBoard.StatType.NORMALKILL);
+        this.infernal_kill += stat.get(GameScoreBoard.StatType.INFERNALKILL) == null ? 0 : stat.get(GameScoreBoard.StatType.INFERNALKILL);
+        this.assist += stat.get(GameScoreBoard.StatType.INFERNALASSIST) == null ? 0 : stat.get(GameScoreBoard.StatType.INFERNALASSIST);
+    }
+    
     public PlayerStats clone() {
         PlayerStats stats = new PlayerStats();
         stats.playerUUID = playerUUID;
