@@ -210,9 +210,13 @@ public class GameScoreBoard {
 
     public Map<StatType, Integer> getStatMap(UUID id) {
         Map<StatType, Integer> map = new HashMap<>();
-        for (StatType type : statMap.keySet()) {
-            Integer stat = statMap.get(type).get(id);
-            map.put(type, stat == null ? 0 : stat);
+        for (StatType type : StatType.values()) {
+            if (statMap.containsKey(type)) {
+                Integer stat = statMap.get(type).get(id);
+                map.put(type, stat == null ? 0 : stat);
+            } else {
+                map.put(type, 0);
+            }
         }
         return map;
     }
