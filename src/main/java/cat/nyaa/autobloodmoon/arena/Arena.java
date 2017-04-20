@@ -156,6 +156,11 @@ public class Arena extends BukkitRunnable implements ISerializable {
         this.cancel();
         removeAllMobs();
         plugin.cfg.statsConfig.save();
+        if (!plugin.cfg.pvp && plugin.cfg.temp_pvp_protection_time > 0) {
+            for (UUID uuid : players) {
+                plugin.tempPVPProtection.put(uuid, System.currentTimeMillis() + (plugin.cfg.temp_pvp_protection_time * 1000));
+            }
+        }
         plugin.currentArena = null;
     }
 

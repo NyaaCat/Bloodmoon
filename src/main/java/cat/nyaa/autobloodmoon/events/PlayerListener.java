@@ -3,7 +3,6 @@ package cat.nyaa.autobloodmoon.events;
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
 import cat.nyaa.autobloodmoon.arena.Arena;
-import cat.nyaa.autobloodmoon.stats.PlayerStats;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -11,6 +10,7 @@ import org.bukkit.block.Chest;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
+import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
@@ -87,21 +87,30 @@ public class PlayerListener implements Listener {
         }
     }
 
-    @EventHandler(ignoreCancelled = true)
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onPlayerDamage(EntityDamageByEntityEvent e) {
-        if (!plugin.cfg.pvp && plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.PLAYING) {
-            if (e.getEntity() instanceof Player) {
-                Player player = (Player) e.getEntity();
-                Player damager = null;
-                if (e.getDamager() instanceof Player) {
-                    damager = (Player) e.getDamager();
-                } else if (e.getDamager() instanceof Projectile &&
-                        ((Projectile) e.getDamager()).getShooter() instanceof Player) {
-                    damager = (Player) ((Projectile) e.getDamager()).getShooter();
-                }
-                if (damager != null && damager.getUniqueId().equals(player.getUniqueId())) {
-                    return;
-                }
+        if (e.getEntity() instanceof Player) {
+            Player player = (Player) e.getEntity();
+            Player damager = null;
+            if (e.getDamager() instanceof Player) {
+                damager = (Player) e.getDamager();
+            } else if (e.getDamager() instanceof Projectile &&
+                    ((Projectile) e.getDamager()).getShooter() instanceof Player) {
+                damager = (Player) ((Projectile) e.getDamager()).getShooter();
+            }
+            if (damager != null && damager.getUniqueId().equals(player.getUniqueId())) {
+                return;
+            }
+
+            if ((plugin.tempPVPProtection.containsKey(player.getUniqueId()) &&
+                    plugin.tempPVPProtection.get(player.getUniqueId()) >= System.currentTimeMillis()) ||
+                    (damager != null && plugin.tempPVPProtection.containsKey(damager.getUniqueId()) &&
+                            plugin.tempPVPProtection.get(damager.getUniqueId()) >= System.currentTimeMillis())) {
+                e.setCancelled(true);
+                return;
+            }
+
+            if (!plugin.cfg.pvp && plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.PLAYING) {
                 if (plugin.currentArena.players.contains(player.getUniqueId()) ||
                         (damager != null && plugin.currentArena.players.contains(damager.getUniqueId()))) {
                     e.setCancelled(true);

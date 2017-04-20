@@ -17,6 +17,9 @@ import cat.nyaa.utils.VaultUtil;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.util.HashMap;
+import java.util.UUID;
+
 public class AutoBloodmoon extends JavaPlugin {
     public static AutoBloodmoon instance;
     public CommandHandler commandHandler;
@@ -28,6 +31,7 @@ public class AutoBloodmoon extends JavaPlugin {
     public MobManager mobManager;
     public TeleportUtil teleportUtil;
     public Arena currentArena = null;
+    public HashMap<UUID, Long> tempPVPProtection = new HashMap<>();
     public PlayerListener playerListener;
     public MobListener mobListener;
     public StatsManager statsManager;
@@ -65,6 +69,7 @@ public class AutoBloodmoon extends JavaPlugin {
         HandlerList.unregisterAll(this);
         cfg.save();
         i18n.reset();
+        tempPVPProtection.clear();
     }
 
     public void doReload() {

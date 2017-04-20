@@ -24,6 +24,8 @@ public class Configuration extends PluginConfigure {
     @Serializable
     public boolean pvp = false;
     @Serializable
+    public int temp_pvp_protection_time = 10;// 10 seconds
+    @Serializable
     public int pvp_penalty_percent = 0;
     @Serializable
     public int pvp_penalty_max = 0;
