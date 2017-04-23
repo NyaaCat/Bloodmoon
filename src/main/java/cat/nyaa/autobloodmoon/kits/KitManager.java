@@ -35,7 +35,7 @@ public class KitManager {
     private List<ItemStack> giveItemsToPlayer(List<ItemStack> items, Player p) {
         Map<Integer, ItemStack> tmp = p.getInventory().addItem(items.toArray(new ItemStack[0]));
         if (tmp == null || tmp.size() < items.size()) {
-            p.sendMessage(I18n._("user.prefix") + I18n._("user.give.inventory"));
+            p.sendMessage(I18n.format("user.prefix") + I18n.format("user.give.inventory"));
         }
         if (tmp == null || tmp.size() <= 0) {
             return null;
@@ -43,7 +43,7 @@ public class KitManager {
         ItemStack[] remainedItems = tmp.values().toArray(new ItemStack[0]);
         tmp = p.getEnderChest().addItem(remainedItems);
         if (tmp == null || tmp.size() < items.size()) {
-            p.sendMessage(I18n._("user.prefix") + I18n._("user.give.ender_chest"));
+            p.sendMessage(I18n.format("user.prefix") + I18n.format("user.give.ender_chest"));
         }
         if (tmp == null || tmp.size() <= 0) {
             return null;
@@ -62,8 +62,8 @@ public class KitManager {
                 unacquiredItemList.remove(id);
             } else {
                 unacquiredItemList.put(id, items);
-                player.sendMessage(I18n._("user.prefix") + I18n._("user.give.not_enough_space"));
-                player.sendMessage(I18n._("user.prefix") + I18n._("user.reward.acquire"));
+                player.sendMessage(I18n.format("user.prefix") + I18n.format("user.give.not_enough_space"));
+                player.sendMessage(I18n.format("user.prefix") + I18n.format("user.reward.acquire"));
             }
         }
     }

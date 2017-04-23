@@ -29,7 +29,13 @@ public class Configuration extends PluginConfigure {
     public int pvp_penalty_percent = 0;
     @Serializable
     public int pvp_penalty_max = 0;
-
+    @Serializable(name = "title_fadein_tick")
+    public int title_fadein_tick = 10;
+    @Serializable(name = "title_stay_tick")
+    public int title_stay_tick = 30;
+    @Serializable(name = "title_fadeout_tick")
+    public int title_fadeout_tick = 10;
+    
     @StandaloneConfig
     public ArenaConfig arenaConfig;
     @StandaloneConfig

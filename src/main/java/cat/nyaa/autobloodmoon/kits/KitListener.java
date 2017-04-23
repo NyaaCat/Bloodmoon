@@ -50,7 +50,7 @@ public class KitListener implements Listener {
                     }
                     kit.setKit(type, chest.getInventory().getContents());
                     plugin.cfg.rewardConfig.save();
-                    e.getPlayer().sendMessage(I18n._("user.kit.save_success"));
+                    e.getPlayer().sendMessage(I18n.format("user.kit.save_success"));
                 }
                 selectChest.remove(e.getPlayer());
             }

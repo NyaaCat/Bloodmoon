@@ -11,6 +11,7 @@ import cat.nyaa.autobloodmoon.stats.PlayerStats;
 import cat.nyaa.autobloodmoon.utils.GetCircle;
 import cat.nyaa.autobloodmoon.utils.RandomLocation;
 import cat.nyaa.utils.ISerializable;
+import cat.nyaa.utils.Message;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -114,17 +115,17 @@ public class Arena extends BukkitRunnable implements ISerializable {
         state = ArenaState.WAIT;
         nextWave = plugin.cfg.call_timeout;
         this.runTaskTimer(this.plugin, 20, 1);
-        broadcast(I18n._("user.game.new_game_0"));
-        broadcast(I18n._("user.game.new_game_1", level.getLevelType(), level.getMaxInfernalLevel(),
+        broadcast(I18n.format("user.game.new_game_0"));
+        broadcast(I18n.format("user.game.new_game_1", level.getLevelType(), level.getMaxInfernalLevel(),
                 level.getMinPlayerAmount()));
-        broadcast(I18n._("user.game.new_game_2"));
+        broadcast(I18n.format("user.game.new_game_2"));
     }
 
     public void join(Player player) {
         if (!players.contains(player.getUniqueId())) {
             players.add(player.getUniqueId());
             plugin.statsManager.getPlayerStats(player).incrementStats(PlayerStats.StatsType.JOINED);
-            broadcast(I18n._("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount()));
+            broadcast(I18n.format("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount()));
             plugin.teleportUtil.Teleport(player, getCenterPoint());
         }
     }
@@ -132,8 +133,8 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public boolean quit(Player player) {
         if (players.contains(player.getUniqueId())) {
             players.remove(player.getUniqueId());
-            broadcast(I18n._("user.game.quit", player.getName()));
-            broadcast(I18n._("user.game.players_remaining", players.size()));
+            broadcast(I18n.format("user.game.quit", player.getName()));
+            broadcast(I18n.format("user.game.players_remaining", players.size()));
             return true;
         } else {
             return false;
@@ -175,19 +176,19 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 if (players.size() >= level.getMinPlayerAmount()) {
                     this.start();
                 } else {
-                    broadcast(I18n._("user.game.cancel"));
+                    broadcast(I18n.format("user.game.cancel"));
                     this.stop();
                 }
             } else {
                 if (nextWave <= 300) {
                     if (players.size() >= level.getMinPlayerAmount()) {
                         if (ticks >= 20) {
-                            broadcast(I18n._("user.game.start", nextWave / 20));
+                            broadcastTitle("user.game.start", nextWave / 20);
                             ticks = 0;
                             return;
                         }
                     } else {
-                        broadcast(I18n._("user.game.cancel"));
+                        broadcast(I18n.format("user.game.cancel"));
                         this.stop();
                     }
                 } else {
@@ -208,8 +209,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     nextWave = plugin.cfg.preparation_time;
                     normalMobs.clear();
                     currentLevel++;
-                    broadcast(I18n._("user.game.next_wave", nextWave / 20));
-                    broadcast(I18n._("user.game.level", currentLevel));
+                    broadcastTitle("user.game.next_wave", currentLevel, nextWave / 20);
                     return;
                 }
                 if (infernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
@@ -230,38 +230,38 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     }
 
                     // winning announcement
-                    broadcast(I18n._("user.game.win"));
+                    broadcast(I18n.format("user.game.win"));
                     if (mvpId != null) {
-                        broadcast(I18n._("user.game.mvp", plugin.getServer().getOfflinePlayer(mvpId).getName()));
+                        broadcast(I18n.format("user.game.mvp", plugin.getServer().getOfflinePlayer(mvpId).getName()));
                     } else {
-                        broadcast(I18n._("user.game.no_mvp"));
+                        broadcast(I18n.format("user.game.no_mvp"));
                     }
                     if (mostKillId != null) {
                         Map<GameScoreBoard.StatType, Integer> stat = this.scoreBoard.getStatMap(mostKillId);
-                        broadcast(I18n._("user.game.most_infernal_kill",
+                        broadcast(I18n.format("user.game.most_infernal_kill",
                                 plugin.getServer().getOfflinePlayer(mostKillId).getName(),
                                 stat.get(GameScoreBoard.StatType.INFERNALKILL)));
                     } else {
-                        broadcast(I18n._("user.game.no_most_infernal_kill"));
+                        broadcast(I18n.format("user.game.no_most_infernal_kill"));
                     }
                     if (mostNormalId != null) {
                         Map<GameScoreBoard.StatType, Integer> stat = this.scoreBoard.getStatMap(mostNormalId);
-                        broadcast(I18n._("user.game.most_normal_kill",
+                        broadcast(I18n.format("user.game.most_normal_kill",
                                 plugin.getServer().getOfflinePlayer(mostNormalId).getName(),
                                 stat.get(GameScoreBoard.StatType.NORMALKILL)));
                     } else {
-                        broadcast(I18n._("user.game.no_most_normal_kill"));
+                        broadcast(I18n.format("user.game.no_most_normal_kill"));
                     }
                     if (mostAssistId != null) {
                         Map<GameScoreBoard.StatType, Integer> stat = this.scoreBoard.getStatMap(mostAssistId);
-                        broadcast(I18n._("user.game.most_assist",
+                        broadcast(I18n.format("user.game.most_assist",
                                 plugin.getServer().getOfflinePlayer(mostAssistId).getName(),
                                 stat.get(GameScoreBoard.StatType.INFERNALASSIST)));
                     } else {
-                        broadcast(I18n._("user.game.no_most_assist"));
+                        broadcast(I18n.format("user.game.no_most_assist"));
                     }
                     for (UUID id : fishermen) {
-                        broadcast(I18n._("user.game.great_fisherman", plugin.getServer().getOfflinePlayer(id).getName()));
+                        broadcast(I18n.format("user.game.great_fisherman", plugin.getServer().getOfflinePlayer(id).getName()));
                     }
 
                     for (UUID id : sortedPlayers) {
@@ -276,9 +276,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         objs[5] = stat.get(GameScoreBoard.StatType.DEATH);
 
                         if (fishermen.contains(id)) {
-                            broadcast(I18n._("user.game.player_stats_fisherman", objs));
+                            broadcast(I18n.format("user.game.player_stats_fisherman", objs));
                         } else {
-                            broadcast(I18n._("user.game.player_stats_active", objs));
+                            broadcast(I18n.format("user.game.player_stats_active", objs));
                         }
                     }
 
@@ -321,7 +321,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         plugin.vaultUtil.deposit(plugin.getServer().getOfflinePlayer(e.getKey()), e.getValue());
                         Player p = plugin.getServer().getPlayer(e.getKey());
                         if (p != null) {
-                            p.sendMessage(I18n._("user.game.money_given", e.getValue()));
+                            p.sendMessage(I18n.format("user.game.money_given", e.getValue()));
                         }
                     }
                     for (UUID id : sortedPlayers) {
@@ -354,13 +354,13 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     }
                     if (tmp.size() != infernalMobs.size()) {
                         infernalMobs = tmp;
-                        broadcast(I18n._("user.game.mobs_remaining", infernalMobs.size()));
+                        broadcast(I18n.format("user.game.mobs_remaining", infernalMobs.size()));
                     }
                 }
             }
             nextWave--;
             if (players.isEmpty()) {
-                broadcast(I18n._("user.game.fail"));
+                broadcast(I18n.format("user.game.fail"));
                 stop();
             }
         } else {
@@ -400,7 +400,17 @@ public class Arena extends BukkitRunnable implements ISerializable {
     }
 
     public void broadcast(String s) {
-        plugin.getServer().broadcastMessage(I18n._("user.prefix") + s);
+        plugin.getServer().broadcastMessage(I18n.format("user.prefix") + s);
+    }
+
+    public void broadcastTitle(String s, Object... args) {
+        Message title = new Message(I18n.format(s + ".title", args));
+        Message subtitle = new Message(I18n.format(s + ".subtitle", args));
+        for (Player p : plugin.getServer().getOnlinePlayers()) {
+            Message.sendTitle(p, title.inner, subtitle.inner, plugin.cfg.title_fadein_tick, plugin.cfg.title_stay_tick, plugin.cfg.title_fadeout_tick);
+        }
+        plugin.getServer().getConsoleSender().sendMessage(title.inner.toLegacyText());
+        plugin.getServer().getConsoleSender().sendMessage(subtitle.inner.toLegacyText());
     }
 
     public Arena clone() {

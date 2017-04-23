@@ -3,8 +3,6 @@ package cat.nyaa.autobloodmoon.events;
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
 import cat.nyaa.autobloodmoon.arena.Arena;
-import cat.nyaa.autobloodmoon.stats.PlayerStats;
-import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.entity.Entity;
 import org.bukkit.entity.LivingEntity;
@@ -14,9 +12,6 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
 import org.bukkit.metadata.FixedMetadataValue;
-
-import java.util.Map;
-import java.util.UUID;
 
 
 public class MobListener implements Listener {
@@ -65,7 +60,7 @@ public class MobListener implements Listener {
                 if (arena.infernalMobs.contains(mob.getUniqueId())) {
                     plugin.currentArena.scoreBoard.incInfernalKill(player, mob);
                     arena.infernalMobs.remove(mob.getUniqueId());
-                    arena.broadcast(I18n._("user.game.mobs_remaining", arena.infernalMobs.size()));
+                    arena.broadcast(I18n.format("user.game.mobs_remaining", arena.infernalMobs.size()));
                 }
             }
         }

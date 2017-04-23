@@ -36,7 +36,7 @@ public class ArenaCommands extends CommandReceiver<AutoBloodmoon> {
         }
         plugin.arenaManager.createArena(arenaName, player.getLocation(), radius, spawnRadius);
         Arena arena = plugin.arenaManager.getArena(arenaName);
-        sender.sendMessage(I18n._("user.arena.info", arena.getName(), arena.getWorld(),
+        sender.sendMessage(I18n.format("user.arena.info", arena.getName(), arena.getWorld(),
                 arena.getCenterPoint().getX(), arena.getCenterPoint().getY(), arena.getCenterPoint().getZ(),
                 arena.getRadius(), arena.getSpawnRadius()));
     }
@@ -45,7 +45,7 @@ public class ArenaCommands extends CommandReceiver<AutoBloodmoon> {
     public void commandList(CommandSender sender, Arguments args) {
         for (String k : plugin.cfg.arenaConfig.arenaList.keySet()) {
             Arena arena = plugin.cfg.arenaConfig.arenaList.get(k);
-            sender.sendMessage(I18n._("user.arena.info", arena.getName(), arena.getWorld(),
+            sender.sendMessage(I18n.format("user.arena.info", arena.getName(), arena.getWorld(),
                     arena.getCenterPoint().getX(), arena.getCenterPoint().getY(), arena.getCenterPoint().getZ(),
                     arena.getRadius(), arena.getSpawnRadius()));
         }
@@ -59,9 +59,9 @@ public class ArenaCommands extends CommandReceiver<AutoBloodmoon> {
         }
         String arenaName = args.next();
         if (plugin.arenaManager.removeArena(arenaName)) {
-            sender.sendMessage(I18n._("user.arena.remove", arenaName));
+            sender.sendMessage(I18n.format("user.arena.remove", arenaName));
         } else {
-            sender.sendMessage(I18n._("user.arena.not_found", arenaName));
+            sender.sendMessage(I18n.format("user.arena.not_found", arenaName));
         }
     }
 }

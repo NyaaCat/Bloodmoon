@@ -42,10 +42,13 @@ user:
     new_game_2: "Use &f/bm join&b to join the game"
     join: "%s has joined (%d/%d)"
     quit: "%s quit"
-    start: "The game start in %d second(s)"
+    start:
+      title: ""
+      subtitle: "The game start in %d second(s)"
     cancel: "Not enough players"
-    next_wave: "Next wave start in %d seconds"
-    level: "Level %d"
+    next_wave: 
+      title: "Level %1$d"
+      subtitle: "Next wave start in %2$d seconds"
     mobs_remaining: "%d infernal mobs remaining"
     players_remaining: "%d players remaining"
     win: "All infernal mobs have been cleared"

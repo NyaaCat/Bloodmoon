@@ -55,10 +55,10 @@ public class PlayerListener implements Listener {
                     }
                     if (money > 1 && plugin.vaultUtil.withdraw(player.getKiller(), money)) {
                         plugin.vaultUtil.deposit(player, money);
-                        player.sendMessage(I18n._("user.prefix") +
-                                I18n._("user.pvp_penalty.message", money, player.getKiller().getName()));
-                        player.getKiller().sendMessage(I18n._("user.prefix") +
-                                I18n._("user.pvp_penalty.killer", player.getName(), money, player.getName()));
+                        player.sendMessage(I18n.format("user.prefix") +
+                                I18n.format("user.pvp_penalty.message", money, player.getKiller().getName()));
+                        player.getKiller().sendMessage(I18n.format("user.prefix") +
+                                I18n.format("user.pvp_penalty.killer", player.getName(), money, player.getName()));
                     }
                 }
             }
