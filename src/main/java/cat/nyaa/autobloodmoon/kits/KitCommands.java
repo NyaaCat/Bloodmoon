@@ -1,8 +1,8 @@
 package cat.nyaa.autobloodmoon.kits;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
-import cat.nyaa.utils.CommandReceiver;
-import cat.nyaa.utils.Internationalization;
+import cat.nyaa.nyaacore.CommandReceiver;
+import cat.nyaa.nyaacore.LanguageRepository;
 import org.bukkit.Bukkit;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
@@ -14,7 +14,7 @@ import java.util.List;
 public class KitCommands extends CommandReceiver<AutoBloodmoon> {
     private AutoBloodmoon plugin;
 
-    public KitCommands(Object plugin, Internationalization i18n) {
+    public KitCommands(Object plugin, LanguageRepository i18n) {
         super((AutoBloodmoon) plugin, i18n);
         this.plugin = (AutoBloodmoon) plugin;
     }

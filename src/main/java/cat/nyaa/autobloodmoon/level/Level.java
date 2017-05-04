@@ -1,6 +1,6 @@
 package cat.nyaa.autobloodmoon.level;
 
-import cat.nyaa.utils.ISerializable;
+import cat.nyaa.nyaacore.configuration.ISerializable;
 
 public class Level implements ISerializable {
     @Serializable

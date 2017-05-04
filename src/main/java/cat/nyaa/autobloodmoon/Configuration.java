@@ -4,7 +4,7 @@ import cat.nyaa.autobloodmoon.arena.ArenaConfig;
 import cat.nyaa.autobloodmoon.level.LevelConfig;
 import cat.nyaa.autobloodmoon.mobs.MobConfig;
 import cat.nyaa.autobloodmoon.stats.StatsConfig;
-import cat.nyaa.utils.PluginConfigure;
+import cat.nyaa.nyaacore.configuration.PluginConfigure;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Configuration extends PluginConfigure {

@@ -1,6 +1,6 @@
 package cat.nyaa.autobloodmoon.mobs;
 
-import cat.nyaa.utils.ISerializable;
+import cat.nyaa.nyaacore.configuration.ISerializable;
 import org.bukkit.configuration.ConfigurationSection;
 
 import java.util.ArrayList;

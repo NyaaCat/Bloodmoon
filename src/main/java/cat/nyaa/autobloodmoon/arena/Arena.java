@@ -10,8 +10,9 @@ import cat.nyaa.autobloodmoon.mobs.Mob;
 import cat.nyaa.autobloodmoon.stats.PlayerStats;
 import cat.nyaa.autobloodmoon.utils.GetCircle;
 import cat.nyaa.autobloodmoon.utils.RandomLocation;
-import cat.nyaa.utils.ISerializable;
-import cat.nyaa.utils.Message;
+import cat.nyaa.nyaacore.Message;
+import cat.nyaa.nyaacore.configuration.ISerializable;
+import cat.nyaa.nyaacore.utils.VaultUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
@@ -22,6 +23,8 @@ import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.util.Vector;
+import org.librazy.nyaautils_lang_checker.LangKey;
+import org.librazy.nyaautils_lang_checker.LangKeyType;
 
 import java.util.*;
 
@@ -267,7 +270,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     for (UUID id : sortedPlayers) {
                         Map<GameScoreBoard.StatType, Integer> stat = scoreBoard.getStatMap(id);
 
-                        Object[] objs = new Object[6];
+                        @LangKey Object[] objs = new Object[6];
                         objs[0] = plugin.getServer().getOfflinePlayer(id).getName();
                         objs[1] = scoreMap.get(id);
                         objs[2] = stat.get(GameScoreBoard.StatType.INFERNALKILL);
@@ -318,7 +321,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     for (Map.Entry<UUID, Double> e : scoreMap.entrySet()) {
                         if (fishermen.contains(e.getKey())) continue;
                         if (e.getValue() <= 0 || e.getValue().isNaN()) continue;
-                        plugin.vaultUtil.deposit(plugin.getServer().getOfflinePlayer(e.getKey()), e.getValue());
+                        VaultUtils.deposit(plugin.getServer().getOfflinePlayer(e.getKey()), e.getValue());
                         Player p = plugin.getServer().getPlayer(e.getKey());
                         if (p != null) {
                             p.sendMessage(I18n.format("user.game.money_given", e.getValue()));
@@ -403,7 +406,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
         plugin.getServer().broadcastMessage(I18n.format("user.prefix") + s);
     }
 
-    public void broadcastTitle(String s, Object... args) {
+    public void broadcastTitle(@LangKey(type = LangKeyType.PREFIX) String s, Object... args) {
         Message title = new Message(I18n.format(s + ".title", args));
         Message subtitle = new Message(I18n.format(s + ".subtitle", args));
         for (Player p : plugin.getServer().getOnlinePlayers()) {

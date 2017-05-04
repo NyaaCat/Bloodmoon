@@ -1,7 +1,7 @@
 package cat.nyaa.autobloodmoon.arena;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
-import cat.nyaa.utils.FileConfigure;
+import cat.nyaa.nyaacore.configuration.FileConfigure;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.plugin.java.JavaPlugin;
 

@@ -11,9 +11,7 @@ import cat.nyaa.autobloodmoon.kits.KitManager;
 import cat.nyaa.autobloodmoon.mobs.MobManager;
 import cat.nyaa.autobloodmoon.stats.StatsManager;
 import cat.nyaa.autobloodmoon.utils.TeleportUtil;
-import cat.nyaa.nyaautils.NyaaUtils;
 import cat.nyaa.nyaautils.api.DamageStatistic;
-import cat.nyaa.utils.VaultUtil;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,7 +23,6 @@ public class AutoBloodmoon extends JavaPlugin {
     public CommandHandler commandHandler;
     public I18n i18n;
     public Configuration cfg;
-    public VaultUtil vaultUtil;
     public ArenaManager arenaManager;
     public KitListener kitListener;
     public MobManager mobManager;
@@ -47,7 +44,6 @@ public class AutoBloodmoon extends JavaPlugin {
         this.i18n = new I18n(this, this.cfg.language);
 
         this.commandHandler = new CommandHandler(this, this.i18n);
-        this.vaultUtil = getPlugin(NyaaUtils.class).vaultUtil;
         this.arenaManager = new ArenaManager(this);
         this.kitListener = new KitListener(this);
         this.mobManager = new MobManager(this);
@@ -68,7 +64,6 @@ public class AutoBloodmoon extends JavaPlugin {
         getCommand("bloodmoon").setExecutor(null);
         HandlerList.unregisterAll(this);
         cfg.save();
-        i18n.reset();
         tempPVPProtection.clear();
     }
 
@@ -76,7 +71,7 @@ public class AutoBloodmoon extends JavaPlugin {
         getServer().getScheduler().cancelTasks(this);
         getCommand("bloodmoon").setExecutor(null);
         HandlerList.unregisterAll(this);
-        i18n.reset();
+        i18n.load();
         onEnable();
     }
 }

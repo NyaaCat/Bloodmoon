@@ -2,15 +2,15 @@ package cat.nyaa.autobloodmoon.arena;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
-import cat.nyaa.utils.CommandReceiver;
-import cat.nyaa.utils.Internationalization;
+import cat.nyaa.nyaacore.CommandReceiver;
+import cat.nyaa.nyaacore.LanguageRepository;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
 public class ArenaCommands extends CommandReceiver<AutoBloodmoon> {
     private AutoBloodmoon plugin;
 
-    public ArenaCommands(Object plugin, Internationalization i18n) {
+    public ArenaCommands(Object plugin, LanguageRepository i18n) {
         super((AutoBloodmoon) plugin, i18n);
         this.plugin = (AutoBloodmoon) plugin;
     }

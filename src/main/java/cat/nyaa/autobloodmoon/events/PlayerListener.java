@@ -3,6 +3,7 @@ package cat.nyaa.autobloodmoon.events;
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
 import cat.nyaa.autobloodmoon.arena.Arena;
+import cat.nyaa.nyaacore.utils.VaultUtils;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -45,16 +46,16 @@ public class PlayerListener implements Listener {
             if (player.getKiller() != null && player.getKiller() instanceof Player) {
                 plugin.currentArena.scoreBoard.incPlayerKill(player.getKiller(), player);
                 if (plugin.cfg.pvp_penalty_percent > 0 && plugin.cfg.pvp_penalty_max > 0 &&
-                        plugin.vaultUtil.enoughMoney(player, 100)) {
+                        VaultUtils.enoughMoney(player, 100)) {
                     int money = 0;
-                    if (plugin.vaultUtil.balance(player) / 100 * plugin.cfg.pvp_penalty_percent >
+                    if (VaultUtils.balance(player) / 100 * plugin.cfg.pvp_penalty_percent >
                             plugin.cfg.pvp_penalty_max) {
                         money = plugin.cfg.pvp_penalty_max;
                     } else {
-                        money = (int) plugin.vaultUtil.balance(player) / 100 * plugin.cfg.pvp_penalty_percent;
+                        money = (int) VaultUtils.balance(player) / 100 * plugin.cfg.pvp_penalty_percent;
                     }
-                    if (money > 1 && plugin.vaultUtil.withdraw(player.getKiller(), money)) {
-                        plugin.vaultUtil.deposit(player, money);
+                    if (money > 1 && VaultUtils.withdraw(player.getKiller(), money)) {
+                        VaultUtils.deposit(player, money);
                         player.sendMessage(I18n.format("user.prefix") +
                                 I18n.format("user.pvp_penalty.message", money, player.getKiller().getName()));
                         player.getKiller().sendMessage(I18n.format("user.prefix") +

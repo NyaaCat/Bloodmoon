@@ -4,8 +4,8 @@ import cat.nyaa.autobloodmoon.arena.Arena;
 import cat.nyaa.autobloodmoon.arena.ArenaCommands;
 import cat.nyaa.autobloodmoon.kits.KitCommands;
 import cat.nyaa.autobloodmoon.level.Level;
-import cat.nyaa.utils.CommandReceiver;
-import cat.nyaa.utils.Internationalization;
+import cat.nyaa.nyaacore.CommandReceiver;
+import cat.nyaa.nyaacore.LanguageRepository;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
@@ -17,7 +17,7 @@ public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
     public ArenaCommands arenaCommands;
     private AutoBloodmoon plugin;
 
-    public CommandHandler(AutoBloodmoon pl, Internationalization i18n) {
+    public CommandHandler(AutoBloodmoon pl, LanguageRepository i18n) {
         super(pl, i18n);
         plugin = pl;
     }

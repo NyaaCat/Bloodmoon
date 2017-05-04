@@ -1,7 +1,7 @@
 package cat.nyaa.autobloodmoon.stats;
 
 import cat.nyaa.autobloodmoon.arena.GameScoreBoard;
-import cat.nyaa.utils.ISerializable;
+import cat.nyaa.nyaacore.configuration.ISerializable;
 import org.bukkit.OfflinePlayer;
 
 import java.util.Map;
