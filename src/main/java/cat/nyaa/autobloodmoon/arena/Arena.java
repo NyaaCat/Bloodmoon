@@ -115,17 +115,17 @@ public class Arena extends BukkitRunnable implements ISerializable {
         state = ArenaState.WAIT;
         nextWave = plugin.cfg.call_timeout;
         this.runTaskTimer(this.plugin, 20, 1);
-        broadcast(I18n.format("user.game.new_game_0"));
-        broadcast(I18n.format("user.game.new_game_1", level.getLevelType(), level.getMaxInfernalLevel(),
-                level.getMinPlayerAmount()));
-        broadcast(I18n.format("user.game.new_game_2"));
+        new Message(I18n.format("user.game.new_game_0")).broadcast();
+        new Message(I18n.format("user.game.new_game_1", level.getLevelType(), level.getMaxInfernalLevel(),
+                level.getMinPlayerAmount())).broadcast();
+        new Message(I18n.format("user.game.new_game_2")).broadcast();
     }
 
     public void join(Player player) {
         if (!players.contains(player.getUniqueId())) {
             players.add(player.getUniqueId());
             plugin.statsManager.getPlayerStats(player).incrementStats(PlayerStats.StatsType.JOINED);
-            broadcast(I18n.format("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount()));
+            new Message(I18n.format("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount())).broadcast();
             plugin.teleportUtil.Teleport(player, getCenterPoint());
         }
     }
@@ -133,8 +133,8 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public boolean quit(Player player) {
         if (players.contains(player.getUniqueId())) {
             players.remove(player.getUniqueId());
-            broadcast(I18n.format("user.game.quit", player.getName()));
-            broadcast(I18n.format("user.game.players_remaining", players.size()));
+            new Message(I18n.format("user.game.quit", player.getName())).broadcast();
+            new Message(I18n.format("user.game.players_remaining", players.size())).broadcast();
             return true;
         } else {
             return false;
@@ -176,7 +176,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 if (players.size() >= level.getMinPlayerAmount()) {
                     this.start();
                 } else {
-                    broadcast(I18n.format("user.game.cancel"));
+                    new Message(I18n.format("user.game.cancel")).broadcast();
                     this.stop();
                 }
             } else {
@@ -187,7 +187,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                             ticks = 0;
                         }
                     } else {
-                        broadcast(I18n.format("user.game.cancel"));
+                        new Message(I18n.format("user.game.cancel")).broadcast();
                         this.stop();
                     }
                 }
@@ -227,9 +227,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     }
 
                     // winning announcement
-                    broadcast(I18n.format("user.game.win"));
+                    new Message(I18n.format("user.game.win")).broadcast();
                     if (mvpId != null) {
-                        broadcast(I18n.format("user.game.mvp", plugin.getServer().getOfflinePlayer(mvpId).getName()));
+                        new Message(I18n.format("user.game.mvp", plugin.getServer().getOfflinePlayer(mvpId).getName())).broadcast();
                     } else {
                         broadcast(I18n.format("user.game.no_mvp"));
                     }
@@ -269,7 +269,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         } else {
                             prompt = "user.game.player_stats_active";
                         }
-                        broadcast(I18n.format(
+                        new Message(I18n.format(
                                 prompt
                                 , plugin.getServer().getOfflinePlayer(id).getName()
                                 , scoreMap.get(id)
@@ -277,7 +277,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                                 , stat.get(GameScoreBoard.StatType.INFERNALASSIST)
                                 , stat.get(GameScoreBoard.StatType.NORMALKILL)
                                 , stat.get(GameScoreBoard.StatType.DEATH)
-                        ));
+                        )).broadcast();
 
                     }
 
@@ -359,7 +359,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
             }
             nextWave--;
             if (players.isEmpty()) {
-                broadcast(I18n.format("user.game.fail"));
+                new Message(I18n.format("user.game.fail")).broadcast();
                 stop();
             }
         } else {
