@@ -31,6 +31,18 @@ import java.util.*;
 import static cat.nyaa.autobloodmoon.kits.KitConfig.KitType.*;
 
 public class Arena extends BukkitRunnable implements ISerializable {
+    public ArrayList<UUID> players = new ArrayList<>();
+    public Level level;
+    public int currentLevel = 0;
+    public String kitName;
+    public int nextWave = 0;
+    public int lastSpawn = 0;
+    public ArrayList<UUID> infernalMobs = new ArrayList<>();
+    public ArrayList<UUID> normalMobs = new ArrayList<>();
+    public ArrayList<UUID> entityList = new ArrayList<>();
+    public Map<UUID, Integer> mobLevelMap = new HashMap<>(); // Map<MobId, MobLevel>
+    public ArenaState state;
+    public GameScoreBoard scoreBoard;
     @Serializable
     private String name;
     @Serializable
@@ -45,27 +57,12 @@ public class Arena extends BukkitRunnable implements ISerializable {
     private double y;
     @Serializable
     private double z;
-
     // TODO separate game logic apart from configure.
     private AutoBloodmoon plugin;
     private int time = 0;
     private int infernal;
     private int ticks = 0;
     private long sendBorderParticle = 0;
-
-    public ArrayList<UUID> players = new ArrayList<>();
-    public Level level;
-    public int currentLevel = 0;
-    public String kitName;
-    public int nextWave = 0;
-    public int lastSpawn = 0;
-    public ArrayList<UUID> infernalMobs = new ArrayList<>();
-    public ArrayList<UUID> normalMobs = new ArrayList<>();
-    public ArrayList<UUID> entityList = new ArrayList<>();
-    public Map<UUID, Integer> mobLevelMap = new HashMap<>(); // Map<MobId, MobLevel>
-    public ArenaState state;
-    public GameScoreBoard scoreBoard;
-
 
     public String getWorld() {
         return world;
@@ -188,14 +185,11 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         if (ticks >= 20) {
                             broadcastTitle("user.game.start", nextWave / 20);
                             ticks = 0;
-                            return;
                         }
                     } else {
                         broadcast(I18n.format("user.game.cancel"));
                         this.stop();
                     }
-                } else {
-
                 }
             }
         } else if (state == ArenaState.PLAYING) {
@@ -389,7 +383,6 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 }
             }
             infernal = 0;
-            return;
         } else {
             Location loc = getRandomLocation();
             if (loc != null) {
@@ -403,15 +396,25 @@ public class Arena extends BukkitRunnable implements ISerializable {
     }
 
     public void broadcast(String s) {
-        plugin.getServer().broadcastMessage(I18n.format("user.prefix") + s);
+        new Message(I18n.format("user.prefix") + s)
+                .broadcast(
+                        Message.MessageType.CHAT,
+                        p -> players.contains(p.getUniqueId())
+                );
     }
 
     public void broadcastTitle(@LangKey(type = LangKeyType.PREFIX) String s, Object... args) {
         Message title = new Message(I18n.format(s + ".title", args));
         Message subtitle = new Message(I18n.format(s + ".subtitle", args));
-        for (Player p : plugin.getServer().getOnlinePlayers()) {
-            Message.sendTitle(p, title.inner, subtitle.inner, plugin.cfg.title_fadein_tick, plugin.cfg.title_stay_tick, plugin.cfg.title_fadeout_tick);
-        }
+        players.stream().map(plugin.getServer()::getPlayer).filter(Objects::nonNull).forEach(
+                p -> Message.sendTitle(
+                        p,
+                        title.inner,
+                        subtitle.inner,
+                        plugin.cfg.title_fadein_tick,
+                        plugin.cfg.title_stay_tick,
+                        plugin.cfg.title_fadeout_tick)
+        );
         plugin.getServer().getConsoleSender().sendMessage(title.inner.toLegacyText());
         plugin.getServer().getConsoleSender().sendMessage(subtitle.inner.toLegacyText());
     }

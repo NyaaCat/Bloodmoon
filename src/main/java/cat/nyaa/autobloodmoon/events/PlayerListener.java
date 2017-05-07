@@ -111,7 +111,7 @@ public class PlayerListener implements Listener {
                 return;
             }
 
-            if (!plugin.cfg.pvp && plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.PLAYING) {
+            if (!plugin.cfg.pvp && plugin.currentArena != null && (plugin.currentArena.state == Arena.ArenaState.PLAYING || plugin.currentArena.state == Arena.ArenaState.WAIT)) {
                 if (plugin.currentArena.players.contains(player.getUniqueId()) ||
                         (damager != null && plugin.currentArena.players.contains(damager.getUniqueId()))) {
                     e.setCancelled(true);
