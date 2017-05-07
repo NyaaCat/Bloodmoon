@@ -32,6 +32,7 @@ public class InfernalMobsAPI {
         }
     }
 
+    @SuppressWarnings("deprecation")
     public static boolean spawnMob(String mobName, ArrayList<String> abilityList, Location loc) {
         try {
             EntityType type = EntityType.fromName(mobName);
@@ -40,9 +41,7 @@ public class InfernalMobsAPI {
             }
             Object mob = spawnMobMethod.invoke(null, type, loc, abilityList);
             return mob != null;
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (InvocationTargetException e) {
+        } catch (IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
         return false;

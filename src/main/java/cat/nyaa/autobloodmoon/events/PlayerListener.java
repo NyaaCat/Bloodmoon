@@ -37,6 +37,7 @@ public class PlayerListener implements Listener {
         }
     }
 
+    @SuppressWarnings("deprecation")
     @EventHandler
     public void onPlayerDeath(PlayerDeathEvent e) {
         if (plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.PLAYING &&
@@ -73,7 +74,7 @@ public class PlayerListener implements Listener {
                         block.setType(getChestType(loc.getBlock()));
                         Chest chest = (Chest) block.getState();
                         Inventory inventory = chest.getInventory();
-                        HashMap items = inventory.addItem((ItemStack[]) e.getDrops().toArray(new ItemStack[0]));
+                        HashMap<Integer, ItemStack> items = inventory.addItem(e.getDrops().toArray(new ItemStack[0]));
                         e.getDrops().clear();
                         e.getDrops().addAll(items.values());
                         plugin.coreProtectAPI.logPlacement(player, block.getLocation(), block.getType(), block.getData());

@@ -263,20 +263,22 @@ public class Arena extends BukkitRunnable implements ISerializable {
 
                     for (UUID id : sortedPlayers) {
                         Map<GameScoreBoard.StatType, Integer> stat = scoreBoard.getStatMap(id);
-
-                        @LangKey Object[] objs = new Object[6];
-                        objs[0] = plugin.getServer().getOfflinePlayer(id).getName();
-                        objs[1] = scoreMap.get(id);
-                        objs[2] = stat.get(GameScoreBoard.StatType.INFERNALKILL);
-                        objs[3] = stat.get(GameScoreBoard.StatType.INFERNALASSIST);
-                        objs[4] = stat.get(GameScoreBoard.StatType.NORMALKILL);
-                        objs[5] = stat.get(GameScoreBoard.StatType.DEATH);
-
+                        @LangKey String prompt;
                         if (fishermen.contains(id)) {
-                            broadcast(I18n.format("user.game.player_stats_fisherman", objs));
+                            prompt = "user.game.player_stats_fisherman";
                         } else {
-                            broadcast(I18n.format("user.game.player_stats_active", objs));
+                            prompt = "user.game.player_stats_active";
                         }
+                        broadcast(I18n.format(
+                                prompt
+                                , plugin.getServer().getOfflinePlayer(id).getName()
+                                , scoreMap.get(id)
+                                , stat.get(GameScoreBoard.StatType.INFERNALKILL)
+                                , stat.get(GameScoreBoard.StatType.INFERNALASSIST)
+                                , stat.get(GameScoreBoard.StatType.NORMALKILL)
+                                , stat.get(GameScoreBoard.StatType.DEATH)
+                        ));
+
                     }
 
                     // Distribute Rewards
