@@ -12,6 +12,7 @@ import cat.nyaa.autobloodmoon.mobs.MobManager;
 import cat.nyaa.autobloodmoon.stats.StatsManager;
 import cat.nyaa.autobloodmoon.utils.TeleportUtil;
 import cat.nyaa.nyaautils.api.DamageStatistic;
+import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -56,6 +57,9 @@ public class AutoBloodmoon extends JavaPlugin {
         damageStatistic = DamageStatistic.instance();
         this.getCommand("bloodmoon").setExecutor(this.commandHandler);
         this.coreProtectAPI = new CoreProtectAPI(this);
+        if (Bukkit.getScoreboardManager().getMainScoreboard().getTeam("bloodmoon") != null) {
+            Bukkit.getScoreboardManager().getMainScoreboard().getTeam("bloodmoon").unregister();
+        }
     }
 
     @Override

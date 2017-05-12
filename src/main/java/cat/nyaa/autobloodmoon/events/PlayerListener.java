@@ -19,6 +19,7 @@ import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
+import java.text.SimpleDateFormat;
 import java.util.HashMap;
 
 public class PlayerListener implements Listener {
@@ -44,6 +45,9 @@ public class PlayerListener implements Listener {
                 plugin.currentArena.players.contains(e.getEntity().getUniqueId())) {
             Player player = e.getEntity();
             plugin.currentArena.scoreBoard.incDeath(player);
+            if (!plugin.currentArena.getWorld().equals(player.getWorld().getName())) {
+                return;
+            }
             if (player.getKiller() != null && player.getKiller() instanceof Player) {
                 plugin.currentArena.scoreBoard.incPlayerKill(player.getKiller(), player);
                 if (plugin.cfg.pvp_penalty_percent > 0 && plugin.cfg.pvp_penalty_max > 0 &&
@@ -66,13 +70,23 @@ public class PlayerListener implements Listener {
             }
             if (plugin.cfg.save_inventory && e.getDrops() != null && !e.getDrops().isEmpty() &&
                     player.getLocation().getY() > 5) {
-                for (int y = 0; y < 32; y++) {
+                for (int y = 0; y < 255; y++) {
                     Location loc = player.getLocation().clone();
+                    if (loc.getY() + y >= loc.getWorld().getMaxHeight()) {
+                        break;
+                    }
                     loc.setY(loc.getY() + y);
                     if (loc.getBlock().getType() == Material.AIR) {
                         Block block = loc.getBlock();
                         block.setType(getChestType(loc.getBlock()));
                         Chest chest = (Chest) block.getState();
+                        try {
+                            SimpleDateFormat format = new SimpleDateFormat(I18n.format("user.chest.date_format"));
+                            String date = format.format(System.currentTimeMillis());
+                            chest.setCustomName(I18n.format("user.chest.name", player.getName(), date));
+                        } catch (Exception e1) {
+                            e1.printStackTrace();
+                        }
                         Inventory inventory = chest.getInventory();
                         HashMap<Integer, ItemStack> items = inventory.addItem(e.getDrops().toArray(new ItemStack[0]));
                         e.getDrops().clear();
@@ -100,22 +114,23 @@ public class PlayerListener implements Listener {
                     ((Projectile) e.getDamager()).getShooter() instanceof Player) {
                 damager = (Player) ((Projectile) e.getDamager()).getShooter();
             }
-            if (damager != null && damager.getUniqueId().equals(player.getUniqueId())) {
-                return;
-            }
-
-            if ((plugin.tempPVPProtection.containsKey(player.getUniqueId()) &&
-                    plugin.tempPVPProtection.get(player.getUniqueId()) >= System.currentTimeMillis()) ||
-                    (damager != null && plugin.tempPVPProtection.containsKey(damager.getUniqueId()) &&
-                            plugin.tempPVPProtection.get(damager.getUniqueId()) >= System.currentTimeMillis())) {
-                e.setCancelled(true);
-                return;
-            }
-
-            if (!plugin.cfg.pvp && plugin.currentArena != null && (plugin.currentArena.state == Arena.ArenaState.PLAYING || plugin.currentArena.state == Arena.ArenaState.WAIT)) {
-                if (plugin.currentArena.players.contains(player.getUniqueId()) ||
-                        (damager != null && plugin.currentArena.players.contains(damager.getUniqueId()))) {
+            if (damager != null) {
+                if (damager.getUniqueId().equals(player.getUniqueId())) {
+                    return;
+                }
+                if ((plugin.tempPVPProtection.containsKey(player.getUniqueId()) &&
+                        plugin.tempPVPProtection.get(player.getUniqueId()) >= System.currentTimeMillis()) ||
+                        (plugin.tempPVPProtection.containsKey(damager.getUniqueId()) &&
+                                plugin.tempPVPProtection.get(damager.getUniqueId()) >= System.currentTimeMillis())) {
                     e.setCancelled(true);
+                    return;
+                }
+                if (!plugin.cfg.pvp && plugin.currentArena != null && (plugin.currentArena.state == Arena.ArenaState.PLAYING || plugin.currentArena.state == Arena.ArenaState.WAIT)) {
+                    if (plugin.currentArena.players.contains(player.getUniqueId()) || plugin.currentArena.players.contains(damager.getUniqueId())) {
+                        if (plugin.currentArena.getWorld().equals(player.getWorld().getName())) {
+                            e.setCancelled(true);
+                        }
+                    }
                 }
             }
         }

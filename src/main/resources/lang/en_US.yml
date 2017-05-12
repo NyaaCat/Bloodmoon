@@ -73,6 +73,9 @@ user:
     infernal_kill: "You gained %d for killed a infernal mob"
     infernal_assist: "You gained %d for assist killed a infernal mob"
     acquire: "Please use &f/bm acquire &bto acquire reward"
+  chest:
+    name: "&1%s %s"
+    date_format: "yyyy-MM-dd HH:mm:ss"
 manual:
   no_description: "No description"
   no_usage: "No usage"

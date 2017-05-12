@@ -22,6 +22,8 @@ import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.scheduler.BukkitRunnable;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
 import org.librazy.nyaautils_lang_checker.LangKey;
 import org.librazy.nyaautils_lang_checker.LangKeyType;
@@ -63,6 +65,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
     private int infernal;
     private int ticks = 0;
     private long sendBorderParticle = 0;
+    private Team team = null;
 
     public String getWorld() {
         return world;
@@ -114,6 +117,14 @@ public class Arena extends BukkitRunnable implements ISerializable {
         this.kitName = kitName;
         state = ArenaState.WAIT;
         nextWave = plugin.cfg.call_timeout;
+        Scoreboard bukkitScoreBoard = Bukkit.getScoreboardManager().getMainScoreboard();
+        if (bukkitScoreBoard.getTeam("bloodmoon") != null) {
+            bukkitScoreBoard.getTeam("bloodmoon").unregister();
+        }
+        if (!plugin.cfg.pvp && plugin.cfg.pvp_scoreboard_team) {
+            team = bukkitScoreBoard.registerNewTeam("bloodmoon");
+            team.setAllowFriendlyFire(false);
+        }
         this.runTaskTimer(this.plugin, 20, 1);
         new Message(I18n.format("user.game.new_game_0")).broadcast();
         new Message(I18n.format("user.game.new_game_1", level.getLevelType(), level.getMaxInfernalLevel(),
@@ -124,6 +135,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public void join(Player player) {
         if (!players.contains(player.getUniqueId())) {
             players.add(player.getUniqueId());
+            if (team != null) {
+                team.addEntry(player.getName());
+            }
             plugin.statsManager.getPlayerStats(player).incrementStats(PlayerStats.StatsType.JOINED);
             new Message(I18n.format("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount())).broadcast();
             plugin.teleportUtil.Teleport(player, getCenterPoint());
@@ -133,6 +147,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
     public boolean quit(Player player) {
         if (players.contains(player.getUniqueId())) {
             players.remove(player.getUniqueId());
+            if (team != null) {
+                team.removeEntry(player.getName());
+            }
             new Message(I18n.format("user.game.quit", player.getName())).broadcast();
             new Message(I18n.format("user.game.players_remaining", players.size())).broadcast();
             return true;
@@ -161,6 +178,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
             for (UUID uuid : players) {
                 plugin.tempPVPProtection.put(uuid, System.currentTimeMillis() + (plugin.cfg.temp_pvp_protection_time * 1000));
             }
+        }
+        if (team != null) {
+            team.unregister();
         }
         plugin.currentArena = null;
     }
