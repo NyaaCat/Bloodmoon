@@ -362,7 +362,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                                 InfernalMobsAPI.isInfernalMob(entity)) {
                             Location location = getCenterPoint().clone();
                             location.setY(entity.getLocation().getY());
-                            if (location.distance(entity.getLocation()) > getRadius()) {
+                            if (!location.getWorld().equals(entity.getWorld()) || location.distance(entity.getLocation()) > getRadius()) {
                                 Location loc = getRandomLocation();
                                 if (loc != null) {
                                     entity.teleport(loc);

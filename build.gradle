@@ -1,6 +1,5 @@
 plugins {
     id 'java'
-    id 'org.inferred.processors' version '1.2.11'
 }
 
 sourceCompatibility = 1.8
@@ -46,7 +45,7 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spigotmc:spigot-api:1.12-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.12.1-R0.1-SNAPSHOT'
     compile('cat.nyaa:nyaautils:4.0-SNAPSHOT') {
         transitive = false
     }
@@ -56,13 +55,13 @@ dependencies {
     compile('net.ess3:Essentials:2.13-SNAPSHOT') {
         transitive = false
     }
-    processor 'org.librazy:NyaaUtilsLangChecker:1.0-SNAPSHOT'
+    compile 'org.librazy:NyaaUtilsLangChecker:1.0-SNAPSHOT'
 }
 
 String nyaaCoreLangDir = System.getenv("NYAACORE_LANG_DIR")
 
 compileJava {
-    options.compilerArgs += ["-Xplugin:NyaaUtilsLangAnnotationProcessor"]
+    options.compilerArgs += ["-Xplugin:NyaaUtilsLangAnnotationProcessor", "-Xlint:deprecation", "-Xlint:unchecked"]
     if (nyaaCoreLangDir != null) {
         options.compilerArgs += ["-ALANG_DIR_ADDITIONAL_PATH=" + nyaaCoreLangDir]
     }
