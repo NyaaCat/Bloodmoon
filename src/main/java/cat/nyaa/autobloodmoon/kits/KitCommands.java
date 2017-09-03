@@ -11,7 +11,7 @@ import org.bukkit.inventory.ItemStack;
 
 import java.util.List;
 
-public class KitCommands extends CommandReceiver<AutoBloodmoon> {
+public class KitCommands extends CommandReceiver {
     private AutoBloodmoon plugin;
 
     public KitCommands(Object plugin, LanguageRepository i18n) {

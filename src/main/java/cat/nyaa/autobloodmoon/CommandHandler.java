@@ -10,7 +10,7 @@ import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class CommandHandler extends CommandReceiver<AutoBloodmoon> {
+public class CommandHandler extends CommandReceiver {
     @SubCommand("kit")
     public KitCommands kitCommands;
     @SubCommand("arena")

@@ -7,7 +7,7 @@ import cat.nyaa.nyaacore.LanguageRepository;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
 
-public class ArenaCommands extends CommandReceiver<AutoBloodmoon> {
+public class ArenaCommands extends CommandReceiver {
     private AutoBloodmoon plugin;
 
     public ArenaCommands(Object plugin, LanguageRepository i18n) {
