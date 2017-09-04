@@ -13,14 +13,14 @@ before_deploy:
 - git config --global user.name "Travis CI"
 - export GIT_TAG=$TRAVIS_BRANCH-v$main_version.$TRAVIS_BUILD_NUMBER
 - git tag $GIT_TAG -a -m "Generated tag from TravisCI for build $TRAVIS_BUILD_NUMBER"
-- git push -q https://$GITHUB_KEY@github.com/NyaaCat/bloodmoon --follow-tags
+- git push -q --follow-tags https://$GITHUB_KEY@github.com/NyaaCat/bloodmoon HEAD:$TRAVIS_BRANCH
 deploy:
 - provider: releases
   skip_cleanup: true
   prerelease: true
   api_key:
     secure: "lRxskY8WMIDsXMHa6X/0pA1zbHgCXIQxkOvVS4cqr6xgtB187PELmjKtRQgDwiLKJvLaSYA3uh5GUSfPPdaoYstgAhcwApwE+a3O4I6FD3w7KJKmNWjxkLwJb2eXxEpcNDvw5yIzXLek9D1I9sEeaAm7BWo4U+uTzVoOG5v7p5r+1nG9A+MnFfqVaobB8IvNcCLMMy2uO/AhyfvV+lVP75LOr4HJBYvBn2mgOqZ8PW3lMHxNCMXLoq+BdYWjxEElGxx5tpn8pX0VbbC600AX6vkwOYqhFOK//JgOsN03ZI0XQ203lOtRG8BPxZkiecxZjEkcJdafE+GHsHnO8Imd52EtfXqa1jy7EaJtIZjev5wTHC7xb00pVwNt8Xk2uONDSh1LAk6eABzwnRHU+ldYdvX4hsvZhEOCq5+6FbIaMr7bSabUNzuiitIdMgWA6TNrbzlfXMF6Q3aWgpq87GKmU+E3WeuN4e1GJNnJUu9fmlPJh3fKzOTj9Kb9VffwXCdNuG4F+eX83WjWX1nypijy5qOS870YW6JNyHooa9fg5cJ/8OC2v0gOmQ4CsqNMMWXiFWVGADoxInuhTkyvr3dxmO2S0D+6zKC/GQ8MUwCoIHn0QUB0khePAXXPtoSFlwVOVZS5Fn/UTOTMlc0He9adh351Fe3zuU1cHAZL6fy0KmE="
-  file: "./bloodmoon-$TRAVIS_BRANCH-v$main_version.$TRAVIS_BUILD_NUMBER.jar"
+  file: "./Bloodmoon-$TRAVIS_BRANCH-v$main_version.$TRAVIS_BUILD_NUMBER.jar"
   on:
     tags: false
     all_branches: true
