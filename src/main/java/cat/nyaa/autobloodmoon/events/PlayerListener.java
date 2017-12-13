@@ -16,6 +16,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
+import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
@@ -28,6 +29,22 @@ public class PlayerListener implements Listener {
     public PlayerListener(AutoBloodmoon pl) {
         plugin = pl;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+    }
+
+    public static Material getChestType(Block block) {
+        Material material;
+        if (block.getX() % 2 == 0) {
+            material = Material.TRAPPED_CHEST;
+        } else {
+            material = Material.CHEST;
+        }
+        if (block.getY() % 2 == 0) {
+            material = material.equals(Material.CHEST) ? Material.TRAPPED_CHEST : Material.CHEST;
+        }
+        if (block.getZ() % 2 == 0) {
+            material = material.equals(Material.TRAPPED_CHEST) ? Material.CHEST : Material.TRAPPED_CHEST;
+        }
+        return material;
     }
 
     @EventHandler
@@ -136,19 +153,14 @@ public class PlayerListener implements Listener {
         }
     }
 
-    public static Material getChestType(Block block) {
-        Material material;
-        if (block.getX() % 2 == 0) {
-            material = Material.TRAPPED_CHEST;
-        } else {
-            material = Material.CHEST;
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.MONITOR)
+    public void onPlayerTeleport(PlayerTeleportEvent e) {
+        if (plugin.currentArena == null || plugin.currentArena.state == Arena.ArenaState.STOP) {
+            return;
         }
-        if (block.getY() % 2 == 0) {
-            material = material.equals(Material.CHEST) ? Material.TRAPPED_CHEST : Material.CHEST;
+        Player p = e.getPlayer();
+        if (!plugin.currentArena.players.contains(p.getUniqueId()) && plugin.currentArena.inArena(e.getTo())) {
+            plugin.currentArena.join(p, false);
         }
-        if (block.getZ() % 2 == 0) {
-            material = material.equals(Material.TRAPPED_CHEST) ? Material.CHEST : Material.TRAPPED_CHEST;
-        }
-        return material;
     }
 }

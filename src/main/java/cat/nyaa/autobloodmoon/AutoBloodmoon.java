@@ -10,7 +10,6 @@ import cat.nyaa.autobloodmoon.kits.KitListener;
 import cat.nyaa.autobloodmoon.kits.KitManager;
 import cat.nyaa.autobloodmoon.mobs.MobManager;
 import cat.nyaa.autobloodmoon.stats.StatsManager;
-import cat.nyaa.autobloodmoon.utils.TeleportUtil;
 import cat.nyaa.nyaautils.api.DamageStatistic;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
@@ -27,7 +26,6 @@ public class AutoBloodmoon extends JavaPlugin {
     public ArenaManager arenaManager;
     public KitListener kitListener;
     public MobManager mobManager;
-    public TeleportUtil teleportUtil;
     public Arena currentArena = null;
     public HashMap<UUID, Long> tempPVPProtection = new HashMap<>();
     public PlayerListener playerListener;
@@ -49,7 +47,6 @@ public class AutoBloodmoon extends JavaPlugin {
         this.kitListener = new KitListener(this);
         this.mobManager = new MobManager(this);
         InfernalMobsAPI.load(getServer().getPluginManager().getPlugin("InfernalMobs"));
-        this.teleportUtil = new TeleportUtil(this);
         this.playerListener = new PlayerListener(this);
         this.mobListener = new MobListener(this);
         this.statsManager = new StatsManager(this);

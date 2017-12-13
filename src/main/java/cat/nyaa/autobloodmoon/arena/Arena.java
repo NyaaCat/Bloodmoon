@@ -12,6 +12,7 @@ import cat.nyaa.autobloodmoon.utils.GetCircle;
 import cat.nyaa.autobloodmoon.utils.RandomLocation;
 import cat.nyaa.nyaacore.Message;
 import cat.nyaa.nyaacore.configuration.ISerializable;
+import cat.nyaa.nyaacore.utils.TeleportUtils;
 import cat.nyaa.nyaacore.utils.VaultUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
@@ -132,7 +133,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
         new Message(I18n.format("user.game.new_game_2")).broadcast();
     }
 
-    public void join(Player player) {
+    public void join(Player player, boolean teleport) {
         if (!players.contains(player.getUniqueId())) {
             players.add(player.getUniqueId());
             if (team != null) {
@@ -140,7 +141,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
             }
             plugin.statsManager.getPlayerStats(player).incrementStats(PlayerStats.StatsType.JOINED);
             new Message(I18n.format("user.game.join", player.getName(), players.size(), level.getMinPlayerAmount())).broadcast();
-            plugin.teleportUtil.Teleport(player, getCenterPoint());
+        }
+        if (teleport) {
+            TeleportUtils.Teleport(player, getCenterPoint());
         }
     }
 
@@ -360,9 +363,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     for (LivingEntity entity : getCenterPoint().getWorld().getLivingEntities()) {
                         if (!entity.isDead() && infernalMobs.contains(entity.getUniqueId()) &&
                                 InfernalMobsAPI.isInfernalMob(entity)) {
-                            Location location = getCenterPoint().clone();
-                            location.setY(entity.getLocation().getY());
-                            if (!location.getWorld().equals(entity.getWorld()) || location.distance(entity.getLocation()) > getRadius()) {
+                            if (!inArena(entity.getLocation())) {
                                 Location loc = getRandomLocation();
                                 if (loc != null) {
                                     entity.teleport(loc);
@@ -473,6 +474,15 @@ public class Arena extends BukkitRunnable implements ISerializable {
                         new Vector(0.5D, 0.5D, 0.5D)), 1);
             }
         }
+    }
+
+    public boolean inArena(Location loc) {
+        Location center = getCenterPoint().clone();
+        if (center.getWorld() != loc.getWorld()) {
+            return false;
+        }
+        center.setY(loc.getY());
+        return center.distance(loc) <= getRadius();
     }
 
     public enum ArenaState {

@@ -24,11 +24,6 @@ repositories {
     }
 
     maven {
-        name 'ess-repo'
-        url 'http://repo.ess3.net/content/groups/essentials'
-    }
-
-    maven {
         name 'nyaa'
         url 'https://raw.githubusercontent.com/NyaaCat/nyaautils/maven-repo'
     }
@@ -50,9 +45,6 @@ dependencies {
         transitive = false
     }
     compile('cat.nyaa:nyaacore:4.1-SNAPSHOT') {
-        transitive = false
-    }
-    compile('net.ess3:Essentials:2.13-SNAPSHOT') {
         transitive = false
     }
     compile 'org.librazy:NyaaUtilsLangChecker:1.0-SNAPSHOT'

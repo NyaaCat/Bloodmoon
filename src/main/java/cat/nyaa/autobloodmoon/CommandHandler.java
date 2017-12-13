@@ -105,7 +105,7 @@ public class CommandHandler extends CommandReceiver {
     public void commandJoin(CommandSender sender, Arguments args) {
         if (plugin.currentArena != null && plugin.currentArena.state != Arena.ArenaState.STOP) {
             Player player = asPlayer(sender);
-            plugin.currentArena.join(player);
+            plugin.currentArena.join(player,true);
         }
     }
 
