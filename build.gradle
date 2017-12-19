@@ -48,6 +48,7 @@ dependencies {
         transitive = false
     }
     compile 'org.librazy:NyaaUtilsLangChecker:1.0-SNAPSHOT'
+    compile files('lib/InfernalMobs-v5.1.42-mc1.12.jar')
 }
 
 String nyaaCoreLangDir = System.getenv("NYAACORE_LANG_DIR")

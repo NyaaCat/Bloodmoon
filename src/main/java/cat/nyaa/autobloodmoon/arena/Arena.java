@@ -2,8 +2,6 @@ package cat.nyaa.autobloodmoon.arena;
 
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
-import cat.nyaa.autobloodmoon.api.InfernalMobsAPI;
-import cat.nyaa.autobloodmoon.events.MobListener;
 import cat.nyaa.autobloodmoon.kits.KitConfig;
 import cat.nyaa.autobloodmoon.level.Level;
 import cat.nyaa.autobloodmoon.mobs.Mob;
@@ -14,14 +12,18 @@ import cat.nyaa.nyaacore.Message;
 import cat.nyaa.nyaacore.configuration.ISerializable;
 import cat.nyaa.nyaacore.utils.TeleportUtils;
 import cat.nyaa.nyaacore.utils.VaultUtils;
+import com.jacob_vejvoda.infernal_mobs.ability.EnumAbilities;
+import com.jacob_vejvoda.infernal_mobs.api.InfernalMobsAPI;
 import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Particle;
 import org.bukkit.block.Block;
+import org.bukkit.entity.Entity;
 import org.bukkit.entity.EntityType;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.inventory.ItemStack;
+import org.bukkit.metadata.FixedMetadataValue;
 import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
@@ -362,7 +364,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     ArrayList<UUID> tmp = new ArrayList<>();
                     for (LivingEntity entity : getCenterPoint().getWorld().getLivingEntities()) {
                         if (!entity.isDead() && infernalMobs.contains(entity.getUniqueId()) &&
-                                InfernalMobsAPI.isInfernalMob(entity)) {
+                                InfernalMobsAPI.asInfernalMob(entity.getUniqueId()) != null) {
                             if (!inArena(entity.getLocation())) {
                                 Location loc = getRandomLocation();
                                 if (loc != null) {
@@ -394,26 +396,23 @@ public class Arena extends BukkitRunnable implements ISerializable {
 
     public void spawnMob() {
         infernal++;
+        Location loc = getRandomLocation();
         if (infernal == level.getInfernalAmount()) {
             Mob mob = plugin.mobManager.getRandomMob(currentLevel);
-            Location loc = getRandomLocation();
             if (mob != null && loc != null) {
-                plugin.mobListener.spawnLocation = loc;
-                plugin.mobListener.mobType = MobListener.MobType.INFERNAL;
-                plugin.mobListener.mobLevel = mob.getSkills().size();
-                if (InfernalMobsAPI.spawnMob(mob.getMobType(), mob.getSkills(), loc)) {
-                    plugin.mobListener.spawnLocation = null;
-                }
+                spawnInfernalMob(mob.getMobType(), mob.getSkills(), loc);
             }
             infernal = 0;
         } else {
-            Location loc = getRandomLocation();
             if (loc != null) {
                 String mob = plugin.cfg.mobConfig.normalMob.get(new Random().nextInt(
                         plugin.cfg.mobConfig.normalMob.size()));
-                plugin.mobListener.spawnLocation = loc;
-                plugin.mobListener.mobType = MobListener.MobType.NORMAL;
-                loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob.toUpperCase()));
+                Entity entity = loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob.toUpperCase()));
+                if (entity != null) {
+                    entity.setMetadata("NPC", new FixedMetadataValue(plugin, 1));
+                    normalMobs.add(entity.getUniqueId());
+                    entityList.add(entity.getUniqueId());
+                }
             }
         }
     }
@@ -483,6 +482,24 @@ public class Arena extends BukkitRunnable implements ISerializable {
         }
         center.setY(loc.getY());
         return center.distance(loc) <= getRadius();
+    }
+
+    @SuppressWarnings("deprecation")
+    public com.jacob_vejvoda.infernal_mobs.persist.Mob spawnInfernalMob(String mobName, ArrayList<String> abilityList, Location loc) {
+        List<EnumAbilities> list = new ArrayList<>();
+        for (String abilityName : abilityList) {
+            for (EnumAbilities enumAbility : EnumAbilities.values()) {
+                if (abilityName.toUpperCase().equals(enumAbility.name())) {
+                    list.add(enumAbility);
+                    break;
+                }
+            }
+        }
+        EntityType type = EntityType.fromName(mobName);
+        if (type == null) {
+            return null;
+        }
+        return InfernalMobsAPI.spawnInfernalMob(type, loc, list);
     }
 
     public enum ArenaState {

@@ -1,7 +1,6 @@
 package cat.nyaa.autobloodmoon;
 
 import cat.nyaa.autobloodmoon.api.CoreProtectAPI;
-import cat.nyaa.autobloodmoon.api.InfernalMobsAPI;
 import cat.nyaa.autobloodmoon.arena.Arena;
 import cat.nyaa.autobloodmoon.arena.ArenaManager;
 import cat.nyaa.autobloodmoon.events.MobListener;
@@ -46,7 +45,6 @@ public class AutoBloodmoon extends JavaPlugin {
         this.arenaManager = new ArenaManager(this);
         this.kitListener = new KitListener(this);
         this.mobManager = new MobManager(this);
-        InfernalMobsAPI.load(getServer().getPluginManager().getPlugin("InfernalMobs"));
         this.playerListener = new PlayerListener(this);
         this.mobListener = new MobListener(this);
         this.statsManager = new StatsManager(this);
