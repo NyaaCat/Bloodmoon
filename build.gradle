@@ -37,6 +37,11 @@ repositories {
         name 'nu-langchecker'
         url 'https://raw.githubusercontent.com/Librazy/NyaaUtilsLangChecker/maven-repo'
     }
+
+    maven {
+        name 'fawe'
+        url 'http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/'
+    }
 }
 
 dependencies {
@@ -49,6 +54,9 @@ dependencies {
     }
     compile 'org.librazy:NyaaUtilsLangChecker:1.0-SNAPSHOT'
     compile files('lib/InfernalMobs-v5.1.42-mc1.12.jar')
+    compile 'com.boydti:fawe-api:17.12.15-0dbb617-949-18.0.6'
+    compile 'com.sk89q.worldedit:worldedit-bukkit:6.1.5'
+    compile 'com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT'
 }
 
 String nyaaCoreLangDir = System.getenv("NYAACORE_LANG_DIR")

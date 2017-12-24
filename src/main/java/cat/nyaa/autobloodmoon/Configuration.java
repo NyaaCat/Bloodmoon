@@ -38,6 +38,9 @@ public class Configuration extends PluginConfigure {
     @Serializable(name = "title_fadeout_tick")
     public int title_fadeout_tick = 10;
     
+    @Serializable
+    public String schematicsDir = "plugins/WorldEdit/schematics";
+    
     @StandaloneConfig
     public ArenaConfig arenaConfig;
     @StandaloneConfig

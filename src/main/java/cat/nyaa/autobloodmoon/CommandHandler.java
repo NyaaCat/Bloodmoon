@@ -15,6 +15,8 @@ public class CommandHandler extends CommandReceiver {
     public KitCommands kitCommands;
     @SubCommand("arena")
     public ArenaCommands arenaCommands;
+    @SubCommand("schematic")
+    public SchematicCommands schematicCommands;
     private AutoBloodmoon plugin;
 
     public CommandHandler(AutoBloodmoon pl, LanguageRepository i18n) {

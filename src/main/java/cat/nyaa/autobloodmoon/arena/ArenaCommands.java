@@ -15,6 +15,15 @@ public class ArenaCommands extends CommandReceiver {
         this.plugin = (AutoBloodmoon) plugin;
     }
 
+    public static Arena getArena(String name) {
+        Arena arena = AutoBloodmoon.instance.arenaManager.getArena(name);
+        if (arena != null) {
+            return arena;
+        } else {
+            throw new BadCommandException("user.arena.not_found", name);
+        }
+    }
+
     @Override
     public String getHelpPrefix() {
         return "arena";

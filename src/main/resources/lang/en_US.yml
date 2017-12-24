@@ -76,6 +76,10 @@ user:
   chest:
     name: "&1%s %s"
     date_format: "yyyy-MM-dd HH:mm:ss"
+  schematic:
+    undo: "Undo success"
+    not_exist: "File %s not exist"
+    pasted: "Schematic has been pasted to %s"
 manual:
   no_description: "No description"
   no_usage: "No usage"
@@ -124,3 +128,7 @@ manual:
   quit:
     description: "Leave the game"
     usage: "/bm quit"
+  schematic:
+    paste:
+      description: "Paste a schematic"
+      usage: "/bm schematic paste [arena name] [schematic file]"

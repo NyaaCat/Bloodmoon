@@ -3,7 +3,7 @@ main: cat.nyaa.autobloodmoon.AutoBloodmoon
 description: "Plugin to automate bloodmoon game"
 version: 2.0
 depend: [NyaaCore,NyaaUtils,InfernalMobs]
-softdepend: [CoreProtect]
+softdepend: [CoreProtect,FastAsyncWorldEdit]
 authors: [RecursiveG]
 website: "https://github.com/NyaaCat/bloodmoon"
 database: false
