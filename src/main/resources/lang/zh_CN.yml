@@ -18,10 +18,10 @@ user:
     bad_enum: 不是枚举 %s 中的有效项，可用的值为：%s
     no_required_permission: 你没有所需的权限执行此操作：%s
   kit:
-    right_click_chest: ''
+    right_click_chest: 右击箱子将其中物品保存到奖励包中
     save_success: 保存成功
-    not_found: 工具不存在
-    kit_type_error: 未知的工具类型
+    not_found: 奖励包不存在
+    kit_type_error: 未知的奖励包类型
     give_success: ''
   give:
     inventory: 物品已经被放入您的背包
@@ -84,22 +84,22 @@ manual:
   no_description: 无描述
   no_usage: 无用法说明
   kit:
-    description: 创建或查看工具包
+    description: 创建或查看奖励包
     usage: /bm kit
     create:
-      description: 创建一个工具
+      description: 创建一个奖励包
       usage: /bm kit create [名称] [类型]
     view:
-      description: 查看工具
+      description: 查看奖励包
       usage: /bm kit view [名称] [类型]
     remove:
-      description: 删除一个工具
+      description: 删除一个奖励包
       usage: /bm kit remove [名称] [类型]
     list:
-      description: 列出所有工具包
+      description: 列出所有奖励包
       usage: /bm kit list
     give:
-      description: 给予一个工具
+      description: 给予一个奖励包
       usage: /bm kit give [名称] [类型] [玩家]
   arena:
     description: 创建或删除场地
