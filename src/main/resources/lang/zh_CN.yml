@@ -1,22 +1,22 @@
 internal:
   info:
-    using_language: ''
+    using_language: '当前使用语言: %s'
   warn:
     bad_subcommand: ''
 user:
   info:
-    command_complete: ''
-    not_player: ''
-    no_item_hand: ''
-    no_item_offhand: ''
+    command_complete: 命令已执行！
+    not_player: 只有玩家可执行此操作
+    no_item_hand: 主手中没有物品
+    no_item_offhand: 副手中没有物品
     player_not_found: ''
   error:
-    bad_command: ''
-    not_int: ''
-    not_double: ''
-    command_exception: ''
+    bad_command: 无效的命令：%s
+    not_int: 不是有效的整数
+    not_double: 不是有效的数字
+    command_exception: 内部错误，无法执行此命令。
     bad_enum: ''
-    no_required_permission: ''
+    no_required_permission: 你没有所需的权限执行此操作：%s
   kit:
     right_click_chest: ''
     save_success: ''
@@ -81,8 +81,8 @@ user:
     not_exist: ''
     pasted: ''
 manual:
-  no_description: ''
-  no_usage: ''
+  no_description: 无描述
+  no_usage: 无用法说明
   kit:
     description: ''
     usage: ''
