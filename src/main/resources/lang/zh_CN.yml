@@ -32,102 +32,102 @@ user:
     save_success: 保存成功
   prefix: '&6[&a血月&6]&r &b'
   arena:
-    info: ''
-    remove: ''
-    not_found: ''
-    radius_error: ''
+    info: '场地: %s (%s, %.2f ,%.2f, %.2f) 半径: [%d] 重生半径: [%d]'
+    remove: 场地 %s 已移除
+    not_found: 未寻找到场地 %s
+    radius_error: 半径需大于重生半径
   game:
-    new_game_0: ''
-    new_game_1: ''
-    new_game_2: ''
-    join: ''
-    quit: ''
+    new_game_0: 新的血月事件
+    new_game_1: '难度: [%s] 最高等级: [%d] 需要玩家数量: [%d]'
+    new_game_2: 输入命令 &f/bm join&b 加入血月
+    join: '%s 已加入 (%d/%d)'
+    quit: '%s 已离开'
     start:
-      title: ''
-      subtitle: ''
-    cancel: ''
+      title: '&c血月&f 正在升起...'
+      subtitle: 血月距升起还有 %d 秒
+    cancel: 玩家不足
     next_wave:
-      title: ''
-      subtitle: ''
-    mobs_remaining: ''
-    players_remaining: ''
-    win: ''
-    mvp: ''
-    most_infernal_kill: ''
-    most_assist: ''
-    most_normal_kill: ''
-    no_mvp: ''
-    no_most_infernal_kill: ''
-    no_most_assist: ''
-    no_most_normal_kill: ''
+      title: 级别 %1$d
+      subtitle: 血月的暗芒将在 %2$d 秒后闪耀
+    mobs_remaining: 仍有 %d 只精英怪残余
+    players_remaining: 仍有 %d 个玩家剩余
+    win: 已斩杀全部精英怪
+    mvp: ' &9MVP：  &f%s '
+    most_infernal_kill: '  &f%s - &b%d 精英斩杀'
+    most_assist: '  &f%s - &b%d 助攻'
+    most_normal_kill: '  &f%s - &b%d 小怪击杀'
+    no_mvp: '&f非MVP'
+    no_most_infernal_kill: '  &f非最多精英斩杀玩家'
+    no_most_assist: '  &f非最多助攻玩家'
+    no_most_normal_kill: '  &f非最多小怪击杀玩家'
     great_fisherman: ''
-    money_given: ''
-    player_stats_active: ''
-    player_stats_fisherman: ''
-    fail: ''
+    money_given: 血月奖励 ($%.2f) 已汇入账户
+    player_stats_active: '&f%s &b分数: %.1f (%d 精英斩杀, %d 助攻, %d 小怪击杀, %d 死亡)'
+    player_stats_fisherman: '&f&m%s &b&m分数: %.1f (%d 精英斩杀, %d 助攻, %d 小怪击杀, %d 死亡)'
+    fail: 全部玩家已离开或死亡
   pvp_penalty:
-    message: ''
-    killer: ''
+    message: 你收到 %d 从 %s
+    killer: 你击杀了 %s, %d 已经给予 %s
   reward:
-    normal_kill: ''
-    infernal_kill: ''
-    infernal_assist: ''
-    acquire: ''
+    normal_kill: 你通过击杀怪物赚得 %d
+    infernal_kill: 你通过斩杀精英怪赚得 %d
+    infernal_assist: 你通过帮助斩杀精英怪赚得 %d
+    acquire: 请输入命令 &f/bm acquire &b获取报酬
   chest:
-    name: ''
-    date_format: ''
+    name: '&1%s %s'
+    date_format: yyyy-MM-dd HH:mm:ss
   schematic:
-    undo: ''
-    not_exist: ''
+    undo: 撤销成功
+    not_exist: 文件 %s 不存在
     pasted: ''
 manual:
   no_description: 无描述
   no_usage: 无用法说明
   kit:
-    description: ''
-    usage: ''
+    description: 创建或查看工具包
+    usage: /bm kit
     create:
-      description: ''
-      usage: ''
+      description: 创建一个工具
+      usage: /bm kit create [名称] [类型]
     view:
-      description: ''
-      usage: ''
+      description: 查看工具
+      usage: /bm kit view [名称] [类型]
     remove:
-      description: ''
-      usage: ''
+      description: 删除一个工具
+      usage: /bm kit remove [名称] [类型]
     list:
-      description: ''
-      usage: ''
+      description: 列出所有工具包
+      usage: /bm kit list
     give:
-      description: ''
-      usage: ''
+      description: 给予一个工具
+      usage: /bm kit give [名称] [类型] [玩家]
   arena:
-    description: ''
-    usage: ''
+    description: 创建或删除场地
+    usage: /bm arena
     create:
-      description: ''
-      usage: ''
+      description: 创建一个场地
+      usage: /bm arena create [名称] [半径] [重生半径]
     remove:
-      description: ''
-      usage: ''
+      description: 删除一个场地
+      usage: /bm arena remove [名称]
     list:
-      description: ''
-      usage: ''
+      description: 列出所有场地
+      usage: /bm arena list
   difficulty:
-    description: ''
+    description: 定义一个难度等级
     usage: ''
   start:
-    description: ''
-    usage: ''
+    description: 升起血月
+    usage: /bm start [场地名称] [难度等级] [工具名称]
   stop:
-    description: ''
-    usage: ''
+    description: 降下血月
+    usage: /bm stop [场地名称]
   join:
-    description: ''
-    usage: ''
+    description: 加入血月
+    usage: /bm join
   quit:
-    description: ''
-    usage: ''
+    description: 离开血月
+    usage: /bm quit
   schematic:
     paste:
       description: ''
