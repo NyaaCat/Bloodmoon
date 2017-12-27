@@ -9,7 +9,7 @@ user:
     not_player: 只有玩家可执行此操作
     no_item_hand: 主手中没有物品
     no_item_offhand: 副手中没有物品
-    player_not_found: ''
+    player_not_found: 未找到该玩家
   error:
     bad_command: 无效的命令：%s
     not_int: 不是有效的整数
@@ -19,9 +19,9 @@ user:
     no_required_permission: 你没有所需的权限执行此操作：%s
   kit:
     right_click_chest: ''
-    save_success: ''
-    not_found: ''
-    kit_type_error: ''
+    save_success: 保存成功
+    not_found: 工具不存在
+    kit_type_error: 未知的工具类型
     give_success: ''
   give:
     inventory: ''
