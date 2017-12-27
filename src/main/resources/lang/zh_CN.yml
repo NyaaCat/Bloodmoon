@@ -24,13 +24,13 @@ user:
     kit_type_error: 未知的工具类型
     give_success: ''
   give:
-    inventory: ''
-    ender_chest: ''
-    not_enough_space: ''
+    inventory: 物品已经被放入您的背包
+    ender_chest: 物品已经放入您的末影箱中
+    not_enough_space: 空间不足，请检查是否有足够的空间
   difficulty:
     type_error: ''
-    save_success: ''
-  prefix: ''
+    save_success: 保存成功
+  prefix: '&6[&a血月&6]&r &b'
   arena:
     info: ''
     remove: ''
