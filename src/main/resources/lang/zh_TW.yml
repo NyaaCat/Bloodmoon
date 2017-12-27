@@ -1,0 +1,134 @@
+internal:
+  info:
+    using_language: ''
+  warn:
+    bad_subcommand: ''
+user:
+  info:
+    command_complete: ''
+    not_player: ''
+    no_item_hand: ''
+    no_item_offhand: ''
+    player_not_found: ''
+  error:
+    bad_command: ''
+    not_int: ''
+    not_double: ''
+    command_exception: ''
+    bad_enum: ''
+    no_required_permission: ''
+  kit:
+    right_click_chest: ''
+    save_success: ''
+    not_found: ''
+    kit_type_error: ''
+    give_success: ''
+  give:
+    inventory: ''
+    ender_chest: ''
+    not_enough_space: ''
+  difficulty:
+    type_error: ''
+    save_success: ''
+  prefix: ''
+  arena:
+    info: ''
+    remove: ''
+    not_found: ''
+    radius_error: ''
+  game:
+    new_game_0: ''
+    new_game_1: ''
+    new_game_2: ''
+    join: ''
+    quit: ''
+    start:
+      title: ''
+      subtitle: ''
+    cancel: ''
+    next_wave:
+      title: ''
+      subtitle: ''
+    mobs_remaining: ''
+    players_remaining: ''
+    win: ''
+    mvp: ''
+    most_infernal_kill: ''
+    most_assist: ''
+    most_normal_kill: ''
+    no_mvp: ''
+    no_most_infernal_kill: ''
+    no_most_assist: ''
+    no_most_normal_kill: ''
+    great_fisherman: ''
+    money_given: ''
+    player_stats_active: ''
+    player_stats_fisherman: ''
+    fail: ''
+  pvp_penalty:
+    message: ''
+    killer: ''
+  reward:
+    normal_kill: ''
+    infernal_kill: ''
+    infernal_assist: ''
+    acquire: ''
+  chest:
+    name: ''
+    date_format: ''
+  schematic:
+    undo: ''
+    not_exist: ''
+    pasted: ''
+manual:
+  no_description: ''
+  no_usage: ''
+  kit:
+    description: ''
+    usage: ''
+    create:
+      description: ''
+      usage: ''
+    view:
+      description: ''
+      usage: ''
+    remove:
+      description: ''
+      usage: ''
+    list:
+      description: ''
+      usage: ''
+    give:
+      description: ''
+      usage: ''
+  arena:
+    description: ''
+    usage: ''
+    create:
+      description: ''
+      usage: ''
+    remove:
+      description: ''
+      usage: ''
+    list:
+      description: ''
+      usage: ''
+  difficulty:
+    description: ''
+    usage: ''
+  start:
+    description: ''
+    usage: ''
+  stop:
+    description: ''
+    usage: ''
+  join:
+    description: ''
+    usage: ''
+  quit:
+    description: ''
+    usage: ''
+  schematic:
+    paste:
+      description: ''
+      usage: ''
