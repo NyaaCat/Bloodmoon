@@ -15,7 +15,7 @@ user:
     not_int: 不是有效的整数
     not_double: 不是有效的数字
     command_exception: 内部错误，无法执行此命令。
-    bad_enum: ''
+    bad_enum: 不是枚举 %s 中的有效项，可用的值为：%s
     no_required_permission: 你没有所需的权限执行此操作：%s
   kit:
     right_click_chest: ''
@@ -28,7 +28,7 @@ user:
     ender_chest: 物品已经放入您的末影箱中
     not_enough_space: 空间不足，请检查是否有足够的空间
   difficulty:
-    type_error: ''
+    type_error: 未知的难度类型
     save_success: 保存成功
   prefix: '&6[&a血月&6]&r &b'
   arena:
@@ -60,7 +60,7 @@ user:
     no_most_infernal_kill: '  &f非最多精英斩杀玩家'
     no_most_assist: '  &f非最多助攻玩家'
     no_most_normal_kill: '  &f非最多小怪击杀玩家'
-    great_fisherman: ''
+    great_fisherman: '  玩家 %s 获得了称号 "摸鱼大师"'
     money_given: 血月奖励 ($%.2f) 已汇入账户
     player_stats_active: '&f%s &b分数: %.1f (%d 精英斩杀, %d 助攻, %d 小怪击杀, %d 死亡)'
     player_stats_fisherman: '&f&m%s &b&m分数: %.1f (%d 精英斩杀, %d 助攻, %d 小怪击杀, %d 死亡)'
