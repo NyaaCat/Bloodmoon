@@ -9,7 +9,7 @@ user:
     not_player: 只有玩家可执行此操作
     no_item_hand: 主手中没有物品
     no_item_offhand: 副手中没有物品
-    player_not_found: 未找到该玩家
+    player_not_found: 找不到指定的玩家
   error:
     bad_command: 无效的命令：%s
     not_int: 不是有效的整数
@@ -18,61 +18,61 @@ user:
     bad_enum: 不是枚举 %s 中的有效项，可用的值为：%s
     no_required_permission: 你没有所需的权限执行此操作：%s
   kit:
-    right_click_chest: 右击箱子将其中物品保存到奖励包中
+    right_click_chest: 右键点击箱子将其中的物品保存至奖励套装中
     save_success: 保存成功
-    not_found: 奖励包不存在
-    kit_type_error: 未知的奖励包类型
-    give_success: 将 %s - %s 给 %s
+    not_found: 指定的奖励套装不存在
+    kit_type_error: 未知的奖励套装类型
+    give_success: 将 %s - %s 给予 %s
   give:
-    inventory: 物品已经被放入您的背包
-    ender_chest: 物品已经放入您的末影箱中
-    not_enough_space: 空间不足，请检查是否有足够的空间
+    inventory: 物品已放入你的背包
+    ender_chest: 物品已放入你的末影箱
+    not_enough_space: 你的背包没有足够的空间来存放物品
   difficulty:
     type_error: 未知的难度类型
     save_success: 保存成功
   prefix: '&6[&a血月&6]&r &b'
   arena:
-    info: '场地: %s (%s, %.2f ,%.2f, %.2f) 半径: [%d] 重生半径: [%d]'
+    info: '场地: %s (%s, %.2f ,%.2f, %.2f) 场地半径: [%d] 刷怪半径: [%d]'
     remove: 场地 %s 已移除
-    not_found: 未寻找到场地 %s
-    radius_error: 半径需大于重生半径
+    not_found: 未找到场地 %s
+    radius_error: 场地半径必须大于刷怪半径
   game:
-    new_game_0: 新的血月事件
-    new_game_1: '难度: [%s] 最高等级: [%d] 需要玩家数量: [%d]'
-    new_game_2: 输入命令 &f/bm join&b 加入血月
+    new_game_0: 新血月事件
+    new_game_1: '难度: [%s] 最高等级: [%d] 所需玩家数量: [%d]'
+    new_game_2: 使用 &f/bm join&b 参加本场游戏
     join: '%s 已加入 (%d/%d)'
     quit: '%s 已离开'
     start:
       title: '&c血月&f 正在升起...'
-      subtitle: 血月距升起还有 %d 秒
-    cancel: 玩家不足
+      subtitle: 游戏将在 %d 秒后开始
+    cancel: 玩家数量不足
     next_wave:
       title: 级别 %1$d
-      subtitle: 血月的暗芒将在 %2$d 秒后闪耀
-    mobs_remaining: 仍有 %d 只精英怪残余
-    players_remaining: 仍有 %d 个玩家剩余
-    win: 已斩杀全部精英怪
+      subtitle: 下一波攻击将在 %2$d 秒后开始
+    mobs_remaining: 尚余 %d 只精英怪
+    players_remaining: 尚余 %d 位玩家
+    win: 所有精英怪已全部消灭
     mvp: ' &9MVP：  &f%s '
-    most_infernal_kill: '  &f%s - &b%d 精英斩杀'
+    most_infernal_kill: '  &f%s - &b%d 精英怪斩杀'
     most_assist: '  &f%s - &b%d 助攻'
     most_normal_kill: '  &f%s - &b%d 小怪击杀'
-    no_mvp: '&f非MVP'
-    no_most_infernal_kill: '  &f非最多精英斩杀玩家'
-    no_most_assist: '  &f非最多助攻玩家'
-    no_most_normal_kill: '  &f非最多小怪击杀玩家'
-    great_fisherman: '  玩家 %s 获得了称号 "摸鱼大师"'
-    money_given: 血月奖励 ($%.2f) 已汇入账户
+    no_mvp: '&f本次没有 MVP 玩家'
+    no_most_infernal_kill: '  &f无最多精英怪斩杀的玩家'
+    no_most_assist: '  &f无最多助攻玩家'
+    no_most_normal_kill: '  &f无最多小怪击杀玩家'
+    great_fisherman: '  玩家 %s 获得了称号「摸鱼大师」'
+    money_given: 战斗奖励 ($%.2f) 已计入你的账户
     player_stats_active: '&f%s &b分数: %.1f (%d 精英斩杀, %d 助攻, %d 小怪击杀, %d 死亡)'
     player_stats_fisherman: '&f&m%s &b&m分数: %.1f (%d 精英斩杀, %d 助攻, %d 小怪击杀, %d 死亡)'
-    fail: 全部玩家已离开或死亡
+    fail: 全部玩家已死亡或退出游戏
   pvp_penalty:
-    message: 你收到 %d 从 %s
-    killer: 你击杀了 %s, %d 已经给予 %s
+    message: '你收到了 %d , 发送者为: %s'
+    killer: 你击杀了 %s, %d 已被给予 %s
   reward:
-    normal_kill: 你通过击杀怪物赚得 %d
-    infernal_kill: 你通过斩杀精英怪赚得 %d
-    infernal_assist: 你通过帮助斩杀精英怪赚得 %d
-    acquire: 请输入命令 &f/bm acquire &b获取报酬
+    normal_kill: 你通过击杀怪物获得 %d
+    infernal_kill: 你通过斩杀精英怪获得 %d
+    infernal_assist: 你通过帮助斩杀精英怪获得 %d
+    acquire: 请使用命令 &f/bm acquire &b以获得奖励
   chest:
     name: '&1%s %s'
     date_format: yyyy-MM-dd HH:mm:ss
@@ -84,32 +84,32 @@ manual:
   no_description: 无描述
   no_usage: 无用法说明
   kit:
-    description: 创建或查看奖励包
+    description: 创建或查看奖励套装
     usage: /bm kit
     create:
-      description: 创建一个奖励包
+      description: 创建一个奖励套装
       usage: /bm kit create [名称] [类型]
     view:
-      description: 查看奖励包
+      description: 查看奖励套装
       usage: /bm kit view [名称] [类型]
     remove:
-      description: 删除一个奖励包
+      description: 删除一个奖励套装
       usage: /bm kit remove [名称] [类型]
     list:
-      description: 列出所有奖励包
+      description: 列出所有奖励套装
       usage: /bm kit list
     give:
-      description: 给予一个奖励包
-      usage: /bm kit give [名称] [类型] [玩家]
+      description: 将奖励套装给予玩家
+      usage: /bm kit give [名称] [类型] [玩家名称]
   arena:
     description: 创建或删除场地
     usage: /bm arena
     create:
-      description: 创建一个场地
-      usage: /bm arena create [名称] [半径] [重生半径]
+      description: 创建场地
+      usage: /bm arena create [场地名称] [场地半径] [刷怪半径]
     remove:
-      description: 删除一个场地
-      usage: /bm arena remove [名称]
+      description: 删除场地
+      usage: /bm arena remove [场地名称]
     list:
       description: 列出所有场地
       usage: /bm arena list
