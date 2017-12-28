@@ -2,7 +2,7 @@ internal:
   info:
     using_language: '当前使用语言: %s'
   warn:
-    bad_subcommand: ''
+    bad_subcommand: '无效的子命令处理器: %s'
 user:
   info:
     command_complete: 命令已执行！
@@ -22,7 +22,7 @@ user:
     save_success: 保存成功
     not_found: 奖励包不存在
     kit_type_error: 未知的奖励包类型
-    give_success: ''
+    give_success: 将 %s - %s 给 %s
   give:
     inventory: 物品已经被放入您的背包
     ender_chest: 物品已经放入您的末影箱中
@@ -79,7 +79,7 @@ user:
   schematic:
     undo: 撤销成功
     not_exist: 文件 %s 不存在
-    pasted: ''
+    pasted: 模型已被粘贴至 %s
 manual:
   no_description: 无描述
   no_usage: 无用法说明
@@ -115,7 +115,7 @@ manual:
       usage: /bm arena list
   difficulty:
     description: 定义一个难度等级
-    usage: ''
+    usage: /bm difficulty [等级] [最低玩家数量] [怪物:玩家数量 (比例)] [怪物:精英怪数量 (比例)] [怪物生成频率] [最大精英怪等级]
   start:
     description: 升起血月
     usage: /bm start [场地名称] [难度等级] [工具名称]
@@ -130,5 +130,5 @@ manual:
     usage: /bm quit
   schematic:
     paste:
-      description: ''
-      usage: ''
+      description: 粘贴模型
+      usage: /bm schematic paste [场地名称] [模型文件]
