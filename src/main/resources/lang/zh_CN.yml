@@ -115,12 +115,12 @@ manual:
       usage: /bm arena list
   difficulty:
     description: 定义一个难度等级
-    usage: /bm difficulty [等级] [最低玩家数量] [怪物:玩家数量 (比例)] [怪物:精英怪数量 (比例)] [怪物生成频率] [最大精英怪等级]
+    usage: /bm difficulty [等级] [最低玩家数量] [怪物相对玩家倍数] [精英怪刷出概率(分母)] [怪物刷出频率] [最大精英怪等级]
   start:
-    description: 升起血月
+    description: 启动一场血月
     usage: /bm start [场地名称] [难度等级] [工具名称]
   stop:
-    description: 降下血月
+    description: 中止正在进行的血月
     usage: /bm stop [场地名称]
   join:
     description: 加入血月
