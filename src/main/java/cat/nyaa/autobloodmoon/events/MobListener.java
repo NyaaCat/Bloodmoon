@@ -6,6 +6,7 @@ import cat.nyaa.autobloodmoon.arena.Arena;
 import com.jacob_vejvoda.infernal_mobs.api.InfernalMobSpawnEvent;
 import com.jacob_vejvoda.infernal_mobs.api.InfernalMobsAPI;
 import com.jacob_vejvoda.infernal_mobs.persist.Mob;
+import org.bukkit.Location;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -13,6 +14,7 @@ import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.CreatureSpawnEvent;
 import org.bukkit.event.entity.EntityDeathEvent;
+import org.bukkit.event.entity.EntityTeleportEvent;
 
 import java.util.UUID;
 
@@ -79,6 +81,17 @@ public class MobListener implements Listener {
                 arena.mobLevelMap.put(mobUUID, event.mob.abilityList.size());
                 arena.normalMobs.add(mobUUID);
                 arena.entityList.add(mobUUID);
+            }
+        }
+    }
+
+    @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
+    public void onMobTeleport(EntityTeleportEvent event) {
+        if (plugin.currentArena != null && plugin.currentArena.infernalMobs.contains(event.getEntity().getUniqueId())) {
+            Location from = event.getFrom();
+            Location to = event.getTo();
+            if (from.getWorld() != to.getWorld() || to.getBlock().getLightFromSky() < 1) {
+                event.setCancelled(true);
             }
         }
     }
