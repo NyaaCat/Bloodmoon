@@ -8,12 +8,14 @@ import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.Chest;
+import org.bukkit.enchantments.Enchantment;
 import org.bukkit.entity.Player;
 import org.bukkit.entity.Projectile;
 import org.bukkit.event.EventHandler;
 import org.bukkit.event.EventPriority;
 import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
+import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
@@ -21,14 +23,16 @@ import org.bukkit.inventory.Inventory;
 import org.bukkit.inventory.ItemStack;
 
 import java.text.SimpleDateFormat;
-import java.util.HashMap;
+import java.util.*;
 
 public class PlayerListener implements Listener {
     private AutoBloodmoon plugin;
+    private Map<UUID, List<ItemStack>> vanishingCurseItems = new HashMap<>();
 
     public PlayerListener(AutoBloodmoon pl) {
         plugin = pl;
         plugin.getServer().getPluginManager().registerEvents(this, plugin);
+        vanishingCurseItems.clear();
     }
 
     public static Material getChestType(Block block) {
@@ -85,8 +89,14 @@ public class PlayerListener implements Listener {
                     }
                 }
             }
-            if (plugin.cfg.save_inventory && e.getDrops() != null && !e.getDrops().isEmpty() &&
+            if (!e.getKeepInventory() && plugin.cfg.save_inventory && e.getDrops() != null && (!e.getDrops().isEmpty() || vanishingCurseItems.containsKey(player.getUniqueId())) &&
                     player.getLocation().getY() > 5) {
+                if (vanishingCurseItems.containsKey(player.getUniqueId())) {
+                    if (e.getDrops().stream().filter(itemStack -> itemStack.containsEnchantment(Enchantment.VANISHING_CURSE)).count() <= 0L) {
+                        e.getDrops().addAll(vanishingCurseItems.get(player.getUniqueId()));
+                    }
+                    vanishingCurseItems.remove(player.getUniqueId());
+                }
                 for (int y = 0; y < 255; y++) {
                     Location loc = player.getLocation().clone();
                     if (loc.getY() + y >= loc.getWorld().getMaxHeight()) {
@@ -101,6 +111,7 @@ public class PlayerListener implements Listener {
                             SimpleDateFormat format = new SimpleDateFormat(I18n.format("user.chest.date_format"));
                             String date = format.format(System.currentTimeMillis());
                             chest.setCustomName(I18n.format("user.chest.name", player.getName(), date));
+                            chest.update();
                         } catch (Exception e1) {
                             e1.printStackTrace();
                         }
@@ -110,13 +121,29 @@ public class PlayerListener implements Listener {
                         e.getDrops().addAll(items.values());
                         plugin.coreProtectAPI.logPlacement(player, block.getLocation(), block.getType(), block.getData());
                         if (e.getDrops().isEmpty()) {
-                            e.setKeepInventory(false);
                             break;
                         }
                     }
                 }
             }
             plugin.currentArena.quit(e.getEntity());
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerResurrect(EntityResurrectEvent e) {
+        if (e.getEntity() instanceof Player && e.isCancelled() && plugin.currentArena != null && plugin.currentArena.state == Arena.ArenaState.PLAYING &&
+                plugin.currentArena.players.contains(e.getEntity().getUniqueId()) && plugin.cfg.save_inventory) {
+            Player player = (Player) e.getEntity();
+            List<ItemStack> stacks = new ArrayList<>();
+            for (ItemStack item : player.getInventory().getContents()) {
+                if (item != null && item.getType() != Material.AIR && item.containsEnchantment(Enchantment.VANISHING_CURSE)) {
+                    stacks.add(item.clone());
+                }
+            }
+            if (!stacks.isEmpty()) {
+                vanishingCurseItems.put(player.getUniqueId(), stacks);
+            }
         }
     }
 
