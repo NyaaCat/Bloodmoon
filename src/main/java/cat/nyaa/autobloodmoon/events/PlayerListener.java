@@ -4,6 +4,7 @@ import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import cat.nyaa.autobloodmoon.I18n;
 import cat.nyaa.autobloodmoon.arena.Arena;
 import cat.nyaa.nyaacore.utils.VaultUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.Location;
 import org.bukkit.Material;
 import org.bukkit.block.Block;
@@ -17,6 +18,7 @@ import org.bukkit.event.Listener;
 import org.bukkit.event.entity.EntityDamageByEntityEvent;
 import org.bukkit.event.entity.EntityResurrectEvent;
 import org.bukkit.event.entity.PlayerDeathEvent;
+import org.bukkit.event.player.PlayerMoveEvent;
 import org.bukkit.event.player.PlayerQuitEvent;
 import org.bukkit.event.player.PlayerTeleportEvent;
 import org.bukkit.inventory.Inventory;
@@ -188,6 +190,16 @@ public class PlayerListener implements Listener {
         Player p = e.getPlayer();
         if (!plugin.currentArena.players.contains(p.getUniqueId()) && plugin.currentArena.inArena(e.getTo())) {
             plugin.currentArena.join(p, false);
+        }
+    }
+
+    @EventHandler(priority = EventPriority.MONITOR)
+    public void onPlayerMove(PlayerMoveEvent event) {
+        if (plugin.currentArena != null) {
+            Arena arena = plugin.currentArena;
+            if (arena.state != Arena.ArenaState.STOP && !arena.players.contains(event.getPlayer().getUniqueId()) && arena.inArena(event.getTo())) {
+                arena.join(event.getPlayer(), false);
+            }
         }
     }
 }
