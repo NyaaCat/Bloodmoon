@@ -62,6 +62,7 @@ user:
     no_most_normal_kill: '  &f无最多小怪击杀玩家'
     great_fisherman: '  玩家 %s 获得了称号「摸鱼大师」'
     money_given: 战斗奖励 ($%.2f) 已计入你的账户
+    money_given_with_tax: '战斗奖励 ($%.2f, 税: $%.2f) 已计入你的账户'
     player_stats_active: '&f%s &b分数: %.1f (%d 精英斩杀, %d 助攻, %d 小怪击杀, %d 死亡)'
     player_stats_fisherman: '&f&m%s &b&m分数: %.1f (%d 精英斩杀, %d 助攻, %d 小怪击杀, %d 死亡)'
     fail: 全部玩家已死亡或退出游戏

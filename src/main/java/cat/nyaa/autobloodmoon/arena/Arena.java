@@ -346,10 +346,22 @@ public class Arena extends BukkitRunnable implements ISerializable {
                     for (Map.Entry<UUID, Double> e : scoreMap.entrySet()) {
                         if (fishermen.contains(e.getKey())) continue;
                         if (e.getValue() <= 0 || e.getValue().isNaN()) continue;
-                        VaultUtils.deposit(plugin.getServer().getOfflinePlayer(e.getKey()), e.getValue());
+                        Double money = e.getValue();
+                        Double tax = 0.0D;
+                        if (plugin.cfg.reward_tax > 0) {
+                            tax = (money / 100) * plugin.cfg.reward_tax;
+                        }
+                        VaultUtils.deposit(plugin.getServer().getOfflinePlayer(e.getKey()), money - tax);
+                        if (plugin.systemBalance != null && tax > 0.0D) {
+                            plugin.systemBalance.deposit(tax, plugin);
+                        }
                         Player p = plugin.getServer().getPlayer(e.getKey());
                         if (p != null) {
-                            p.sendMessage(I18n.format("user.game.money_given", e.getValue()));
+                            if (tax > 0.0D) {
+                                p.sendMessage(I18n.format("user.game.money_given_with_tax", money - tax, tax));
+                            } else {
+                                p.sendMessage(I18n.format("user.game.money_given", e.getValue()));
+                            }
                         }
                     }
                     for (UUID id : sortedPlayers) {

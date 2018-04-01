@@ -9,6 +9,9 @@ import cat.nyaa.autobloodmoon.kits.KitListener;
 import cat.nyaa.autobloodmoon.kits.KitManager;
 import cat.nyaa.autobloodmoon.mobs.MobManager;
 import cat.nyaa.autobloodmoon.stats.StatsManager;
+import cat.nyaa.nyaacore.component.ComponentNotAvailableException;
+import cat.nyaa.nyaacore.component.ISystemBalance;
+import cat.nyaa.nyaacore.component.NyaaComponent;
 import cat.nyaa.nyaautils.api.DamageStatistic;
 import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
@@ -33,6 +36,7 @@ public class AutoBloodmoon extends JavaPlugin {
     public DamageStatistic damageStatistic;
     public KitManager kitManager;
     public CoreProtectAPI coreProtectAPI;
+    public ISystemBalance systemBalance;
 
     @Override
     public void onEnable() {
@@ -50,6 +54,11 @@ public class AutoBloodmoon extends JavaPlugin {
         this.statsManager = new StatsManager(this);
         this.kitManager = new KitManager(this);
         damageStatistic = DamageStatistic.instance();
+        try {
+            systemBalance = NyaaComponent.get(ISystemBalance.class);
+        } catch (ComponentNotAvailableException e) {
+            systemBalance = null;
+        }
         this.getCommand("bloodmoon").setExecutor(this.commandHandler);
         this.coreProtectAPI = new CoreProtectAPI(this);
         if (Bukkit.getScoreboardManager().getMainScoreboard().getTeam("bloodmoon") != null) {

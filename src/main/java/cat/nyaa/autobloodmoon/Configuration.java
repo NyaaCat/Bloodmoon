@@ -45,7 +45,10 @@ public class Configuration extends PluginConfigure {
     public int mob_limits_infernal = 100;
     @Serializable(name = "mob_limits.normal")
     public int mob_limits_normal = 100;
-    
+
+    @Serializable
+    public int reward_tax = 10;
+
     @StandaloneConfig
     public ArenaConfig arenaConfig;
     @StandaloneConfig
