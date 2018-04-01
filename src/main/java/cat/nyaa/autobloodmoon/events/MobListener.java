@@ -7,6 +7,7 @@ import com.jacob_vejvoda.infernal_mobs.api.InfernalMobSpawnEvent;
 import com.jacob_vejvoda.infernal_mobs.api.InfernalMobsAPI;
 import com.jacob_vejvoda.infernal_mobs.persist.Mob;
 import org.bukkit.Location;
+import org.bukkit.entity.ArmorStand;
 import org.bukkit.entity.LivingEntity;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -33,16 +34,16 @@ public class MobListener implements Listener {
             Arena arena = plugin.currentArena;
             LivingEntity entity = event.getEntity();
             UUID mobUUID = entity.getUniqueId();
-            boolean isInfernalMob = arena.infernalMobs.contains(mobUUID);
-            boolean isNormalMob = arena.entityList.contains(mobUUID);
+            boolean isInfernalMob = arena.currentLevelInfernalMobs.contains(mobUUID);
+            boolean isNormalMob = arena.spawnedMobs.contains(mobUUID);
             if (!isInfernalMob && !isNormalMob && arena.inArena(entity.getLocation())) {
                 Mob mob = InfernalMobsAPI.asInfernalMob(mobUUID);
                 if (mob != null) {
                     isInfernalMob = true;
-                    arena.infernalMobs.add(mobUUID);
+                    arena.currentLevelInfernalMobs.add(mobUUID);
                     arena.mobLevelMap.put(mobUUID, mob.abilityList.size());
-                    arena.normalMobs.add(mobUUID);
-                    arena.entityList.add(mobUUID);
+                    arena.currentLevelSpawnedMobs.add(mobUUID);
+                    arena.spawnedMobs.add(mobUUID);
                 } else {
                     isNormalMob = true;
                 }
@@ -56,18 +57,23 @@ public class MobListener implements Listener {
                     if (killer != null && arena.players.contains(killer.getUniqueId())) {
                         arena.scoreBoard.incInfernalKill(killer, entity);
                     }
-                    arena.infernalMobs.remove(mobUUID);
-                    arena.broadcast(I18n.format("user.game.mobs_remaining", arena.infernalMobs.size()));
+                    arena.currentLevelInfernalMobs.remove(mobUUID);
+                    arena.broadcast(I18n.format("user.game.mobs_remaining", arena.currentLevelInfernalMobs.size()));
                 }
+                plugin.currentArena.spawnedMobs.remove(mobUUID);
             }
         }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onMobSpawn(CreatureSpawnEvent event) {
-        if (plugin.currentArena != null && event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL &&
-                plugin.currentArena.inArena(event.getLocation())) {
-            event.setCancelled(true);
+        if (plugin.currentArena != null && plugin.currentArena.state != Arena.ArenaState.STOP && plugin.currentArena.inArena(event.getLocation())) {
+            if (event.getSpawnReason() == CreatureSpawnEvent.SpawnReason.NATURAL) {
+                event.setCancelled(true);
+            } else if (!(event.getEntity() instanceof ArmorStand)){
+                plugin.currentArena.currentLevelSpawnedMobs.add(event.getEntity().getUniqueId());
+                plugin.currentArena.spawnedMobs.add(event.getEntity().getUniqueId());
+            }
         }
     }
 
@@ -76,18 +82,18 @@ public class MobListener implements Listener {
         if (plugin.currentArena != null) {
             Arena arena = plugin.currentArena;
             UUID mobUUID = event.mobEntity.getUniqueId();
-            if (arena.infernalMobs.contains(event.parentId) || arena.inArena(event.mobEntity.getLocation())) {
-                arena.infernalMobs.add(mobUUID);
+            if (arena.currentLevelInfernalMobs.contains(event.parentId) || arena.inArena(event.mobEntity.getLocation())) {
+                arena.currentLevelInfernalMobs.add(mobUUID);
                 arena.mobLevelMap.put(mobUUID, event.mob.abilityList.size());
-                arena.normalMobs.add(mobUUID);
-                arena.entityList.add(mobUUID);
+                arena.currentLevelSpawnedMobs.add(mobUUID);
+                arena.spawnedMobs.add(mobUUID);
             }
         }
     }
 
     @EventHandler(ignoreCancelled = true, priority = EventPriority.LOWEST)
     public void onMobTeleport(EntityTeleportEvent event) {
-        if (plugin.currentArena != null && plugin.currentArena.infernalMobs.contains(event.getEntity().getUniqueId())) {
+        if (plugin.currentArena != null && plugin.currentArena.currentLevelInfernalMobs.contains(event.getEntity().getUniqueId())) {
             Location from = event.getFrom();
             Location to = event.getTo();
             if (from.getWorld() != to.getWorld() || to.getBlock().getLightFromSky() < 1) {

@@ -36,15 +36,15 @@ import java.util.*;
 import static cat.nyaa.autobloodmoon.kits.KitConfig.KitType.*;
 
 public class Arena extends BukkitRunnable implements ISerializable {
-    public ArrayList<UUID> players = new ArrayList<>();
+    public Set<UUID> players = new HashSet<>();
     public Level level;
     public int currentLevel = 0;
     public String kitName;
     public int nextWave = 0;
     public int lastSpawn = 0;
-    public ArrayList<UUID> infernalMobs = new ArrayList<>();
-    public ArrayList<UUID> normalMobs = new ArrayList<>();
-    public ArrayList<UUID> entityList = new ArrayList<>();
+    public Set<UUID> currentLevelInfernalMobs = new HashSet<>();
+    public Set<UUID> currentLevelSpawnedMobs = new HashSet<>();
+    public Set<UUID> spawnedMobs = new HashSet<>();
     public Map<UUID, Integer> mobLevelMap = new HashMap<>(); // Map<MobId, MobLevel>
     public ArenaState state;
     public GameScoreBoard scoreBoard;
@@ -220,22 +220,26 @@ public class Arena extends BukkitRunnable implements ISerializable {
         } else if (state == ArenaState.PLAYING) {
             if (nextWave <= 0) {
                 if (currentLevel > 0 && time - lastSpawn >= level.getMobSpawnDelayTicks() &&
-                        this.normalMobs.size() < players.size() * level.getMobAmount()) {
-                    spawnMob();
-                    lastSpawn = time;
-                    return;
+                        this.currentLevelSpawnedMobs.size() < players.size() * level.getMobAmount()) {
+                    if ((plugin.cfg.mob_limits_normal <= 0 && plugin.cfg.mob_limits_infernal <= 0) ||
+                            (plugin.cfg.mob_limits_normal > spawnedMobs.size() && plugin.cfg.mob_limits_infernal > currentLevelInfernalMobs.size())) {
+                        spawnMob();
+                        lastSpawn = time;
+                        return;
+                    }
+
                 }
-                if (currentLevel == 0 || (infernalMobs.isEmpty() &&
-                        normalMobs.size() >= players.size() * level.getMobAmount() &&
+                if (currentLevel == 0 || (currentLevelInfernalMobs.isEmpty() &&
+                        currentLevelSpawnedMobs.size() >= players.size() * level.getMobAmount() &&
                         currentLevel < level.getMaxInfernalLevel())) {
                     nextWave = plugin.cfg.preparation_time;
-                    normalMobs.clear();
+                    currentLevelSpawnedMobs.clear();
                     currentLevel++;
                     broadcastTitle("user.game.next_wave", currentLevel, nextWave / 20);
                     return;
                 }
-                if (infernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
-                        normalMobs.size() >= players.size() * level.getMobAmount()) {
+                if (currentLevelInfernalMobs.isEmpty() && currentLevel >= level.getMaxInfernalLevel() && !players.isEmpty() &&
+                        currentLevelSpawnedMobs.size() >= players.size() * level.getMobAmount()) {
                     scoreBoard.computeFishermen();
                     UUID mvpId = scoreBoard.getMVP();
                     UUID mostKillId = scoreBoard.getMaxInfernalKill();
@@ -360,23 +364,22 @@ public class Arena extends BukkitRunnable implements ISerializable {
             if (ticks >= 20) {
                 ticks = 0;
                 lockTime();
-                if (!infernalMobs.isEmpty()) {
-                    ArrayList<UUID> tmp = new ArrayList<>();
+                if (!spawnedMobs.isEmpty()) {
+                    Set<UUID> livingMobs = new HashSet<>();
                     for (LivingEntity entity : getCenterPoint().getWorld().getLivingEntities()) {
-                        if (!entity.isDead() && infernalMobs.contains(entity.getUniqueId()) &&
-                                InfernalMobsAPI.asInfernalMob(entity.getUniqueId()) != null) {
+                        if (spawnedMobs.contains(entity.getUniqueId()) && !entity.isDead()) {
                             if (!inArena(entity.getLocation())) {
                                 Location loc = getRandomLocation();
                                 if (loc != null) {
                                     entity.teleport(loc);
                                 }
                             }
-                            tmp.add(entity.getUniqueId());
+                            livingMobs.add(entity.getUniqueId());
                         }
                     }
-                    if (tmp.size() != infernalMobs.size()) {
-                        infernalMobs = tmp;
-                        broadcast(I18n.format("user.game.mobs_remaining", infernalMobs.size()));
+                    spawnedMobs = livingMobs;
+                    if (currentLevelInfernalMobs.removeIf(uuid -> !livingMobs.contains(uuid))) {
+                        broadcast(I18n.format("user.game.mobs_remaining", currentLevelInfernalMobs.size()));
                     }
                 }
             }
@@ -410,8 +413,8 @@ public class Arena extends BukkitRunnable implements ISerializable {
                 Entity entity = loc.getWorld().spawnEntity(loc, EntityType.valueOf(mob.toUpperCase()));
                 if (entity != null) {
                     entity.setMetadata("NPC", new FixedMetadataValue(plugin, 1));
-                    normalMobs.add(entity.getUniqueId());
-                    entityList.add(entity.getUniqueId());
+                    currentLevelSpawnedMobs.add(entity.getUniqueId());
+                    spawnedMobs.add(entity.getUniqueId());
                 }
             }
         }
@@ -458,7 +461,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
 
     public void removeAllMobs() {
         for (LivingEntity entity : getCenterPoint().getWorld().getLivingEntities()) {
-            if (entityList.contains(entity.getUniqueId())) {
+            if (spawnedMobs.contains(entity.getUniqueId())) {
                 entity.remove();
             }
         }

@@ -41,6 +41,11 @@ public class Configuration extends PluginConfigure {
     @Serializable
     public String schematicsDir = "plugins/WorldEdit/schematics";
     
+    @Serializable(name = "mob_limits.infernal")
+    public int mob_limits_infernal = 100;
+    @Serializable(name = "mob_limits.normal")
+    public int mob_limits_normal = 100;
+    
     @StandaloneConfig
     public ArenaConfig arenaConfig;
     @StandaloneConfig
