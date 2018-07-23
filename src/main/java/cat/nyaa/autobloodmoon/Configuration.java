@@ -5,6 +5,7 @@ import cat.nyaa.autobloodmoon.level.LevelConfig;
 import cat.nyaa.autobloodmoon.mobs.MobConfig;
 import cat.nyaa.autobloodmoon.stats.StatsConfig;
 import cat.nyaa.nyaacore.configuration.PluginConfigure;
+import org.bukkit.ChatColor;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public class Configuration extends PluginConfigure {
@@ -25,6 +26,8 @@ public class Configuration extends PluginConfigure {
     public boolean pvp = false;
     @Serializable
     public boolean pvp_scoreboard_team = true;// use vanilla scoreboard team to prevent pvp
+    @Serializable
+    public ChatColor pvp_scoreboard_team_color = ChatColor.AQUA;
     @Serializable
     public int temp_pvp_protection_time = 10;// 10 seconds
     @Serializable

@@ -126,6 +126,7 @@ public class Arena extends BukkitRunnable implements ISerializable {
         }
         if (!plugin.cfg.pvp && plugin.cfg.pvp_scoreboard_team) {
             team = bukkitScoreBoard.registerNewTeam("bloodmoon");
+            team.setColor(plugin.cfg.pvp_scoreboard_team_color);
             team.setAllowFriendlyFire(false);
         }
         this.runTaskTimer(this.plugin, 20, 1);
