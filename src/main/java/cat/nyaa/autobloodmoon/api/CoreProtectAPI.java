@@ -3,6 +3,7 @@ package cat.nyaa.autobloodmoon.api;
 import cat.nyaa.autobloodmoon.AutoBloodmoon;
 import org.bukkit.Location;
 import org.bukkit.Material;
+import org.bukkit.block.data.BlockData;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.Plugin;
 
@@ -25,7 +26,7 @@ public class CoreProtectAPI {
                 Method getAPIMethod = coreProtectPlugin.getClass().getDeclaredMethod("getAPI");
                 this.coreProtectAPI = getAPIMethod.invoke(this.coreProtectPlugin);
                 this.logPlacementMethod = coreProtectAPI.getClass().
-                        getDeclaredMethod("logPlacement", String.class, Location.class, Material.class, byte.class);
+                        getDeclaredMethod("logPlacement", String.class, Location.class, Material.class, BlockData.class);
                 coreProtectAPI.getClass().getDeclaredMethod("testAPI").invoke(coreProtectAPI);
                 enable = (boolean) coreProtectAPI.getClass().getDeclaredMethod("isEnabled").invoke(coreProtectAPI);
                 return;
@@ -46,7 +47,7 @@ public class CoreProtectAPI {
         return enable;
     }
 
-    public boolean logPlacement(Player player, Location location, Material type, byte data) {
+    public boolean logPlacement(Player player, Location location, Material type, BlockData data) {
         if (!isEnabled()) {
             return false;
         }
