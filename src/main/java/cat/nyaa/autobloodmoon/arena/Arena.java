@@ -124,10 +124,13 @@ public class Arena extends BukkitRunnable implements ISerializable {
         if (bukkitScoreBoard.getTeam("bloodmoon") != null) {
             bukkitScoreBoard.getTeam("bloodmoon").unregister();
         }
-        if (!plugin.cfg.pvp && plugin.cfg.pvp_scoreboard_team) {
+        if (plugin.cfg.pvp_scoreboard_team) {
             team = bukkitScoreBoard.registerNewTeam("bloodmoon");
             team.setColor(plugin.cfg.pvp_scoreboard_team_color);
             team.setAllowFriendlyFire(false);
+        }
+        if (plugin.cfg.pvp) {
+            team.setAllowFriendlyFire(true);
         }
         this.runTaskTimer(this.plugin, 20, 1);
         new Message(I18n.format("user.game.new_game_0")).broadcast();
