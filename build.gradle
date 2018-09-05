@@ -42,9 +42,7 @@ dependencies {
     compile('cat.nyaa:nyaacore:6.2-SNAPSHOT') {
         transitive = false
     }
-    compile ('org.librazy:NyaaUtilsLangChecker:2.0-SNAPSHOT') {
-        transitive = false
-    }
+    compileOnly 'org.librazy:NyaaUtilsLangChecker:2.0-SNAPSHOT'
     compile files('lib/InfernalMobs-v5.1.42-mc1.12.jar')
     compile 'com.boydti:fawe-api:17.12.15-0dbb617-949-18.0.6'
     compile 'com.sk89q.worldedit:worldedit-bukkit:6.1.5'
