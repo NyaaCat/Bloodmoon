@@ -24,18 +24,13 @@ repositories {
     }
 
     maven {
-        name 'nu-langchecker'
-        url 'https://raw.githubusercontent.com/Librazy/NyaaUtilsLangChecker/maven-repo'
-    }
-
-    maven {
         name 'fawe'
         url 'http://ci.athion.net/job/FastAsyncWorldEdit/ws/mvn/'
     }
 }
 
 dependencies {
-    compile 'org.spigotmc:spigot-api:1.13-R0.1-SNAPSHOT'
+    compile 'org.spigotmc:spigot-api:1.13.1-R0.1-SNAPSHOT'
     compile('cat.nyaa:nyaautils:6.1-SNAPSHOT') {
         transitive = false
     }

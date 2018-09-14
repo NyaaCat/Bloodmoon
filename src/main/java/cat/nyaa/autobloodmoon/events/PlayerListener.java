@@ -105,7 +105,7 @@ public class PlayerListener implements Listener {
                         break;
                     }
                     loc.setY(loc.getY() + y);
-                    if (loc.getBlock().getType() == Material.AIR) {
+                    if (loc.getBlock().isEmpty()) {
                         Block block = loc.getBlock();
                         block.setType(getChestType(loc.getBlock()));
                         Chest chest = (Chest) block.getState();
