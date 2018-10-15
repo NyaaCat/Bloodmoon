@@ -14,28 +14,13 @@ repositories {
     }
 
     maven {
-        name 'Sonatype'
-        url 'https://oss.sonatype.org/content/groups/public'
-    }
-
-    maven {
         name 'sk89q'
         url 'http://maven.sk89q.com/artifactory/repo/'
     }
 
     maven {
-        name 'nyaa'
-        url 'https://raw.githubusercontent.com/NyaaCat/nyaautils/maven-repo'
-    }
-
-    maven {
-        name 'NyaaCore'
-        url 'https://raw.githubusercontent.com/NyaaCat/NyaaCore/maven-repo'
-    }
-
-    maven {
-        name 'nu-langchecker'
-        url 'https://raw.githubusercontent.com/Librazy/NyaaUtilsLangChecker/maven-repo'
+        name 'NyaaCentral'
+        url 'https://raw.githubusercontent.com/NyaaCat/NyaaCentral/maven-repo'
     }
 
     maven {
@@ -45,14 +30,14 @@ repositories {
 }
 
 dependencies {
-    compile 'org.spigotmc:spigot-api:1.12.1-R0.1-SNAPSHOT'
-    compile('cat.nyaa:nyaautils:4.0-SNAPSHOT') {
+    compile 'org.spigotmc:spigot-api:1.13.1-R0.1-SNAPSHOT'
+    compile('cat.nyaa:nyaautils:6.1-SNAPSHOT') {
         transitive = false
     }
-    compile('cat.nyaa:nyaacore:4.1-SNAPSHOT') {
+    compile('cat.nyaa:nyaacore:6.2-SNAPSHOT') {
         transitive = false
     }
-    compile 'org.librazy:NyaaUtilsLangChecker:1.0-SNAPSHOT'
+    compileOnly 'org.librazy:NyaaUtilsLangChecker:2.0-SNAPSHOT'
     compile files('lib/InfernalMobs-v5.1.42-mc1.12.jar')
     compile 'com.boydti:fawe-api:17.12.15-0dbb617-949-18.0.6'
     compile 'com.sk89q.worldedit:worldedit-bukkit:6.1.5'

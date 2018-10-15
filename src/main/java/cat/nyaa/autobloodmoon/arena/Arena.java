@@ -28,8 +28,8 @@ import org.bukkit.scheduler.BukkitRunnable;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.bukkit.util.Vector;
-import org.librazy.nyaautils_lang_checker.LangKey;
-import org.librazy.nyaautils_lang_checker.LangKeyType;
+import org.librazy.nclangchecker.LangKey;
+import org.librazy.nclangchecker.LangKeyType;
 
 import java.util.*;
 
@@ -128,6 +128,9 @@ public class Arena extends BukkitRunnable implements ISerializable {
             team = bukkitScoreBoard.registerNewTeam("bloodmoon");
             team.setColor(plugin.cfg.pvp_scoreboard_team_color);
             team.setAllowFriendlyFire(plugin.cfg.pvp);
+        }
+        if (plugin.cfg.pvp) {
+            team.setAllowFriendlyFire(true);
         }
         this.runTaskTimer(this.plugin, 20, 1);
         new Message(I18n.format("user.game.new_game_0")).broadcast();

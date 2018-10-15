@@ -105,7 +105,7 @@ public class PlayerListener implements Listener {
                         break;
                     }
                     loc.setY(loc.getY() + y);
-                    if (loc.getBlock().getType() == Material.AIR) {
+                    if (loc.getBlock().isEmpty()) {
                         Block block = loc.getBlock();
                         block.setType(getChestType(loc.getBlock()));
                         Chest chest = (Chest) block.getState();
@@ -121,7 +121,7 @@ public class PlayerListener implements Listener {
                         HashMap<Integer, ItemStack> items = inventory.addItem(e.getDrops().toArray(new ItemStack[0]));
                         e.getDrops().clear();
                         e.getDrops().addAll(items.values());
-                        plugin.coreProtectAPI.logPlacement(player, block.getLocation(), block.getType(), block.getData());
+                        plugin.coreProtectAPI.logPlacement(player, block.getLocation(), block.getType(), block.getBlockData());
                         if (e.getDrops().isEmpty()) {
                             break;
                         }
