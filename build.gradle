@@ -39,9 +39,18 @@ dependencies {
     }
     compileOnly 'org.librazy:NyaaUtilsLangChecker:2.0-SNAPSHOT'
     compile files('lib/InfernalMobs-v5.1.42-mc1.12.jar')
-    compile 'com.boydti:fawe-api:17.12.15-0dbb617-949-18.0.6'
-    compile 'com.sk89q.worldedit:worldedit-bukkit:6.1.5'
-    compile 'com.sk89q.worldedit:worldedit-core:6.1.4-SNAPSHOT'
+    // compile 'com.boydti:fawe-api:18.10.05-f3fdef6-1218-21.5.5'
+    compile ('com.sk89q.worldguard:worldguard-legacy:7.0.0-SNAPSHOT') {
+        exclude group: 'io.papermc', module: 'paperlib'
+        exclude group: 'org.bstats.bStats-Metrics', module: 'bstats-bukkit'
+    }
+    compile ('com.sk89q.worldedit:worldedit-bukkit:7.0.0-SNAPSHOT') {
+        exclude group: 'io.papermc', module: 'paperlib'
+        exclude group: 'org.bstats.bStats-Metrics', module: 'bstats-bukkit'
+    }
+
+    annotationProcessor 'org.librazy:NyaaUtilsLangChecker:2.0-SNAPSHOT'
+    annotationProcessor "org.spigotmc:spigot-api:1.13.1-R0.1-SNAPSHOT"
 }
 
 String nyaaCoreLangDir = System.getenv("NYAACORE_LANG_DIR")
